@@ -10,13 +10,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserEntity saveUserIfNotExists(String email, String name, String password, String googleID){
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public UserEntity saveUserIfNotExists(String email, String name, String password, String googleID, String accessToken) {
         return userRepository.findByGoogleID(googleID).orElseGet(() -> {
             UserEntity user = new UserEntity();
             user.setEmail(email);
             user.setName(name);
             user.setPassword(password);
             user.setGoogleID(googleID);
+            user.setAccessToken(accessToken);
             return userRepository.save(user);
         });
     }

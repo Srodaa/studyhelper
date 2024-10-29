@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import studyhelper.thesis.backend.component.OAuth2LoginSuccessHandler;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -19,10 +21,13 @@ public class SecurityConfig {
     private OAuth2LoginSuccessHandler successHandler;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+            .cors(withDefaults())
+            .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests.anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:5173/home", true)
+                                .failureUrl("http://localhost:5173/")
                                 .successHandler(successHandler)
                         );
         return http.build();

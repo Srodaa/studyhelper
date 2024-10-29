@@ -15,6 +15,9 @@ public class UserEntity {
     private String password;
     @Column(name = "googleID")
     private String googleID;
+    @Column(name = "accessToken")
+    private String accessToken;
+
 
     public long getId() {
         return id;
@@ -54,5 +57,12 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
