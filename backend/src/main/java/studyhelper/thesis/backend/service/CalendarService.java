@@ -1,12 +1,10 @@
 package studyhelper.thesis.backend.service;
 
-import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -40,23 +38,41 @@ public class CalendarService {
         return response.getBody().getItems();
     }
 
-    // Delete an event
     public void deleteEvent(String accessToken, String eventId) {
         RestTemplate restTemplate = new RestTemplate();
-        // Set up headers
+        // Headerök megadása
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
-        // Create an HTTP entity
+        // Http entity
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-        // Request to delete the event
+        // Request
         restTemplate.exchange(
                 apiUrl + "/" + eventId,
                 HttpMethod.DELETE,
                 entity,
                 Void.class
         );
-        System.out.println(apiUrl+"/"+eventId);
+        System.out.println("Delete: " + apiUrl+"/"+eventId);
+    }
+
+    public void updateEvent(String accessToken, String eventId, CalendarEvent updateEvent){
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<CalendarEvent> entity = new HttpEntity<>(updateEvent, headers);
+
+        ResponseEntity<CalendarEvent> response = restTemplate.exchange(
+                apiUrl + "/" + eventId,
+                HttpMethod.PUT,
+                entity,
+                CalendarEvent.class
+        );
+
+        System.out.println("Update: " + apiUrl+"/"+eventId);
     }
 
 
 }
+

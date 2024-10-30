@@ -1,6 +1,6 @@
 package studyhelper.thesis.backend.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -62,5 +62,24 @@ public class CalendarController {
         calendarService.deleteEvent(accessToken.getTokenValue(), eventId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/user/calendar-events/{eventId}")
+    public ResponseEntity<CalendarEvent> updateEvent(
+            @PathVariable String eventId,
+            @RequestBody CalendarEvent updatedEvent,
+            @AuthenticationPrincipal OAuth2User principal,
+            Authentication authentication) {
+
+        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+                oAuth2Token.getAuthorizedClientRegistrationId(),
+                oAuth2Token.getName()
+        );
+
+        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+        calendarService.updateEvent(accessToken.getTokenValue(), eventId, updatedEvent);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

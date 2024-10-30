@@ -40,11 +40,7 @@ function Home() {
           <p>{user.name}</p>
           <p>{user.email}</p>
           {user.picture && (
-            <img
-              src={user.picture}
-              alt="User Profile"
-              referrerPolicy="no-referrer"
-            />
+            <img src={user.picture} alt="User Profile" referrerPolicy="no-referrer" />
           )}
         </div>
       ) : (
