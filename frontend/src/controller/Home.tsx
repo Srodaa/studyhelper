@@ -50,7 +50,7 @@ function Home() {
       ) : (
         <p>Loading user data...</p>
       )}
-      <Calendar/>
+      <Calendar />
     </div>
   );
 }

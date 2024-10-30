@@ -5,8 +5,15 @@ import FullCalendar from "@fullcalendar/react"; // FullCalendar komponens
 import dayGridPlugin from "@fullcalendar/daygrid"; // Naptár nézetek
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // Esemény interakciók
-import Modal from "react-modal"; // Modal for editing or creating events
-import styles from "../styles/calendar.module.css";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"; // Importáld a szükséges Dialog elemeket
+import { Button } from "@/components/ui/button"; // Importáld a gombot
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -36,7 +43,7 @@ const Calendar: React.FC = () => {
   useEffect(() => {
     fetchEvents();
 
-    const interval = setInterval(fetchEvents, 300000); //5 perc
+    const interval = setInterval(fetchEvents, 300000); // 5 perc
     return () => clearInterval(interval);
   }, []);
 
@@ -46,16 +53,16 @@ const Calendar: React.FC = () => {
         `http://localhost:8080/user/calendar-events/${eventId}`,
         {
           withCredentials: true,
-          timeout: 5000, // 5-second timeout for testing
+          timeout: 5000, // 5 másodperces időtúllépés teszteléshez
         }
       );
       closeModal();
-      fetchEvents(); // Refresh events after deletion
+      fetchEvents(); // Frissítjük az eseményeket törlés után
     } catch (error) {
       console.error("Error deleting event: ", error);
     }
   };
-  
+
   const openModal = (eventInfo: any) => {
     setCurrentEvent({
       id: eventInfo.event.id,
@@ -65,6 +72,7 @@ const Calendar: React.FC = () => {
       description: eventInfo.event.extendedProps.description,
     });
     setModalOpen(true);
+    console.log("Modal opening..."); // Debugging
   };
 
   const closeModal = () => {
@@ -107,7 +115,7 @@ const Calendar: React.FC = () => {
         <b>
           {startTime} - {endTime} {eventInfo.id}
         </b>
-        <br></br>
+        <br />
         <b className="text-center">{eventInfo.event.title}</b>
         <div>{eventInfo.event.extendedProps.description}</div>
       </div>
@@ -115,8 +123,8 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <div className={styles.calendar}>
-      <h2>Közelgő Események</h2>
+    <div>
+      <h2 className="text-orange-950">Közelgő Események</h2>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -132,18 +140,18 @@ const Calendar: React.FC = () => {
         }}
       />
 
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        contentLabel="Event Modal"
-      >
-        <h2>Esemény részletei</h2>
-        <p>{currentEvent?.summary}</p>
-        <button onClick={() => handleDeleteEvent(currentEvent?.id)}>
-          Törlés
-        </button>
-        <button onClick={closeModal}>Bezárás</button>
-      </Modal>
+      <Dialog open={isModalOpen} onOpenChange={closeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Esemény részletei</DialogTitle>
+            <DialogDescription>{currentEvent?.summary}</DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => handleDeleteEvent(currentEvent?.id)}>
+            Törlés
+          </Button>
+          <Button onClick={closeModal}>Bezárás</Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

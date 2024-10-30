@@ -1,5 +1,4 @@
 import React from "react";
-import styles from  "../styles/login.module.css";
 
 function Login() {
   const googleLogin = () => {
@@ -8,7 +7,7 @@ function Login() {
 
   return (
     <>
-      <div >
+      <div>
         <h2>Welcome to StudyHelper</h2>
         <button onClick={googleLogin}>Login with Google </button>
       </div>
