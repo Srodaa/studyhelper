@@ -13,32 +13,53 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-const Calendar: React.FC = () => {
+import { Calendar as CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar as SmallCalendar } from "@/components/ui/smallcalendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+
+const Calendarr: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<Partial<CalendarEvent> | null>(null);
-  const [eventName, setEventName] = useState<string>(currentEvent?.summary || "");
-
+  const [currentEvent, setCurrentEvent] =
+    useState<Partial<CalendarEvent> | null>(null);
+  const [eventName, setEventName] = useState<string>(
+    currentEvent?.summary || ""
+  ); //Esemény nevének a szerkesztéséhez kell
+  const [eventStartDatePicker, setEventStartDatePicker] =
+    React.useState<Date>();
+  const [eventEndDatePicker, setEventEndDatePicker] = React.useState<Date>();
+  const [eventStartTimeValue, setEventStartTimeValue] =
+    useState<string>("10:00");
+  const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("00:00");
+  //Lekérdezi az eseményeket
   const fetchEvents = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/user/calendar-events", {
-        withCredentials: true
-      });
+      const response = await axios.get(
+        "http://localhost:8080/user/calendar-events",
+        {
+          withCredentials: true
+        }
+      );
       setEvents(response.data);
     } catch (err) {
-      setError("Hiba történt az események betöltésekor.");
       console.error("Error fetching events: ", err);
     } finally {
       setLoading(false);
     }
   };
-
+  //5 percenként újra lekérdezi az eseményeket.
   useEffect(() => {
     fetchEvents();
 
@@ -46,21 +67,27 @@ const Calendar: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  //Az esemény törlése
   const handleDeleteEvent = async (eventId: string | undefined) => {
     try {
-      await axios.delete(`http://localhost:8080/user/calendar-events/${eventId}`, {
-        withCredentials: true,
-        timeout: 5000 // 5 másodperces időtúllépés teszteléshez
-      });
+      await axios.delete(
+        `http://localhost:8080/user/calendar-events/${eventId}`,
+        {
+          withCredentials: true,
+          timeout: 5000 // 5 másodperces időtúllépés teszteléshez
+        }
+      );
       closeDialog();
       fetchEvents();
     } catch (error) {
       console.error("Error deleting event: ", error);
     }
   };
-
+  //Szerkesztésnél a változtatások mentése
   const handleSaveChanges = async () => {
-    const esemenyNeve = document.getElementById("esemenyNeve") as HTMLInputElement;
+    const esemenyNeve = document.getElementById(
+      "esemenyNeve"
+    ) as HTMLInputElement;
     if (esemenyNeve) {
       console.log("Az esemény új neve: " + esemenyNeve.value);
     } else {
@@ -68,8 +95,29 @@ const Calendar: React.FC = () => {
     }
 
     if (currentEvent?.id) {
-      const startDateTime = new Date(currentEvent.start); // Hiába húzza alá sose lesz undefinied. Legalábbis még nem tud lenni, mert nem a felhasználó adja meg.
+      const startDateTime = new Date(currentEvent.start);
       const endDateTime = new Date(currentEvent.end);
+
+      //A dátum és idő kombinációja
+      //Először a START
+      const startDatum = new Date(eventStartDatePicker);
+      const [selectedStartHourString, selectedStartMinuteString] =
+        eventStartTimeValue.split(":");
+      const selectedStartHour: number = parseInt(selectedStartHourString, 10);
+      const selectedStartMinute: number = parseInt(
+        selectedStartMinuteString,
+        10
+      );
+      startDatum.setHours(selectedStartHour, selectedStartMinute);
+      const combinatedStart = startDatum.toISOString();
+      //És most az END
+      const endDatum = new Date(eventEndDatePicker);
+      const [selectedEndHourString, selectedEndMinuteString] =
+        eventEndTimeValue.split(":");
+      const selectedEndHour: number = parseInt(selectedEndHourString, 10);
+      const selectedEndMinute: number = parseInt(selectedEndMinuteString, 10);
+      endDatum.setHours(selectedEndHour, selectedEndMinute);
+      const combinatedEnd = endDatum.toISOString();
 
       try {
         const updatedEvent: CalendarEvent = {
@@ -78,12 +126,10 @@ const Calendar: React.FC = () => {
           location: currentEvent.location || undefined,
           description: currentEvent.description || undefined,
           start: {
-            dateTime: startDateTime.toISOString(), // ISO 8601 formátum
-            timeZone: "Europe/Budapest"
+            dateTime: combinatedStart || startDateTime.toISOString() // ISO 8601 formátum
           },
           end: {
-            dateTime: endDateTime.toISOString(),
-            timeZone: "Europe/Budapest"
+            dateTime: combinatedEnd || endDateTime.toISOString()
           }
         };
 
@@ -103,7 +149,7 @@ const Calendar: React.FC = () => {
       }
     }
   };
-
+  //Dialog nyitása
   const openDialog = (eventInfo: any) => {
     setCurrentEvent({
       id: eventInfo.event.id,
@@ -115,7 +161,7 @@ const Calendar: React.FC = () => {
     setDialogOpen(true);
     console.log("Dialog opening..."); // Teszt
   };
-
+  //Dialog zárása
   const closeDialog = () => {
     setDialogOpen(false);
     setCurrentEvent(null);
@@ -123,10 +169,6 @@ const Calendar: React.FC = () => {
 
   if (loading) {
     return <div>Betöltés...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
   }
 
   const eventList = events.map((event) => ({
@@ -137,7 +179,7 @@ const Calendar: React.FC = () => {
     location: event.location,
     description: event.description
   }));
-
+  //Beleteszi a naptárba
   const renderEventContent = (eventInfo: any) => {
     const startTime = eventInfo.event.start
       ? new Date(eventInfo.event.start).toLocaleTimeString([], {
@@ -180,13 +222,16 @@ const Calendar: React.FC = () => {
           right: "dayGridMonth,timeGridWeek,timeGridDay"
         }}
       />
-
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-center">{currentEvent?.summary}</DialogTitle>
+            <DialogTitle className="text-center">
+              {currentEvent?.summary}
+            </DialogTitle>
           </DialogHeader>
-          <DialogDescription className="text-center">esemény részletei</DialogDescription>
+          <DialogDescription className="text-center">
+            esemény részletei
+          </DialogDescription>
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -199,10 +244,85 @@ const Calendar: React.FC = () => {
                 onChange={(e) => setEventName(e.target.value)}
                 className="col-span-3"
               />
+              <Label htmlFor="datePicker" className="text-right">
+                Időpont
+              </Label>
+              <div className="flex-wrap">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !eventStartDatePicker && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {eventStartDatePicker ? (
+                        format(eventStartDatePicker, "PPP")
+                      ) : (
+                        <span>Kezdő dátum</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <SmallCalendar
+                      mode="single"
+                      selected={eventStartDatePicker}
+                      onSelect={setEventStartDatePicker}
+                      initialFocus
+                    />
+                    <Input
+                      type="time"
+                      value={eventStartTimeValue}
+                      onChange={(e) => {
+                        setEventStartTimeValue(e.target.value);
+                        console.log(eventStartTimeValue);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !eventEndDatePicker && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {eventEndDatePicker ? (
+                        format(eventEndDatePicker, "PPP")
+                      ) : (
+                        <span>Vég dátum</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <SmallCalendar
+                      mode="single"
+                      selected={eventEndDatePicker}
+                      onSelect={setEventEndDatePicker}
+                      initialFocus
+                    />
+                    <Input
+                      type="time"
+                      value={eventEndTimeValue}
+                      onChange={(e) => {
+                        setEventEndTimeValue(e.target.value);
+                        console.log(eventEndTimeValue);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={() => handleDeleteEvent(currentEvent?.id)}>Törlés</Button>
+            <Button onClick={() => handleDeleteEvent(currentEvent?.id)}>
+              Törlés
+            </Button>
             <Button type="submit" onClick={handleSaveChanges}>
               Save changes
             </Button>
@@ -213,4 +333,4 @@ const Calendar: React.FC = () => {
   );
 };
 
-export default Calendar;
+export default Calendarr;
