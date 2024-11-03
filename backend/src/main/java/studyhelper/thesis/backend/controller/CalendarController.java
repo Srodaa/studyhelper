@@ -81,5 +81,20 @@ public class CalendarController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/user/calendar-events")
+    public ResponseEntity<CalendarEvent> createEvent(
+            @RequestBody CalendarEvent newEvent,
+            @AuthenticationPrincipal OAuth2User principal,
+            Authentication authentication) {
+        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+                oAuth2Token.getAuthorizedClientRegistrationId(),
+                oAuth2Token.getName()
+        );
+
+        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+        CalendarEvent createdEvent = calendarService.createEvent(accessToken.getTokenValue(), newEvent);
+        return ResponseEntity.ok(createdEvent);
+    }
 
 }

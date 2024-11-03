@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CalendarEvent } from "../../types";
+import { CalendarEvent } from "@/types";
 
 export const fetchEvents = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
@@ -118,4 +118,32 @@ export const getCombinatedDateTime = (
     return date.toISOString();
   }
   return defaultDate.toISOString();
+};
+
+export const handleCreateEvent = async (
+  newEvent: CalendarEvent,
+  setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  closeDialog: () => void
+) => {
+  setLoading(true);
+  console.log(newEvent);
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/user/calendar-events",
+      newEvent,
+      {
+        withCredentials: true,
+        timeout: 5000,
+      }
+    );
+    const createdEvent = response.data;
+    setEvents((prevEvents) => [...prevEvents, createdEvent]);
+    closeDialog();
+    console.log("Esemény létrehozva.");
+  } catch (error) {
+    console.error("Error creating event: ", error);
+  } finally {
+    setLoading(false);
+  }
 };

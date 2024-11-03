@@ -73,6 +73,23 @@ public class CalendarService {
         System.out.println("Update: " + apiUrl+"/"+eventId);
     }
 
+    public CalendarEvent createEvent(String accessToken, CalendarEvent newEvent) {
+        RestTemplate restTemplate = new RestTemplate();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<CalendarEvent> entity = new HttpEntity<>(newEvent, headers);
+
+        ResponseEntity<CalendarEvent> response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.POST,
+                entity,
+                CalendarEvent.class
+        );
+
+        System.out.println("Create: " + apiUrl);
+        return response.getBody();
+    }
 }
 

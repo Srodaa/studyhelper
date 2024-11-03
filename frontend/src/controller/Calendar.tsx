@@ -30,11 +30,14 @@ import {
   fetchEvents,
   handleDeleteEvent,
   handleSaveChanges,
+  handleCreateEvent,
+  getCombinatedDateTime,
 } from "@/components/utils/functions";
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isNewEventDialogOpen, setNewEventDialogOpen] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] =
     useState<Partial<CalendarEvent> | null>(null);
@@ -52,9 +55,12 @@ const Calendar: React.FC = () => {
   useEffect(() => {
     fetchEvents(setEvents, setLoading);
 
-    const interval = setInterval(fetchEvents, 300000); // 5 perc
+    const interval = setInterval(
+      () => fetchEvents(setEvents, setLoading),
+      300000
+    ); // 5 perc
     return () => clearInterval(interval);
-  }, []);
+  }, [setEvents, setInterval]);
 
   const onDeleteEvent = (eventId: string | undefined) => {
     handleDeleteEvent(eventId, setEvents, setLoading, closeDialog);
@@ -72,6 +78,31 @@ const Calendar: React.FC = () => {
     );
   };
 
+  const openDialogForNewEvent = (eventInfo: any) => {
+    setNewEventDialogOpen(true);
+    setEventStartDatePicker(eventInfo.date);
+  };
+
+  const createNewEvent = async () => {
+    const startDateTime = getCombinatedDateTime(
+      eventStartDatePicker,
+      eventStartTimeValue,
+      new Date()
+    );
+    const endDateTime = getCombinatedDateTime(
+      eventEndDatePicker,
+      eventEndTimeValue,
+      new Date()
+    );
+
+    const newEvent: CalendarEvent = {
+      summary: eventName,
+      start: { dateTime: startDateTime },
+      end: { dateTime: endDateTime },
+    };
+
+    await handleCreateEvent(newEvent, setEvents, setLoading, closeDialog);
+  };
   const openDialog = (eventInfo: any) => {
     setCurrentEvent({
       id: eventInfo.event.id,
@@ -86,13 +117,14 @@ const Calendar: React.FC = () => {
 
   const closeDialog = () => {
     setDialogOpen(false);
+    setNewEventDialogOpen(false);
     setCurrentEvent(null);
   };
 
   if (loading) {
     return <div>Betöltés...</div>;
   }
-  
+
   const eventList = events.map((event) => ({
     id: event.id,
     title: event.summary,
@@ -145,17 +177,119 @@ const Calendar: React.FC = () => {
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
+        dateClick={openDialogForNewEvent}
       />
+
+      <Dialog open={isNewEventDialogOpen} onOpenChange={closeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              Új esemény létrehozása
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center"></DialogDescription>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Esemény neve
+              </Label>
+              <Input
+                id="esemenyNeve"
+                value={eventName}
+                onChange={(e) => setEventName(e.target.value)}
+                className="col-span-3"
+              />
+              <Label htmlFor="datePicker" className="text-right">
+                Időpont
+              </Label>
+              <div className="flex-wrap">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !eventStartDatePicker && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {eventStartDatePicker ? (
+                        format(eventStartDatePicker, "PPP")
+                      ) : (
+                        <span>Kezdő dátum</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <SmallCalendar
+                      mode="single"
+                      selected={eventStartDatePicker}
+                      onSelect={setEventStartDatePicker}
+                      initialFocus
+                    />
+                    <Input
+                      type="time"
+                      value={eventStartTimeValue}
+                      onChange={(e) => {
+                        setEventStartTimeValue(e.target.value);
+                        console.log(eventStartTimeValue);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[280px] justify-start text-left font-normal",
+                        !eventEndDatePicker && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon />
+                      {eventEndDatePicker ? (
+                        format(eventEndDatePicker, "PPP")
+                      ) : (
+                        <span>Vég dátum</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <SmallCalendar
+                      mode="single"
+                      selected={eventEndDatePicker}
+                      onSelect={setEventEndDatePicker}
+                      initialFocus
+                    />
+                    <Input
+                      type="time"
+                      value={eventEndTimeValue}
+                      onChange={(e) => {
+                        setEventEndTimeValue(e.target.value);
+                        console.log(eventEndTimeValue);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={createNewEvent}>
+              Add event
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              {currentEvent?.summary}
+              {currentEvent?.summary} <br /> esemény részletei
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription className="text-center">
-            esemény részletei
-          </DialogDescription>
+          <DialogDescription></DialogDescription>
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
