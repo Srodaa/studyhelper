@@ -93,31 +93,36 @@ const Calendarr: React.FC = () => {
     } else {
       console.error("Az esemenyNeve nem található.");
     }
-
+    let combinatedStart;
+    let combinatedEnd;
     if (currentEvent?.id) {
       const startDateTime = new Date(currentEvent.start);
       const endDateTime = new Date(currentEvent.end);
+      if(eventStartDatePicker != undefined){
+        //A dátum és idő kombinációja
+        //Először a START
+        const startDatum = new Date(eventStartDatePicker);
+        const [selectedStartHourString, selectedStartMinuteString] =
+          eventStartTimeValue.split(":");
+        const selectedStartHour: number = parseInt(selectedStartHourString, 10);
+        const selectedStartMinute: number = parseInt(
+          selectedStartMinuteString,
+          10
+        );
+        startDatum.setHours(selectedStartHour, selectedStartMinute);
+        combinatedStart = startDatum.toISOString();
+      }
 
-      //A dátum és idő kombinációja
-      //Először a START
-      const startDatum = new Date(eventStartDatePicker);
-      const [selectedStartHourString, selectedStartMinuteString] =
-        eventStartTimeValue.split(":");
-      const selectedStartHour: number = parseInt(selectedStartHourString, 10);
-      const selectedStartMinute: number = parseInt(
-        selectedStartMinuteString,
-        10
-      );
-      startDatum.setHours(selectedStartHour, selectedStartMinute);
-      const combinatedStart = startDatum.toISOString();
-      //És most az END
-      const endDatum = new Date(eventEndDatePicker);
-      const [selectedEndHourString, selectedEndMinuteString] =
-        eventEndTimeValue.split(":");
-      const selectedEndHour: number = parseInt(selectedEndHourString, 10);
-      const selectedEndMinute: number = parseInt(selectedEndMinuteString, 10);
-      endDatum.setHours(selectedEndHour, selectedEndMinute);
-      const combinatedEnd = endDatum.toISOString();
+      if(eventEndDatePicker != undefined){
+        //És most az END
+        const endDatum = new Date(eventEndDatePicker);
+        const [selectedEndHourString, selectedEndMinuteString] =
+          eventEndTimeValue.split(":");
+        const selectedEndHour: number = parseInt(selectedEndHourString, 10);
+        const selectedEndMinute: number = parseInt(selectedEndMinuteString, 10);
+        endDatum.setHours(selectedEndHour, selectedEndMinute);
+        combinatedEnd = endDatum.toISOString();
+      }
 
       try {
         const updatedEvent: CalendarEvent = {
@@ -129,7 +134,7 @@ const Calendarr: React.FC = () => {
             dateTime: combinatedStart || startDateTime.toISOString() // ISO 8601 formátum
           },
           end: {
-            dateTime: combinatedEnd || endDateTime.toISOString()
+            dateTime: combinatedEnd || endDateTime.toISOString() 
           }
         };
 
