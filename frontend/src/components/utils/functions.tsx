@@ -9,7 +9,7 @@ export const fetchEvents = async (
     const response = await axios.get(
       "http://localhost:8080/user/calendar-events",
       {
-        withCredentials: true,
+        withCredentials: true
       }
     );
     setEvents(response.data);
@@ -31,7 +31,7 @@ export const handleDeleteEvent = async (
       `http://localhost:8080/user/calendar-events/${eventId}`,
       {
         withCredentials: true,
-        timeout: 5000,
+        timeout: 5000
       }
     );
     closeDialog();
@@ -48,7 +48,8 @@ export const handleSaveChanges = async (
   eventEndDatePicker: Date | undefined,
   eventEndTimeValue: string,
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  closeDialog: () => void
 ) => {
   const esemenyNeve = document.getElementById(
     "esemenyNeve"
@@ -80,11 +81,11 @@ export const handleSaveChanges = async (
         location: currentEvent.location || undefined,
         description: currentEvent.description || undefined,
         start: {
-          dateTime: combinatedStart || startDateTime.toISOString(),
+          dateTime: combinatedStart || startDateTime.toISOString()
         },
         end: {
-          dateTime: combinatedEnd || endDateTime.toISOString(),
-        },
+          dateTime: combinatedEnd || endDateTime.toISOString()
+        }
       };
 
       console.log(updatedEvent);
@@ -93,10 +94,11 @@ export const handleSaveChanges = async (
         updatedEvent,
         {
           withCredentials: true,
-          timeout: 5000,
+          timeout: 5000
         }
       );
       console.log("Sikeres eseményfrissítés!", response.data);
+      closeDialog();
       fetchEvents(setEvents, setLoading);
     } catch (error) {
       console.error("Hiba történt az esemény frissítése során: ", error);
@@ -122,25 +124,33 @@ export const getCombinatedDateTime = (
 
 export const handleCreateEvent = async (
   newEvent: CalendarEvent,
+  category: string,
+  duration: number,
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   closeDialog: () => void
 ) => {
   setLoading(true);
-  console.log(newEvent);
+  const eventData = {
+    ...newEvent,
+    category: category,
+    duration: duration
+  };
+
+  console.log("eventData: ", eventData);
   try {
     const response = await axios.post(
       "http://localhost:8080/user/calendar-events",
-      newEvent,
+      eventData,
       {
         withCredentials: true,
-        timeout: 5000,
+        timeout: 5000
       }
     );
     const createdEvent = response.data;
     setEvents((prevEvents) => [...prevEvents, createdEvent]);
     closeDialog();
-    console.log("Esemény létrehozva.");
+    console.log("Event created.");
   } catch (error) {
     console.error("Error creating event: ", error);
   } finally {

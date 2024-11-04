@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import studyhelper.thesis.backend.entity.CalendarEvent;
 import studyhelper.thesis.backend.entity.CalendarEventsResponse;
+import studyhelper.thesis.backend.entity.EventDetailsEntity;
+import studyhelper.thesis.backend.entity.UserEntity;
+import studyhelper.thesis.backend.repository.EventDetailsRepository;
+import studyhelper.thesis.backend.repository.UserRepository;
 
 import java.util.List;
 
@@ -20,11 +24,17 @@ public class CalendarService {
     private String apiUrl;
 
     private final RestTemplate restTemplate;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public CalendarService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
+
+    @Autowired
+    private EventDetailsRepository eventDetailsRepository;
+
 
     public List<CalendarEvent> getEvents(String accessToken) {
         String url = "https://www.googleapis.com/calendar/v3/calendars/primary/events?access_token=" + accessToken;
@@ -71,6 +81,32 @@ public class CalendarService {
         );
 
         System.out.println("Update: " + apiUrl+"/"+eventId);
+    }
+
+    public CalendarEvent createEventWithCategoryAndDuration(UserEntity user, String accessToken, CalendarEvent newEvent){
+        //Előre lementjük a kategóriát és az időtartamot, mert a Google Calendar API nem támogatja ezeket a mezőket
+        String temporaryCategory = newEvent.getCategory();
+        int temporaryDuration = newEvent.getDuration();
+
+        CalendarEvent createdEvent = createEvent(accessToken, newEvent);
+        //Mivel ID-hoz rendeljük őket ezért csak akkor mentjük el, ha a Google Calendar API visszatér az ID-val
+        if (createdEvent.getId() != null){
+            createdEvent.setCategory(temporaryCategory);
+            createdEvent.setDuration(temporaryDuration);
+            //Mentjük az adatbázisba
+            EventDetailsEntity eventDetailsEntity = new EventDetailsEntity();
+            eventDetailsEntity.setEventID(createdEvent.getId());
+            eventDetailsEntity.setCategory(createdEvent.getCategory());
+            eventDetailsEntity.setDuration(createdEvent.getDuration());
+            //Felhasználó <-> esemény raláció
+            eventDetailsEntity.setUser(user);
+            eventDetailsRepository.save(eventDetailsEntity);
+            user.addEvent(eventDetailsEntity);
+            userRepository.save(user);
+        } else {
+            throw new IllegalStateException("Nem lekérdezhető eventID!");
+        }
+        return createdEvent;
     }
 
     public CalendarEvent createEvent(String accessToken, CalendarEvent newEvent) {

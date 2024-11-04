@@ -1,6 +1,8 @@
 package studyhelper.thesis.backend.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class UserEntity {
@@ -18,6 +20,16 @@ public class UserEntity {
     @Column(name = "accessToken")
     private String accessToken;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<EventDetailsEntity> events = new ArrayList<>();
+
+    public List<EventDetailsEntity> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<EventDetailsEntity> events) {
+        this.events = events;
+    }
 
     public long getId() {
         return id;
@@ -64,5 +76,10 @@ public class UserEntity {
     }
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public void addEvent(EventDetailsEntity event) {
+        events.add(event);
+        event.setUser(this);
     }
 }

@@ -1,6 +1,7 @@
 package studyhelper.thesis.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,10 +12,13 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import studyhelper.thesis.backend.entity.CalendarEvent;
+import studyhelper.thesis.backend.entity.UserEntity;
+import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
@@ -25,6 +29,8 @@ public class CalendarController {
 
     @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/calendar-events")
     public List<CalendarEvent> getUpcomingEvents(@AuthenticationPrincipal OAuth2User principal, Authentication authentication) {
@@ -92,9 +98,24 @@ public class CalendarController {
                 oAuth2Token.getName()
         );
 
+        System.out.println("newEvent: " + newEvent);
         OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-        CalendarEvent createdEvent = calendarService.createEvent(accessToken.getTokenValue(), newEvent);
-        return ResponseEntity.ok(createdEvent);
+
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
+        if (optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+            CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken.getTokenValue(), newEvent);
+            return ResponseEntity.ok(createdEvent);
+
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Vagy kezelheted másképp, ha a felhasználó nem található
+
+        }
+        /*
+                CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(
+                accessToken.getTokenValue(), newEvent);
+
+        * */
     }
 
 }

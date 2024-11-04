@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
+  DialogFooter
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ import { Calendar as SmallCalendar } from "@/components/ui/smallcalendar";
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import {
@@ -31,7 +31,7 @@ import {
   handleDeleteEvent,
   handleSaveChanges,
   handleCreateEvent,
-  getCombinatedDateTime,
+  getCombinatedDateTime
 } from "@/components/utils/functions";
 
 const Calendar: React.FC = () => {
@@ -50,6 +50,8 @@ const Calendar: React.FC = () => {
   const [eventStartTimeValue, setEventStartTimeValue] =
     useState<string>("10:00");
   const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("12:00");
+  const [eventCategory, setEventCategory] = React.useState<string>("Default");
+  const [eventDuration, setEventDuration] = React.useState<number>(60);
 
   //5 percenként újra lekérdezi az eseményeket.
   useEffect(() => {
@@ -74,7 +76,8 @@ const Calendar: React.FC = () => {
       eventEndDatePicker,
       eventEndTimeValue,
       setEvents,
-      setLoading
+      setLoading,
+      closeDialog
     );
   };
 
@@ -99,9 +102,18 @@ const Calendar: React.FC = () => {
       summary: eventName,
       start: { dateTime: startDateTime },
       end: { dateTime: endDateTime },
+      category: eventCategory,
+      duration: eventDuration
     };
 
-    await handleCreateEvent(newEvent, setEvents, setLoading, closeDialog);
+    await handleCreateEvent(
+      newEvent,
+      eventCategory,
+      eventDuration,
+      setEvents,
+      setLoading,
+      closeDialog
+    );
   };
   const openDialog = (eventInfo: any) => {
     setCurrentEvent({
@@ -109,7 +121,7 @@ const Calendar: React.FC = () => {
       summary: eventInfo.event.title,
       start: eventInfo.event.start,
       end: eventInfo.event.end,
-      description: eventInfo.event.extendedProps.description,
+      description: eventInfo.event.extendedProps.description
     });
     setDialogOpen(true);
     console.log("Dialog opening...");
@@ -131,7 +143,7 @@ const Calendar: React.FC = () => {
     start: event.start.dateTime,
     end: event.end.dateTime,
     location: event.location,
-    description: event.description,
+    description: event.description
   }));
 
   //Beleteszi a naptárba
@@ -139,13 +151,13 @@ const Calendar: React.FC = () => {
     const startTime = eventInfo.event.start
       ? new Date(eventInfo.event.start).toLocaleTimeString([], {
           hour: "2-digit",
-          minute: "2-digit",
+          minute: "2-digit"
         })
       : "";
     const endTime = eventInfo.event.end
       ? new Date(eventInfo.event.end).toLocaleTimeString([], {
           hour: "2-digit",
-          minute: "2-digit",
+          minute: "2-digit"
         })
       : "";
 
@@ -175,7 +187,7 @@ const Calendar: React.FC = () => {
         headerToolbar={{
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+          right: "dayGridMonth,timeGridWeek,timeGridDay"
         }}
         dateClick={openDialogForNewEvent}
       />
@@ -200,10 +212,12 @@ const Calendar: React.FC = () => {
                 onChange={(e) => setEventName(e.target.value)}
                 className="col-span-3"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="datePicker" className="text-right">
                 Időpont
               </Label>
-              <div className="flex-wrap">
+              <div>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -273,6 +287,34 @@ const Calendar: React.FC = () => {
                   </PopoverContent>
                 </Popover>
               </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="category" className="text-right">
+                Kategória
+              </Label>
+              <Input
+                id="eventCategory"
+                value={eventCategory}
+                onChange={(e) => setEventCategory(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="duration" className="text-right">
+                Tervezett idő (perc)
+              </Label>
+              <Input
+                id="eventDuration"
+                inputMode="numeric"
+                max={9000}
+                value={eventDuration}
+                type="number"
+                onChange={(e) => {
+                  setEventDuration(parseInt(e.target.value));
+                  console.log(e.target.value);
+                }}
+                className="col-span-3"
+              />
             </div>
           </div>
           <DialogFooter>
