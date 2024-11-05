@@ -6,5 +6,5 @@ import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import java.util.Optional;
 
 public interface EventDetailsRepository extends JpaRepository<EventDetailsEntity, Long> {
-    Optional<EventDetailsRepository> findByEventID(String eventID);
+    Optional<EventDetailsEntity> findByEventID(String eventID);
 }

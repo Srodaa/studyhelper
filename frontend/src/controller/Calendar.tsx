@@ -77,7 +77,9 @@ const Calendar: React.FC = () => {
       eventEndTimeValue,
       setEvents,
       setLoading,
-      closeDialog
+      closeDialog,
+      eventCategory,
+      eventDuration
     );
   };
 

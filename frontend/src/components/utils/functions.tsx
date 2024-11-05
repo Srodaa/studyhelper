@@ -49,7 +49,9 @@ export const handleSaveChanges = async (
   eventEndTimeValue: string,
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  closeDialog: () => void
+  closeDialog: () => void,
+  category: string,
+  duration: number
 ) => {
   const esemenyNeve = document.getElementById(
     "esemenyNeve"
@@ -85,7 +87,9 @@ export const handleSaveChanges = async (
         },
         end: {
           dateTime: combinatedEnd || endDateTime.toISOString()
-        }
+        },
+        category: category,
+        duration: duration
       };
 
       console.log(updatedEvent);

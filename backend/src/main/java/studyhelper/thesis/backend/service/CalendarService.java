@@ -65,7 +65,33 @@ public class CalendarService {
         System.out.println("Delete: " + apiUrl+"/"+eventId);
     }
 
-    public void updateEvent(String accessToken, String eventId, CalendarEvent updateEvent){
+    public CalendarEvent updateEventWithCategoryAndDuration(UserEntity user, String accessToken, String eventId, CalendarEvent updateEvent) {
+        String temporaryCategory = updateEvent.getCategory();
+        int temporaryDuration = updateEvent.getDuration();
+
+        updateEvent(accessToken, eventId, updateEvent);
+
+        // Frissítjük az EventDetailsEntity-t az adatbázisban
+        EventDetailsEntity eventDetailsEntity = eventDetailsRepository.findByEventID(eventId)
+                .orElseGet(() -> {
+                    EventDetailsEntity newEventDetails = new EventDetailsEntity();
+                    newEventDetails.setEventID(eventId);
+                    newEventDetails.setCategory(temporaryCategory);
+                    newEventDetails.setDuration(temporaryDuration);
+                    newEventDetails.setUser(user);
+                    // Mentjük az új entitást az adatbázisba
+                    return eventDetailsRepository.save(newEventDetails);
+                });
+        eventDetailsEntity.setCategory(temporaryCategory);
+        eventDetailsEntity.setDuration(temporaryDuration);
+        // Felhasználó <-> esemény raláció
+        eventDetailsEntity.setUser(user);
+        eventDetailsRepository.save(eventDetailsEntity);
+
+        return updateEvent;
+    }
+
+    public CalendarEvent updateEvent(String accessToken, String eventId, CalendarEvent updateEvent){
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -81,6 +107,7 @@ public class CalendarService {
         );
 
         System.out.println("Update: " + apiUrl+"/"+eventId);
+        return response.getBody();
     }
 
     public CalendarEvent createEventWithCategoryAndDuration(UserEntity user, String accessToken, CalendarEvent newEvent){

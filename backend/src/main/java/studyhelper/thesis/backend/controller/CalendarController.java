@@ -17,7 +17,6 @@ import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -83,8 +82,15 @@ public class CalendarController {
         );
 
         OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-        calendarService.updateEvent(accessToken.getTokenValue(), eventId, updatedEvent);
-        return ResponseEntity.noContent().build();
+        Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
+        if (optionalUser.isPresent()) {
+            UserEntity user = optionalUser.get();
+            CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken.getTokenValue(), eventId, updatedEvent);
+            return ResponseEntity.ok(updatedEventResult);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
     }
 
     @PostMapping("/user/calendar-events")
@@ -108,14 +114,9 @@ public class CalendarController {
             return ResponseEntity.ok(createdEvent);
 
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Vagy kezelheted másképp, ha a felhasználó nem található
-
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        /*
-                CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(
-                accessToken.getTokenValue(), newEvent);
 
-        * */
     }
 
 }
