@@ -12,7 +12,9 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import studyhelper.thesis.backend.entity.CalendarEvent;
+import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
+import studyhelper.thesis.backend.repository.EventDetailsRepository;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
 
@@ -30,6 +32,9 @@ public class CalendarController {
     private OAuth2AuthorizedClientService authorizedClientService;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventDetailsRepository eventDetailsRepository;
 
     @GetMapping("/calendar-events")
     public List<CalendarEvent> getUpcomingEvents(@AuthenticationPrincipal OAuth2User principal, Authentication authentication) {
@@ -119,4 +124,9 @@ public class CalendarController {
 
     }
 
+    @GetMapping("/user/calendar-events/{eventId}/details")
+    public ResponseEntity<EventDetailsEntity> getEventCategoryAndDuration(@PathVariable String eventId, Authentication authentication) {
+        EventDetailsEntity eventDetails = calendarService.fetchEventCategoryAndDuration(eventId, authentication);
+        return ResponseEntity.ok(eventDetails);
+    }
 }

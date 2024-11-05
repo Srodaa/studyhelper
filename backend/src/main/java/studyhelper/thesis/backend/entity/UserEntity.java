@@ -1,5 +1,6 @@
 package studyhelper.thesis.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserEntity {
     private String accessToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<EventDetailsEntity> events = new ArrayList<>();
 
     public List<EventDetailsEntity> getEvents() {

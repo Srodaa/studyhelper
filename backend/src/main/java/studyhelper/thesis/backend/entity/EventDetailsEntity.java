@@ -1,5 +1,6 @@
 package studyhelper.thesis.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class EventDetailsEntity {
     private Integer duration;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 

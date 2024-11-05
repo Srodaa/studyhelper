@@ -31,7 +31,8 @@ import {
   handleDeleteEvent,
   handleSaveChanges,
   handleCreateEvent,
-  getCombinatedDateTime
+  getCombinatedDateTime,
+  getEventCategoryAndDuration
 } from "@/components/utils/functions";
 
 const Calendar: React.FC = () => {
@@ -117,7 +118,7 @@ const Calendar: React.FC = () => {
       closeDialog
     );
   };
-  const openDialog = (eventInfo: any) => {
+  const openDialog = async (eventInfo: any) => {
     setCurrentEvent({
       id: eventInfo.event.id,
       summary: eventInfo.event.title,
@@ -137,6 +138,13 @@ const Calendar: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     }));
+    try {
+      const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
+      setEventCategory(category);
+      setEventDuration(duration);
+  } catch (error) {
+      console.error('Hiba a kategória és időtartam lekérésekor:', error);
+  }
     setDialogOpen(true);
     console.log("Dialog opening...");
   };
@@ -266,7 +274,6 @@ const Calendar: React.FC = () => {
                       value={eventStartTimeValue}
                       onChange={(e) => {
                         setEventStartTimeValue(e.target.value);
-                        console.log(eventStartTimeValue);
                       }}
                     />
                   </PopoverContent>
@@ -300,7 +307,6 @@ const Calendar: React.FC = () => {
                       value={eventEndTimeValue}
                       onChange={(e) => {
                         setEventEndTimeValue(e.target.value);
-                        console.log(eventEndTimeValue);
                       }}
                     />
                   </PopoverContent>
@@ -331,7 +337,6 @@ const Calendar: React.FC = () => {
               type="number"
               onChange={(e) => {
                 setEventDuration(parseInt(e.target.value));
-                console.log(e.target.value);
               }}
               className="col-span-3"
             />

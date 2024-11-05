@@ -6,6 +6,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import studyhelper.thesis.backend.entity.CalendarEvent;
@@ -153,6 +155,28 @@ public class CalendarService {
 
         System.out.println("Create: " + apiUrl);
         return response.getBody();
+    }
+
+    public EventDetailsEntity fetchEventCategoryAndDuration(String eventId, Authentication authentication) {
+        String userEmail = ((OAuth2User) authentication.getPrincipal()).getAttribute("email");
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalStateException("Felhasználó nem található!"));
+
+
+        //Visszaadja a category-t és duration-t, ha nincs még benne az adott event akkor pedig létrehozza
+        EventDetailsEntity existingEventDetails = eventDetailsRepository.findByEventID(eventId).orElse(null);
+
+        if (existingEventDetails != null) {
+            return existingEventDetails;
+        }
+
+        EventDetailsEntity newEventDetails = new EventDetailsEntity();
+        newEventDetails.setEventID(eventId);
+        newEventDetails.setCategory("Default");
+        newEventDetails.setDuration(0);
+        newEventDetails.setUser(user);
+
+        return eventDetailsRepository.save(newEventDetails);
     }
 }
 
