@@ -37,7 +37,6 @@ import {
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isNewEventDialogOpen, setNewEventDialogOpen] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] =
     useState<Partial<CalendarEvent> | null>(null);
@@ -52,6 +51,7 @@ const Calendar: React.FC = () => {
   const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("12:00");
   const [eventCategory, setEventCategory] = React.useState<string>("Default");
   const [eventDuration, setEventDuration] = React.useState<number>(60);
+  const [isDateClickDialog, setIsDateClickDialog] = useState(false);
 
   //5 percenként újra lekérdezi az eseményeket.
   useEffect(() => {
@@ -81,9 +81,9 @@ const Calendar: React.FC = () => {
     );
   };
 
-  const openDialogForNewEvent = (eventInfo: any) => {
-    setNewEventDialogOpen(true);
-    setEventStartDatePicker(eventInfo.date);
+  const openDialogForNewEvent = (isDateClickDialog = false) => {
+    setIsDateClickDialog(isDateClickDialog);
+    setDialogOpen(true);
   };
 
   const createNewEvent = async () => {
@@ -140,8 +140,8 @@ const Calendar: React.FC = () => {
   };
 
   const closeDialog = () => {
+    openDialogForNewEvent(false);
     setDialogOpen(false);
-    setNewEventDialogOpen(false);
     setCurrentEvent(null);
   };
 
@@ -201,17 +201,24 @@ const Calendar: React.FC = () => {
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay"
         }}
-        dateClick={openDialogForNewEvent}
+        dateClick={() => openDialogForNewEvent(true)}
       />
-
-      <Dialog open={isNewEventDialogOpen} onOpenChange={closeDialog}>
+      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-              Új esemény létrehozása
+            {isDateClickDialog ? (
+              <>
+                  Új esemény létrehozása
+              </>
+            ) : (
+              <>
+                {currentEvent?.summary} <br /> esemény részletei
+              </>
+            )} 
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription className="text-center"></DialogDescription>
+          <DialogDescription></DialogDescription>
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -224,8 +231,6 @@ const Calendar: React.FC = () => {
                 onChange={(e) => setEventName(e.target.value)}
                 className="col-span-3"
               />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="datePicker" className="text-right">
                 Időpont
               </Label>
@@ -300,144 +305,52 @@ const Calendar: React.FC = () => {
                 </Popover>
               </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="category" className="text-right">
-                Kategória
-              </Label>
-              <Input
-                id="eventCategory"
-                value={eventCategory}
-                onChange={(e) => setEventCategory(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="duration" className="text-right">
-                Tervezett idő (perc)
-              </Label>
-              <Input
-                id="eventDuration"
-                inputMode="numeric"
-                max={9000}
-                value={eventDuration}
-                type="number"
-                onChange={(e) => {
-                  setEventDuration(parseInt(e.target.value));
-                  console.log(e.target.value);
-                }}
-                className="col-span-3"
-              />
-            </div>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="category" className="text-right">
+              Kategória
+            </Label>
+            <Input
+              id="eventCategory"
+              value={eventCategory}
+              onChange={(e) => setEventCategory(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="duration" className="text-right">
+              Tervezett idő (perc)
+            </Label>
+            <Input
+              id="eventDuration"
+              inputMode="numeric"
+              max={9000}
+              value={eventDuration}
+              type="number"
+              onChange={(e) => {
+                setEventDuration(parseInt(e.target.value));
+                console.log(e.target.value);
+              }}
+              className="col-span-3"
+            />
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={createNewEvent}>
-              Add event
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-center">
-              {currentEvent?.summary} <br /> esemény részletei
-            </DialogTitle>
-          </DialogHeader>
-          <DialogDescription></DialogDescription>
-
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Esemény neve
-              </Label>
-              <Input
-                id="esemenyNeve"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                className="col-span-3"
-              />
-              <Label htmlFor="datePicker" className="text-right">
-                Időpont
-              </Label>
-              <div className="flex-wrap">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[280px] justify-start text-left font-normal",
-                        !eventStartDatePicker && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon />
-                      {eventStartDatePicker ? (
-                        format(eventStartDatePicker, "PPP")
-                      ) : (
-                        <span>Kezdő dátum</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <SmallCalendar
-                      mode="single"
-                      selected={eventStartDatePicker}
-                      onSelect={setEventStartDatePicker}
-                      initialFocus
-                    />
-                    <Input
-                      type="time"
-                      value={eventStartTimeValue}
-                      onChange={(e) => {
-                        setEventStartTimeValue(e.target.value);
-                        console.log(eventStartTimeValue);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[280px] justify-start text-left font-normal",
-                        !eventEndDatePicker && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon />
-                      {eventEndDatePicker ? (
-                        format(eventEndDatePicker, "PPP")
-                      ) : (
-                        <span>Vég dátum</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <SmallCalendar
-                      mode="single"
-                      selected={eventEndDatePicker}
-                      onSelect={setEventEndDatePicker}
-                      initialFocus
-                    />
-                    <Input
-                      type="time"
-                      value={eventEndTimeValue}
-                      onChange={(e) => {
-                        setEventEndTimeValue(e.target.value);
-                        console.log(eventEndTimeValue);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => onDeleteEvent(currentEvent?.id)}>
-              Törlés
-            </Button>
-            <Button type="submit" onClick={onSaveChanges}>
-              Save changes
-            </Button>
+            {isDateClickDialog ? (
+              <>
+                <Button type="submit" onClick={createNewEvent}>
+                  Esemény létrehozása
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => onDeleteEvent(currentEvent?.id)}>
+                  Törlés
+                </Button>
+                <Button type="submit" onClick={onSaveChanges}>
+                  Esemény mentése
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
