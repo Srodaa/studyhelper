@@ -123,6 +123,18 @@ const Calendar: React.FC = () => {
       end: eventInfo.event.end,
       description: eventInfo.event.extendedProps.description
     });
+
+    setEventName(eventInfo.event.title);
+    setEventStartDatePicker(new Date(eventInfo.event.start))
+    setEventEndDatePicker(new Date(eventInfo.event.end))
+    setEventStartTimeValue(new Date(eventInfo.event.start).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    }));
+    setEventEndTimeValue(new Date(eventInfo.event.end).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    }));
     setDialogOpen(true);
     console.log("Dialog opening...");
   };
