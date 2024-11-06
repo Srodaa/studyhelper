@@ -142,9 +142,9 @@ const Calendar: React.FC = () => {
       const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
       setEventCategory(category);
       setEventDuration(duration);
-  } catch (error) {
+    } catch (error) {
       console.error('Hiba a kategória és időtartam lekérésekor:', error);
-  }
+    }
     setDialogOpen(true);
     console.log("Dialog opening...");
   };
@@ -197,7 +197,6 @@ const Calendar: React.FC = () => {
 
   return (
     <>
-      <h2 className="text-orange-950">Közelgő Események</h2>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
@@ -205,11 +204,12 @@ const Calendar: React.FC = () => {
         editable={true}
         selectable={true}
         eventContent={renderEventContent}
-        height="auto"
+        height={400}
+        fixedWeekCount={false}
         headerToolbar={{
-          left: "prev,next today",
+          left: "prev,next",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay"
+          right: "today"
         }}
         dateClick={() => openDialogForNewEvent(true)}
       />

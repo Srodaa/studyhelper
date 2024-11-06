@@ -10,20 +10,29 @@ import {
   AlertTitle
 } from "@/components/calendarui/alert";
 
-function Home() {
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger
+} from "@/components/ui/drawer";
+import { Button } from "@/components/calendarui/button";
+import { fetchEvents } from "@/components/utils/functions";
+import { CalendarEvent } from "@/types";
+
+const Home: React.FC = () => {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
   interface User {
     name: string;
     email: string;
     picture: string;
     events: CalendarEvent[];
-  }
-
-  interface CalendarEvent {
-    id: string;
-    summary: string;
-    description: string;
-    start: string;
-    end: string;
   }
 
   const [user, setUser] = useState<User | null>(null);
@@ -38,6 +47,7 @@ function Home() {
       .catch((error) => {
         console.error("Error occurred: ", error);
       });
+    fetchEvents(setEvents, setLoading);
   }, []);
 
   return (
@@ -75,9 +85,25 @@ function Home() {
       ) : (
         <p></p>
       )}
-      <Calendar />
+      <Drawer>
+        <DrawerTrigger>Open</DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle></DrawerTitle>
+            <DrawerDescription></DrawerDescription>
+            <div className="px-[10%]">
+              <Calendar />
+            </div>
+          </DrawerHeader>
+          <DrawerFooter>
+            <DrawerClose>
+              <Button variant="outline">Bezárás</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
-}
+};
 
 export default Home;
