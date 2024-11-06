@@ -4,7 +4,11 @@ import Calendar from "./Calendar";
 
 import { Terminal, AlertCircle } from "lucide-react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle
+} from "@/components/calendarui/alert";
 
 function Home() {
   interface User {
@@ -51,7 +55,8 @@ function Home() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Sikertelen bejelentkezés!</AlertTitle>
           <AlertDescription>
-            A bejelentkezési fázis nem ment végbe, kérlek próbáld meg <a href="http://localhost:5173/login">újra</a>!
+            A bejelentkezési fázis nem ment végbe, kérlek próbáld meg{" "}
+            <a href="http://localhost:5173/login">újra</a>!
           </AlertDescription>
         </Alert>
       )}
@@ -67,7 +72,9 @@ function Home() {
             />
           )}
         </div>
-      ) : (<p></p>)}
+      ) : (
+        <p></p>
+      )}
       <Calendar />
     </div>
   );

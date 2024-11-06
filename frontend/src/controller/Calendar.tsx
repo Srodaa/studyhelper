@@ -11,20 +11,20 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from "@/components/calendarui/dialog";
+import { Label } from "@/components/calendarui/label";
+import { Input } from "@/components/calendarui/input";
 
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar as SmallCalendar } from "@/components/ui/smallcalendar";
+import { Button } from "@/components/calendarui/button";
+import { Calendar as SmallCalendar } from "@/components/calendarui/smallcalendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
-} from "@/components/ui/popover";
+} from "@/components/calendarui/popover";
 import { format } from "date-fns";
 import {
   fetchEvents,
