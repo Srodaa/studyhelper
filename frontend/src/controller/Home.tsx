@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-slate-800 text-white">
+    <div className="bg-slate-800 text-white h-screen">
       {user ? (
         <div>
           <p>{user.name}</p>
