@@ -28,12 +28,9 @@
     "lucide-react": "^0.454.0",
     "primereact": "^10.8.4",
     "react": "^18.3.1",
-    "react-big-calendar": "^1.15.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
-    "react-modal": "^3.16.1",
     "react-router-dom": "^6.27.0",
-    "react-time-picker": "^7.0.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.1"

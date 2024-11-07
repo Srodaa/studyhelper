@@ -1,19 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Calendar from "./Calendar";
-
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from "@/components/ui/drawer";
-import { Button } from "@/components/calendarui/button";
 import { CalendarEvent } from "@/types";
+import Navigation from "@/components/ui/Navigation";
 
 const Home: React.FC = () => {
   interface User {
@@ -24,6 +12,7 @@ const Home: React.FC = () => {
   }
 
   const [user, setUser] = useState<User | null>(null);
+  const userProfileImageUrl = user?.picture;
 
   useEffect(() => {
     // Felhasználói adatok és események
@@ -39,38 +28,15 @@ const Home: React.FC = () => {
 
   return (
     <div className="bg-slate-800 text-white h-screen">
+      <Navigation profileImageUrl={userProfileImageUrl} />
       {user ? (
         <div>
           <p>{user.name}</p>
           <p>{user.email}</p>
-          {user.picture && (
-            <img
-              src={user.picture}
-              alt="User Profile"
-              referrerPolicy="no-referrer"
-            />
-          )}
         </div>
       ) : (
         <p></p>
       )}
-      <Drawer>
-        <DrawerTrigger>Open</DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle></DrawerTitle>
-            <DrawerDescription></DrawerDescription>
-            <div className="px-[10%]">
-              <Calendar />
-            </div>
-          </DrawerHeader>
-          <DrawerFooter>
-            <DrawerClose>
-              <Button variant="outline">Bezárás</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
     </div>
   );
 };
