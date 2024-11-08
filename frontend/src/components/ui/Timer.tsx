@@ -10,6 +10,11 @@ import { getAllCategories } from '../utils/functions';
 const Timer: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [duration, setDuration] = useState<number>(60);
+  const [remainingTime, setRemainingTime] = useState<number>(duration * 60);
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,11 +29,57 @@ const Timer: React.FC = () => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    setRemainingTime(duration * 60);
+  }, [duration]);
+
+  const startTimer = () => {
+    if (isRunning) return;
+    setIsRunning(true);
+
+    const id = setInterval(() => {
+      setRemainingTime((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(id);
+          setIsRunning(false);
+          setRemainingTime(duration * 60);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    setIntervalId(id);
+  };
+
+  const handlePopoverOpenChange = (open: boolean) => {
+    if (open && isRunning) {
+      clearInterval(intervalId!);
+      setIsRunning(false);
+      setDuration(Math.floor(remainingTime / 60));
+      setIsPopoverOpen(open);
+    } else {
+      setIsPopoverOpen(open);
+    }
+  };
+
+  const closePopover = () => {
+    setIsPopoverOpen(false);
+  };
+
+  const formatTime = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  const startStudy = isRunning ? formatTime(remainingTime) : 'Tanulás elkezdése';
+
   return (
-    <Popover>
+    <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="bg-slate">
-          Tanulás elkezdése
+          {startStudy}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
@@ -56,9 +107,37 @@ const Timer: React.FC = () => {
               </Select>
             </div>
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="duration">Időtartam</Label>
-              <Input id="duration" defaultValue="60" className="col-span-2 h-8" />
+              <Label htmlFor="duration">Időtartam (perc)</Label>
+              <Input
+                type="number"
+                max="10000"
+                min="1"
+                id="duration"
+                value={remainingTime / 60}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (newValue == '') {
+                    setDuration(0);
+                  } else {
+                    const parsedValue = parseInt(newValue, 10);
+                    setDuration(parsedValue);
+                  }
+                }}
+                className="col-span-2 h-8"
+              />
             </div>
+          </div>
+          <div>
+            <Button
+              type="submit"
+              onClick={() => {
+                startTimer();
+                closePopover();
+              }}
+              className="grid float-right"
+            >
+              Kezdés
+            </Button>
           </div>
         </div>
       </PopoverContent>
