@@ -135,14 +135,21 @@ public class CalendarController {
     }
 
     @GetMapping("/user/categories")
-    public ResponseEntity<List<String>> getCategories() {
+    public ResponseEntity<List<String>> getCategories(@AuthenticationPrincipal OAuth2User principal) {
         try {
-            List<String> categories = calendarService.getAllCategories();
-            return ResponseEntity.ok(categories);
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
+            if (optionalUser.isPresent()) {
+                UserEntity user = optionalUser.get();
+                List<String> categories = calendarService.getCategoriesByUser(user.getId());
+                return ResponseEntity.ok(categories);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
+
 
     @PostMapping("/user/updateDuration")
     public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {

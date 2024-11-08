@@ -183,8 +183,8 @@ public class CalendarService {
         return eventDetailsRepository.save(newEventDetails);
     }
 
-    public List<String> getAllCategories() {
-        return eventDetailsRepository.findAllCategories();
+    public List<String> getCategoriesByUser(Long userId) {
+        return eventDetailsRepository.findCategoriesByUserId(userId);
     }
 
     public void updateCategoryDuration(String category, int elapsedSeconds) {
