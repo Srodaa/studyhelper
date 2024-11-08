@@ -67,6 +67,7 @@ public class CalendarController {
                 oAuth2Token.getAuthorizedClientRegistrationId(),
                 oAuth2Token.getName()
         );
+        eventDetailsRepository.findByEventID(eventId).ifPresent(eventDetails -> eventDetailsRepository.delete(eventDetails));
 
         OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
         calendarService.deleteEvent(accessToken.getTokenValue(), eventId);
