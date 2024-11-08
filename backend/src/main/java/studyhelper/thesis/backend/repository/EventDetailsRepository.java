@@ -12,4 +12,6 @@ public interface EventDetailsRepository extends JpaRepository<EventDetailsEntity
 
     @Query("SELECT DISTINCT e.category FROM EventDetailsEntity e")
     List<String> findAllCategories();
+
+    EventDetailsEntity findByCategory(String category);
 }

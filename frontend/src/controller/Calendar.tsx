@@ -141,7 +141,7 @@ const Calendar: React.FC = () => {
     try {
       const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
       setEventCategory(category);
-      setEventDuration(duration);
+      setEventDuration(Math.round(duration/60 *100)/100);
     } catch (error) {
       console.error('Hiba a kategória és időtartam lekérésekor:', error);
     }

@@ -88,7 +88,7 @@ export const handleSaveChanges = async (
           dateTime: combinatedEnd || endDateTime.toISOString()
         },
         category: category,
-        duration: duration
+        duration: duration*60
       };
 
       console.log(updatedEvent);
@@ -137,7 +137,7 @@ export const handleCreateEvent = async (
   const eventData = {
     ...newEvent,
     category: category,
-    duration: duration
+    duration: duration*60
   };
 
   console.log("eventData: ", eventData);
@@ -181,3 +181,29 @@ export const getAllCategories = async (): Promise<string[]> => {
     throw error;
   }
 };
+
+export async function updateDatabaseDuration(category: string, elapsedSeconds: number): Promise<void> {
+  try {
+    if (!category || elapsedSeconds <= 0) {
+      console.error('Hibás paraméterek az adatbázis frissítéséhez. ', category + ' ' + elapsedSeconds);
+      return;
+    }
+
+    const response = await fetch('/user/updateDuration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        category,
+        elapsedSeconds,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Hiba az adatbázis frissítése során.');
+    }
+    console.log('Az adatbázis sikeresen frissítve.');
+  } catch (error) {
+    console.error('Nem sikerült frissíteni az adatbázist:', error);
+  }
+}

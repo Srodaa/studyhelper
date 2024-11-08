@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+import studyhelper.thesis.backend.DTO.UpdateDurationRequest;
 import studyhelper.thesis.backend.entity.CalendarEvent;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
@@ -137,10 +138,19 @@ public class CalendarController {
     public ResponseEntity<List<String>> getCategories() {
         try {
             List<String> categories = calendarService.getAllCategories();
-            System.out.println(categories);
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
+    }
+
+    @PostMapping("/user/updateDuration")
+    public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {
+        try {
+            calendarService.updateCategoryDuration(request.getCategory(), request.getElapsedSeconds());
+            return ResponseEntity.ok("Az adatbázis sikeresen frissítve.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
         }
     }
 

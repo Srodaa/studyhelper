@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import studyhelper.thesis.backend.entity.CalendarEvent;
 import studyhelper.thesis.backend.entity.CalendarEventsResponse;
@@ -36,6 +37,9 @@ public class CalendarService {
 
     @Autowired
     private EventDetailsRepository eventDetailsRepository;
+
+    @Autowired
+    private eventDetailsService eventDetailsService;
 
 
     public List<CalendarEvent> getEvents(String accessToken) {
@@ -181,6 +185,10 @@ public class CalendarService {
 
     public List<String> getAllCategories() {
         return eventDetailsRepository.findAllCategories();
+    }
+
+    public void updateCategoryDuration(String category, int elapsedSeconds) {
+        eventDetailsService.updateCategoryDuration(category, elapsedSeconds);
     }
 }
 
