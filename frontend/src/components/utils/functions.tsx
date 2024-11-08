@@ -10,11 +10,10 @@ export const fetchEvents = async (
       "http://localhost:8080/user/calendar-events",
       {
         withCredentials: true
-      }
-    );
+    });
     setEvents(response.data);
   } catch (err) {
-    console.error("Error fetching events: ", err);
+    console.error('Error fetching events: ', err);
   } finally {
     setLoading(false);
   }
@@ -162,8 +161,6 @@ export const handleCreateEvent = async (
   }
 };
 
-
-
 export const getEventCategoryAndDuration = async (eventId: string): Promise<CalendarEvent> => {
   try {
       const response = await axios.get<CalendarEvent>(`/user/calendar-events/${eventId}/details`);
@@ -172,5 +169,15 @@ export const getEventCategoryAndDuration = async (eventId: string): Promise<Cale
   } catch (error) {
       console.error('Ehhez az eventhez nincs társítva kategória és tervezett tanulási idő!', error);
       throw error;
+  }
+};
+
+export const getAllCategories = async (): Promise<string[]> => {
+  try {
+    const response = await axios.get('/user/categories');
+    return response.data;
+  } catch (error) {
+    console.error('Hiba a kategóriák lekérésekor:', error);
+    throw error;
   }
 };

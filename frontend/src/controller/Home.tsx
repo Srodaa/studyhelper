@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { CalendarEvent } from "@/types";
 import Navigation from "@/components/ui/Navigation";
+import Timer from "@/components/ui/Timer";
 
 const Home: React.FC = () => {
   interface User {
@@ -37,6 +38,9 @@ const Home: React.FC = () => {
       ) : (
         <p></p>
       )}
+      <div>
+        <Timer />
+      </div>
     </div>
   );
 };

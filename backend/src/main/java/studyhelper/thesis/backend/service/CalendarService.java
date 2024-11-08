@@ -178,5 +178,9 @@ public class CalendarService {
 
         return eventDetailsRepository.save(newEventDetails);
     }
+
+    public List<String> getAllCategories() {
+        return eventDetailsRepository.findAllCategories();
+    }
 }
 

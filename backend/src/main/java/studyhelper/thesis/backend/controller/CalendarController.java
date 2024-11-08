@@ -18,8 +18,10 @@ import studyhelper.thesis.backend.repository.EventDetailsRepository;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
@@ -130,4 +132,16 @@ public class CalendarController {
         EventDetailsEntity eventDetails = calendarService.fetchEventCategoryAndDuration(eventId, authentication);
         return ResponseEntity.ok(eventDetails);
     }
+
+    @GetMapping("/user/categories")
+    public ResponseEntity<List<String>> getCategories() {
+        try {
+            List<String> categories = calendarService.getAllCategories();
+            System.out.println(categories);
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
+    }
+
 }
