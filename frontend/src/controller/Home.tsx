@@ -1,8 +1,8 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { CalendarEvent } from '@/types';
-import Navigation from '@/components/ui/Navigation';
-import Timer from '@/components/ui/Timer';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { CalendarEvent } from "@/types";
+import Navigation from "@/components/ui/Navigation";
+import Timer from "@/components/ui/Timer";
 
 const Home: React.FC = () => {
   interface User {
@@ -18,12 +18,12 @@ const Home: React.FC = () => {
   useEffect(() => {
     // Felhasználói adatok és események
     axios
-      .get('http://localhost:8080/user-info', { withCredentials: true })
+      .get("http://localhost:8080/user-info", { withCredentials: true })
       .then((response) => {
         setUser(response.data);
       })
       .catch((error) => {
-        console.error('Error occurred: ', error);
+        console.error("Error occurred: ", error);
       });
   }, []);
 

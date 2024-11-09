@@ -20,11 +20,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/calendarui/button";
 import { Calendar as SmallCalendar } from "@/components/calendarui/smallcalendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/calendarui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
 import { format } from "date-fns";
 import {
   fetchEvents,
@@ -39,16 +35,11 @@ const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentEvent, setCurrentEvent] =
-    useState<Partial<CalendarEvent> | null>(null);
-  const [eventName, setEventName] = useState<string>(
-    currentEvent?.summary || ""
-  ); //Esemény nevének a szerkesztéséhez kell
-  const [eventStartDatePicker, setEventStartDatePicker] =
-    React.useState<Date>();
+  const [currentEvent, setCurrentEvent] = useState<Partial<CalendarEvent> | null>(null);
+  const [eventName, setEventName] = useState<string>(currentEvent?.summary || ""); //Esemény nevének a szerkesztéséhez kell
+  const [eventStartDatePicker, setEventStartDatePicker] = React.useState<Date>();
   const [eventEndDatePicker, setEventEndDatePicker] = React.useState<Date>();
-  const [eventStartTimeValue, setEventStartTimeValue] =
-    useState<string>("10:00");
+  const [eventStartTimeValue, setEventStartTimeValue] = useState<string>("10:00");
   const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("12:00");
   const [eventCategory, setEventCategory] = React.useState<string>("Default");
   const [eventDuration, setEventDuration] = React.useState<number>(60);
@@ -58,10 +49,7 @@ const Calendar: React.FC = () => {
   useEffect(() => {
     fetchEvents(setEvents, setLoading);
 
-    const interval = setInterval(
-      () => fetchEvents(setEvents, setLoading),
-      300000
-    ); // 5 perc
+    const interval = setInterval(() => fetchEvents(setEvents, setLoading), 300000); // 5 perc
     return () => clearInterval(interval);
   }, [setEvents, setInterval]);
 
@@ -95,11 +83,7 @@ const Calendar: React.FC = () => {
       eventStartTimeValue,
       new Date()
     );
-    const endDateTime = getCombinatedDateTime(
-      eventEndDatePicker,
-      eventEndTimeValue,
-      new Date()
-    );
+    const endDateTime = getCombinatedDateTime(eventEndDatePicker, eventEndTimeValue, new Date());
 
     const newEvent: CalendarEvent = {
       summary: eventName,
@@ -128,22 +112,26 @@ const Calendar: React.FC = () => {
     });
 
     setEventName(eventInfo.event.title);
-    setEventStartDatePicker(new Date(eventInfo.event.start))
-    setEventEndDatePicker(new Date(eventInfo.event.end))
-    setEventStartTimeValue(new Date(eventInfo.event.start).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    }));
-    setEventEndTimeValue(new Date(eventInfo.event.end).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    }));
+    setEventStartDatePicker(new Date(eventInfo.event.start));
+    setEventEndDatePicker(new Date(eventInfo.event.end));
+    setEventStartTimeValue(
+      new Date(eventInfo.event.start).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    );
+    setEventEndTimeValue(
+      new Date(eventInfo.event.end).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      })
+    );
     try {
       const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
       setEventCategory(category);
-      setEventDuration(Math.round(duration/60 *100)/100);
+      setEventDuration(Math.round((duration / 60) * 100) / 100);
     } catch (error) {
-      console.error('Hiba a kategória és időtartam lekérésekor:', error);
+      console.error("Hiba a kategória és időtartam lekérésekor:", error);
     }
     setDialogOpen(true);
     console.log("Dialog opening...");
@@ -217,15 +205,13 @@ const Calendar: React.FC = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center">
-            {isDateClickDialog ? (
-              <>
-                  Új esemény létrehozása
-              </>
-            ) : (
-              <>
-                {currentEvent?.summary} <br /> esemény részletei
-              </>
-            )} 
+              {isDateClickDialog ? (
+                <>Új esemény létrehozása</>
+              ) : (
+                <>
+                  {currentEvent?.summary} <br /> esemény részletei
+                </>
+              )}
             </DialogTitle>
           </DialogHeader>
           <DialogDescription></DialogDescription>
@@ -350,9 +336,7 @@ const Calendar: React.FC = () => {
               </>
             ) : (
               <>
-                <Button onClick={() => onDeleteEvent(currentEvent?.id)}>
-                  Törlés
-                </Button>
+                <Button onClick={() => onDeleteEvent(currentEvent?.id)}>Törlés</Button>
                 <Button type="submit" onClick={onSaveChanges}>
                   Esemény mentése
                 </Button>
