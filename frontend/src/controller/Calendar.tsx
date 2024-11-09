@@ -44,6 +44,7 @@ const Calendar: React.FC = () => {
   const [eventCategory, setEventCategory] = React.useState<string>("Default");
   const [eventDuration, setEventDuration] = React.useState<number>(60);
   const [isDateClickDialog, setIsDateClickDialog] = useState(false);
+  const [clickedDate, setClickedDate] = useState<Date>();
 
   //5 percenként újra lekérdezi az eseményeket.
   useEffect(() => {
@@ -199,7 +200,13 @@ const Calendar: React.FC = () => {
           center: "title",
           right: "today"
         }}
-        dateClick={() => openDialogForNewEvent(true)}
+        dateClick={(info) => {
+          const clickedDay = info.date;
+          setEventStartDatePicker(clickedDay);
+          setEventEndDatePicker(clickedDay);
+          setClickedDate(clickedDay);
+          openDialogForNewEvent(true);
+        }}
       />
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
         <DialogContent>
