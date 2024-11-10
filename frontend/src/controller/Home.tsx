@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { CalendarEvent } from "@/types";
 import Navigation from "@/components/ui/Navigation";
 import Timer from "@/components/ui/Timer";
+import HomeCalendar from "@/components/ui/HomeCalendar";
 
 const Home: React.FC = () => {
   interface User {
@@ -30,15 +31,10 @@ const Home: React.FC = () => {
   return (
     <div className="bg-slate-800 text-white h-screen">
       <Navigation profileImageUrl={userProfileImageUrl} />
-      {user ? (
-        <div>
-          <p>{user.name}</p>
-          <p>{user.email}</p>
-        </div>
-      ) : (
-        <p></p>
-      )}
       <div>
+        <HomeCalendar></HomeCalendar>
+      </div>
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <Timer />
       </div>
     </div>

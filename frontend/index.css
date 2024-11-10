@@ -64,3 +64,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+/** Home calendar komponenshez tartozik .event-day */
+.event-day {
+  position: relative;
+}
+
+.event-day::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background-color: rgb(24, 99, 124);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+}
