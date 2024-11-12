@@ -16,11 +16,6 @@ const HomeCalendar: React.FC = () => {
     const interval = setInterval(() => fetchEvents(setEvents, setLoading), 300000); // 5 perc
     return () => clearInterval(interval);
   }, []);
-  const eventDates = events.map(
-    (event) => new Date(event.start.dateTime).toISOString().split("T")[0]
-  );
-
-  console.log(eventDates);
 
   const isEventDay = (date: Date) => {
     return events.some((event) => {
