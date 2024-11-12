@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import { Button } from '@/components/calendarui/button';
 import { Input } from '@/components/calendarui/input';
@@ -16,18 +16,13 @@ const Timer: React.FC = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
-  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data: string[] = await getAllCategories();
         setCategories(data);
       } catch (error) {
-        console.error('Nem sikerült betölteni a kategóriákat: ', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+      console.error("Nem sikerült betölteni a kategóriákat: ", error);
+    }};
 
   useEffect(() => {
     setRemainingTime(duration * 60);
@@ -92,7 +87,7 @@ const Timer: React.FC = () => {
           {startStudy}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80" onFocus={fetchCategories}>
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none text-center">Időzítő</h4>
