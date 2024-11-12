@@ -39,7 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ profileImageUrl }) => {
                 <DrawerTrigger className="text-lg font-semibold">
                   Naptár
                 </DrawerTrigger>
-                <DrawerContent>
+                <DrawerContent className="bg-slate-800 border-slate-600">
                   <DrawerHeader>
                     <DrawerTitle></DrawerTitle>
                     <DrawerDescription></DrawerDescription>

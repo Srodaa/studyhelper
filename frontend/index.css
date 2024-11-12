@@ -81,3 +81,29 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+/**Fullcalendar stilizálása */
+.fc{
+  @apply bg-slate-800 text-slate-200
+}
+.fc-col-header-cell{
+  @apply text-slate-300 font-semibold
+}
+.fc-daygrid{
+  @apply border border-slate-500
+}
+.fc-day-other{ /**Kieső napok */
+  @apply bg-gray-700 opacity-80
+}
+.fc-day-today{
+  @apply bg-slate-700 !important;
+}
+.fc td, .fc th{
+  @apply border-gray-500
+}
+.fc-event {
+  @apply bg-sky-900 hover:bg-slate-700
+}
+.fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main{
+  @apply font-normal text-slate-300 border-0 !important
+}

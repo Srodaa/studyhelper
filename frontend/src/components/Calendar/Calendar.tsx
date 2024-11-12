@@ -195,10 +195,12 @@ const Calendar: React.FC = () => {
         eventContent={renderEventContent}
         height={400}
         fixedWeekCount={false}
+        firstDay={1}
+        eventStartEditable={false}
         headerToolbar={{
-          left: "prev,next",
+          left: "prev",
           center: "title",
-          right: "today"
+          right: "next"
         }}
         dateClick={(info) => {
           const clickedDay = info.date;
