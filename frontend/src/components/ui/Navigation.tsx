@@ -1,7 +1,7 @@
 // Navbar.tsx
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import Calendar from "@/controller/Calendar";
+import Calendar from "@/components/Calendar/Calendar";
 
 import {
   Drawer,
