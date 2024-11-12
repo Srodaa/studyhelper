@@ -1,5 +1,5 @@
 // Navbar.tsx
-import { useState } from "react";
+import React, { useState } from "react";
 import { Menu } from "lucide-react";
 import Calendar from "@/components/Calendar/Calendar";
 
@@ -43,10 +43,10 @@ const Navbar: React.FC<NavbarProps> = ({ profileImageUrl }) => {
                   <DrawerHeader>
                     <DrawerTitle></DrawerTitle>
                     <DrawerDescription></DrawerDescription>
-                    <div className="px-[10%]">
-                      <Calendar />
-                    </div>
                   </DrawerHeader>
+                  <div>
+                    <Calendar />
+                  </div>
                   <DrawerFooter>
                     <DrawerClose>
                       <Button variant="outline">Bezárás</Button>

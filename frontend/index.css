@@ -84,7 +84,7 @@
 
 /**Fullcalendar stilizálása */
 .fc{
-  @apply bg-slate-800 text-slate-200
+  @apply bg-slate-800 text-slate-200 xl:w-[1400px] lg:w-[800px] mx-auto lg:h-[450px] md:h-[300px] md:w-[600px] !important
 }
 .fc-col-header-cell{
   @apply text-slate-300 font-semibold
