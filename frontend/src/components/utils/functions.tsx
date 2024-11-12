@@ -62,8 +62,8 @@ export const handleSaveChanges = async (
   }
 
   if (currentEvent?.id) {
-    const startDateTime = new Date(currentEvent.start);
-    const endDateTime = new Date(currentEvent.end);
+    const startDateTime = new Date(currentEvent.start.dateTime);
+    const endDateTime = new Date(currentEvent.end.dateTime);
     const combinatedStart = getCombinatedDateTime(
       eventStartDatePicker,
       eventStartTimeValue,
