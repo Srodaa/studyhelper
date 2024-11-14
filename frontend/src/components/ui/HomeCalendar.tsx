@@ -19,11 +19,14 @@ const HomeCalendar: React.FC = () => {
 
   const isEventDay = (date: Date) => {
     return events.some((event) => {
-      const eventDate = new Date(event.start.dateTime);
+      const startDate = new Date(event.start.dateTime);
+      const endDate = new Date(event.end.dateTime);
+
       return (
-        eventDate.getFullYear() === date.getFullYear() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getDate() === date.getDate()
+        (startDate.getFullYear() === date.getFullYear() &&
+          startDate.getMonth() === date.getMonth() &&
+          startDate.getDate() === date.getDate()) ||
+        (startDate <= date && date <= endDate)
       );
     });
   };
