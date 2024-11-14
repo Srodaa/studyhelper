@@ -104,6 +104,6 @@
 .fc-event {
   @apply bg-sky-900 hover:bg-slate-700
 }
-.fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main{
+.fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main, .fc-h-event{
   @apply font-normal text-slate-300 border-0 !important
 }
