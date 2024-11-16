@@ -16,11 +16,11 @@ const Timer: React.FC = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
-    const fetchCategories = async () => {
-      try {
-        const data: string[] = await getAllCategories();
-        setCategories(data);
-      } catch (error) {
+  const fetchCategories = async () => {
+    try {
+      const data: string[] = await getAllCategories();
+      setCategories(data);
+    } catch (error) {
       console.error("Nem sikerült betölteni a kategóriákat: ", error);
     }};
 
@@ -87,7 +87,7 @@ const Timer: React.FC = () => {
           {startStudy}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80" onFocus={fetchCategories}>
+      <PopoverContent className="w-80">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-medium leading-none text-center">Időzítő</h4>
@@ -98,7 +98,11 @@ const Timer: React.FC = () => {
           <div className="grid gap-2">
             <div className="grid gap-4 grid-cols-3 items-center">
               <Label htmlFor="category">Kategória</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+                onOpenChange={fetchCategories}
+              >
                 <SelectTrigger className="w-[185px]">
                   <SelectValue placeholder="Válassz kategóriát" />
                   <SelectContent>

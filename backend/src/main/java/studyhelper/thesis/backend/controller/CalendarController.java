@@ -20,6 +20,8 @@ import studyhelper.thesis.backend.service.CalendarService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
@@ -105,6 +107,10 @@ public class CalendarController {
         try {
             UserEntity user = getUserFromPrincipal(principal);
             List<String> categories = calendarService.getCategoriesByUser(user.getId());
+            categories = categories.stream()
+                    .filter(Objects::nonNull)
+                    .filter(category -> !"Default".equals(category))
+                    .collect(Collectors.toList());
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
