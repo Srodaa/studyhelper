@@ -16,11 +16,11 @@ import java.io.IOException;
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private UserService userService;
+    private final UserService userService;
 
     private static final String REDIRECT_URL = "http://localhost:5173/home";
 
-    private OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
     public OAuth2LoginSuccessHandler(UserService userService, OAuth2AuthorizedClientService authorizedClientService) {
         this.userService = userService;

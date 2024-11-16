@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 @RestController
 public class CalendarController {
 
-    private CalendarService calendarService;
+    private final CalendarService calendarService;
 
-    private OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private EventDetailsRepository eventDetailsRepository;
+    private final EventDetailsRepository eventDetailsRepository;
 
     public CalendarController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
         this.calendarService = calendarService;
