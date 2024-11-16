@@ -1,6 +1,5 @@
 package studyhelper.thesis.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import studyhelper.thesis.backend.DTO.UpdateDurationRequest;
-import studyhelper.thesis.backend.entity.CalendarEvent;
+import studyhelper.thesis.backend.DTO.CalendarEvent;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.EventDetailsRepository;
@@ -21,58 +20,51 @@ import studyhelper.thesis.backend.service.CalendarService;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 public class CalendarController {
 
-    @Autowired
     private CalendarService calendarService;
 
-    @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
-    @Autowired
+
     private UserRepository userRepository;
 
-    @Autowired
     private EventDetailsRepository eventDetailsRepository;
 
-    @GetMapping("/calendar-events")
-    public List<CalendarEvent> getUpcomingEvents(@AuthenticationPrincipal OAuth2User principal, Authentication authentication) {
-        // Cast the Authentication object to OAuth2AuthenticationToken
-        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
+    public CalendarController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
+        this.calendarService = calendarService;
+        this.authorizedClientService = authorizedClientService;
+        this.userRepository = userRepository;
+        this.eventDetailsRepository = eventDetailsRepository;
+    }
 
-        // Load the authorized client using the registration ID and principal name
+    private OAuth2AccessToken getAccessToken(Authentication authentication) {
+        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
                 oAuth2Token.getAuthorizedClientRegistrationId(),
                 oAuth2Token.getName()
         );
-        // Get the access token from the authorized client
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-        return calendarService.getEvents(accessToken.getTokenValue());
+        return authorizedClient.getAccessToken();
     }
-    // Handles CORS preflight for DELETE method
-    @RequestMapping(value = "/user/calendar-events/{eventId}", method = RequestMethod.OPTIONS)
-    public ResponseEntity<Void> preflightCheck() {
-        return ResponseEntity.ok().build();
+
+    private UserEntity getUserFromPrincipal(OAuth2User principal) {
+        return userRepository.findByEmail(principal.getAttribute("email"))
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    @GetMapping("/calendar-events")
+    public List<CalendarEvent> getUpcomingEvents(Authentication authentication) {
+        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        return calendarService.getEvents(accessToken.getTokenValue());
     }
 
     @DeleteMapping("/user/calendar-events/{eventId}")
-    public ResponseEntity<Void> deleteEvent(
-            @PathVariable String eventId,
-            @AuthenticationPrincipal OAuth2User principal,
-            Authentication authentication) {
-
-        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
-        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                oAuth2Token.getAuthorizedClientRegistrationId(),
-                oAuth2Token.getName()
-        );
-        eventDetailsRepository.findByEventID(eventId).ifPresent(eventDetails -> eventDetailsRepository.delete(eventDetails));
-
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+    public ResponseEntity<Void> deleteEvent(@PathVariable String eventId, Authentication authentication) {
+        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        eventDetailsRepository.findByEventID(eventId)
+                .ifPresent(eventDetails -> eventDetailsRepository.delete(eventDetails));
         calendarService.deleteEvent(accessToken.getTokenValue(), eventId);
         return ResponseEntity.noContent().build();
     }
@@ -84,22 +76,10 @@ public class CalendarController {
             @AuthenticationPrincipal OAuth2User principal,
             Authentication authentication) {
 
-        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
-        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                oAuth2Token.getAuthorizedClientRegistrationId(),
-                oAuth2Token.getName()
-        );
-
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
-        if (optionalUser.isPresent()) {
-            UserEntity user = optionalUser.get();
-            CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken.getTokenValue(), eventId, updatedEvent);
-            return ResponseEntity.ok(updatedEventResult);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
+        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        UserEntity user = getUserFromPrincipal(principal);
+        CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken.getTokenValue(), eventId, updatedEvent);
+        return ResponseEntity.ok(updatedEventResult);
     }
 
     @PostMapping("/user/calendar-events")
@@ -107,25 +87,11 @@ public class CalendarController {
             @RequestBody CalendarEvent newEvent,
             @AuthenticationPrincipal OAuth2User principal,
             Authentication authentication) {
-        OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
-        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                oAuth2Token.getAuthorizedClientRegistrationId(),
-                oAuth2Token.getName()
-        );
 
-        System.out.println("newEvent: " + newEvent);
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
-        if (optionalUser.isPresent()) {
-            UserEntity user = optionalUser.get();
-            CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken.getTokenValue(), newEvent);
-            return ResponseEntity.ok(createdEvent);
-
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
+        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        UserEntity user = getUserFromPrincipal(principal);
+        CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken.getTokenValue(), newEvent);
+        return ResponseEntity.ok(createdEvent);
     }
 
     @GetMapping("/user/calendar-events/{eventId}/details")
@@ -137,19 +103,13 @@ public class CalendarController {
     @GetMapping("/user/categories")
     public ResponseEntity<List<String>> getCategories(@AuthenticationPrincipal OAuth2User principal) {
         try {
-            Optional<UserEntity> optionalUser = userRepository.findByEmail(principal.getAttribute("email"));
-            if (optionalUser.isPresent()) {
-                UserEntity user = optionalUser.get();
-                List<String> categories = calendarService.getCategoriesByUser(user.getId());
-                return ResponseEntity.ok(categories);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
-            }
+            UserEntity user = getUserFromPrincipal(principal);
+            List<String> categories = calendarService.getCategoriesByUser(user.getId());
+            return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
-
 
     @PostMapping("/user/updateDuration")
     public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {
@@ -160,5 +120,4 @@ public class CalendarController {
             return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
         }
     }
-
 }

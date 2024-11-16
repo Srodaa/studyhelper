@@ -1,4 +1,4 @@
-package studyhelper.thesis.backend.entity;
+package studyhelper.thesis.backend.DTO;
 
 import java.util.List;
 

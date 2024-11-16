@@ -2,7 +2,6 @@ package studyhelper.thesis.backend.component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -17,14 +16,16 @@ import java.io.IOException;
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Autowired
     private UserService userService;
 
     private static final String REDIRECT_URL = "http://localhost:5173/home";
 
-    @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
+    public OAuth2LoginSuccessHandler(UserService userService, OAuth2AuthorizedClientService authorizedClientService) {
+        this.userService = userService;
+        this.authorizedClientService = authorizedClientService;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -46,7 +47,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
 
-        userService.saveUserIfNotExists(email, name, null, googleID, accessToken);
+        userService.saveUserIfNotExists(email, name, googleID, accessToken);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
     }
