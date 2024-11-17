@@ -107,3 +107,30 @@
 .fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main, .fc-h-event{
   @apply font-normal text-slate-300 border-0 !important
 }
+
+.rain {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.drop {
+  position: absolute;
+  width: 2px;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+  opacity: 0.5;
+  animation: fall linear infinite;
+  top: -10px; /*Hogy ne legyen látható az oldal betöltésekor */
+}
+
+@keyframes fall {
+  from {
+    top: 10%;
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
