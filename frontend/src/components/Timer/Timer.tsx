@@ -83,7 +83,7 @@ const Timer: React.FC = () => {
   return (
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="bg-slate">
+        <Button variant="outline" className="bg-slate-900 border-2 border-slate-600 hover:bg-slate-600  hover:text-white">
           {startStudy}
         </Button>
       </PopoverTrigger>
