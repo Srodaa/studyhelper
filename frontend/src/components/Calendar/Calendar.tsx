@@ -79,11 +79,7 @@ const Calendar: React.FC = () => {
   };
 
   const createNewEvent = async () => {
-    const startDateTime = getCombinatedDateTime(
-      eventStartDatePicker,
-      eventStartTimeValue,
-      new Date()
-    );
+    const startDateTime = getCombinatedDateTime(eventStartDatePicker, eventStartTimeValue, new Date());
     const endDateTime = getCombinatedDateTime(eventEndDatePicker, eventEndTimeValue, new Date());
 
     const newEvent: CalendarEvent = {
@@ -94,14 +90,7 @@ const Calendar: React.FC = () => {
       duration: eventDuration
     };
 
-    await handleCreateEvent(
-      newEvent,
-      eventCategory,
-      eventDuration,
-      setEvents,
-      setLoading,
-      closeDialog
-    );
+    await handleCreateEvent(newEvent, eventCategory, eventDuration, setEvents, setLoading, closeDialog);
   };
   const openDialog = async (eventInfo: any) => {
     setCurrentEvent({
@@ -211,14 +200,15 @@ const Calendar: React.FC = () => {
         }}
       />
       <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
-        <DialogContent>
+        <DialogContent className="border border-slate-600 bg-slate-900 text-white">
           <DialogHeader>
             <DialogTitle className="text-center">
               {isDateClickDialog ? (
-                <>Új esemény létrehozása</>
+                <>Create new event</>
               ) : (
                 <>
-                  {currentEvent?.summary} <br /> esemény részletei
+                  <span className="uppercase">{currentEvent?.summary} </span>
+                  <br /> event details
                 </>
               )}
             </DialogTitle>
@@ -228,16 +218,16 @@ const Calendar: React.FC = () => {
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Esemény neve
+                Event name
               </Label>
               <Input
                 id="esemenyNeve"
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
-                className="col-span-3"
+                className="col-span-3 border border-slate-600 focus:border-white"
               />
               <Label htmlFor="datePicker" className="text-right">
-                Időpont
+                Date
               </Label>
               <div>
                 <Popover>
@@ -245,16 +235,12 @@ const Calendar: React.FC = () => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[280px] justify-start text-left font-normal",
+                        "w-[342.5px] justify-start text-left font-normal border border-slate-600 bg-slate-900 hover:bg-slate-800 hover:text-white mb-1",
                         !eventStartDatePicker && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon />
-                      {eventStartDatePicker ? (
-                        format(eventStartDatePicker, "PPP")
-                      ) : (
-                        <span>Kezdő dátum</span>
-                      )}
+                      {eventStartDatePicker ? format(eventStartDatePicker, "PPP") : <span>Kezdő dátum</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -278,16 +264,12 @@ const Calendar: React.FC = () => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[280px] justify-start text-left font-normal",
+                        "w-[342.5px] justify-start text-left font-normal border border-slate-600 bg-slate-900 hover:bg-slate-800 hover:text-white mt-1",
                         !eventEndDatePicker && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon />
-                      {eventEndDatePicker ? (
-                        format(eventEndDatePicker, "PPP")
-                      ) : (
-                        <span>Vég dátum</span>
-                      )}
+                      {eventEndDatePicker ? format(eventEndDatePicker, "PPP") : <span>Vég dátum</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -311,18 +293,18 @@ const Calendar: React.FC = () => {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="category" className="text-right">
-              Kategória
+              Category
             </Label>
             <Input
               id="eventCategory"
               value={eventCategory}
               onChange={(e) => setEventCategory(e.target.value)}
-              className="col-span-3"
+              className="col-span-3 border border-slate-600 focus:border-white"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="duration" className="text-right">
-              Tervezett idő (perc)
+              Time planned (minutes)
             </Label>
             <Input
               id="eventDuration"
@@ -333,21 +315,34 @@ const Calendar: React.FC = () => {
               onChange={(e) => {
                 setEventDuration(parseInt(e.target.value));
               }}
-              className="col-span-3"
+              className="col-span-3 border border-slate-600 focus:border-white"
             />
           </div>
           <DialogFooter>
             {isDateClickDialog ? (
               <>
-                <Button type="submit" onClick={createNewEvent}>
-                  Esemény létrehozása
+                <Button
+                  type="submit"
+                  onClick={createNewEvent}
+                  className="bg-white text-black hover:bg-slate-200 border border-slate-600"
+                >
+                  Create event
                 </Button>
               </>
             ) : (
               <>
-                <Button onClick={() => onDeleteEvent(currentEvent?.id)}>Törlés</Button>
-                <Button type="submit" onClick={onSaveChanges}>
-                  Esemény mentése
+                <Button
+                  onClick={() => onDeleteEvent(currentEvent?.id)}
+                  className="bg-white text-black hover:bg-slate-200 border border-slate-600"
+                >
+                  Delete event
+                </Button>
+                <Button
+                  type="submit"
+                  onClick={onSaveChanges}
+                  className="bg-white text-black hover:bg-slate-200 border border-slate-600"
+                >
+                  Save event
                 </Button>
               </>
             )}

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import { Button } from '@/components/calendarui/button';
-import { Input } from '@/components/calendarui/input';
-import { Label } from '@/components/calendarui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/calendarui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getAllCategories, updateDatabaseDuration } from '../utils/functions';
+import { Button } from "@/components/calendarui/button";
+import { Input } from "@/components/calendarui/input";
+import { Label } from "@/components/calendarui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getAllCategories, updateDatabaseDuration } from "../utils/functions";
 
 const Timer: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [duration, setDuration] = useState<number>(60);
   const [remainingTime, setRemainingTime] = useState<number>(duration * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -22,7 +22,8 @@ const Timer: React.FC = () => {
       setCategories(data);
     } catch (error) {
       console.error("Nem sikerült betölteni a kategóriákat: ", error);
-    }};
+    }
+  };
 
   useEffect(() => {
     setRemainingTime(duration * 60);
@@ -75,36 +76,30 @@ const Timer: React.FC = () => {
   const formatTime = (timeInSeconds: number): string => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const startStudy = isRunning ? formatTime(remainingTime) : 'Tanulás elkezdése';
+  const startStudy = isRunning ? formatTime(remainingTime) : "Start learning";
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="bg-slate-900 border-2 border-slate-600 hover:bg-slate-600  hover:text-white">
+        <Button variant="outline" className="bg-slate-900 border border-slate-600 hover:bg-slate-800 hover:text-white">
           {startStudy}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80 bg-slate-900 text-white border border-slate-600 border border-slate-600">
         <div className="grid gap-4">
           <div className="space-y-2">
-            <h4 className="font-medium leading-none text-center">Időzítő</h4>
-            <p className="text-sm text-muted-foreground text-center">
-              A tanulás elkezdéséhez válaszd ki az alábbi pontokat.
-            </p>
+            <h4 className="font-medium leading-none text-center">Timer</h4>
+            <p className="text-sm text-slate-200 text-center">To start learning, select the points below.</p>
           </div>
           <div className="grid gap-2">
             <div className="grid gap-4 grid-cols-3 items-center">
-              <Label htmlFor="category">Kategória</Label>
-              <Select
-                value={selectedCategory}
-                onValueChange={setSelectedCategory}
-                onOpenChange={fetchCategories}
-              >
-                <SelectTrigger className="w-[185px]">
-                  <SelectValue placeholder="Válassz kategóriát" />
+              <Label htmlFor="category">Category</Label>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory} onOpenChange={fetchCategories}>
+                <SelectTrigger className="w-[185px] border-slate-600 hover:border-white">
+                  <SelectValue placeholder="Choose your category" />
                   <SelectContent>
                     {categories.map((category, index) => (
                       <SelectItem key={index} value={category}>
@@ -116,7 +111,7 @@ const Timer: React.FC = () => {
               </Select>
             </div>
             <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="duration">Időtartam (perc)</Label>
+              <Label htmlFor="duration">Duration (minutes)</Label>
               <Input
                 type="number"
                 max="10000"
@@ -125,14 +120,14 @@ const Timer: React.FC = () => {
                 value={remainingTime / 60}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  if (newValue == '') {
+                  if (newValue == "") {
                     setDuration(0);
                   } else {
                     const parsedValue = parseInt(newValue, 10);
                     setDuration(parsedValue);
                   }
                 }}
-                className="col-span-2 h-8"
+                className="col-span-2 h-8 border-slate-600 focus:border-white"
               />
             </div>
           </div>
@@ -143,9 +138,9 @@ const Timer: React.FC = () => {
                 startTimer();
                 closePopover();
               }}
-              className="grid float-right"
+              className="grid float-right bg-white text-black hover:bg-slate-200 border border-slate-600"
             >
-              Kezdés
+              Start
             </Button>
           </div>
         </div>

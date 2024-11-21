@@ -84,7 +84,7 @@
 
 /**Fullcalendar stilizálása */
 .fc{
-  @apply bg-slate-800 text-slate-200 xl:w-[1400px] lg:w-[800px] mx-auto lg:h-[450px] md:h-[300px] md:w-[600px] !important
+  @apply bg-slate-900 text-slate-200 xl:w-[1400px] lg:w-[800px] mx-auto lg:h-[450px] md:h-[300px] md:w-[600px] !important
 }
 .fc-col-header-cell{
   @apply text-slate-300 font-semibold
@@ -106,6 +106,9 @@
 }
 .fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main, .fc-h-event{
   @apply font-normal text-slate-300 border-0 !important
+}
+.fc-prev-button.fc-button.fc-button-primary,.fc-next-button.fc-button.fc-button-primary{
+  @apply border border-slate-600 bg-slate-900 hover:bg-slate-800
 }
 
 .rain {
