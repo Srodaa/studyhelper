@@ -30,6 +30,7 @@ import {
   getCombinatedDateTime,
   getEventCategoryAndDuration
 } from "@/components/utils/functions";
+import { buttonVariants } from "@/components/calendarui/button";
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -240,23 +241,38 @@ const Calendar: React.FC = () => {
                       )}
                     >
                       <CalendarIcon />
-                      {eventStartDatePicker ? format(eventStartDatePicker, "PPP") : <span>Kezdő dátum</span>}
+                      {eventStartDatePicker ? format(eventStartDatePicker, "PPP") : <span>Start date</span>}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0 border border-slate-600 bg-slate-900 text-white">
                     <SmallCalendar
                       mode="single"
                       selected={eventStartDatePicker}
                       onSelect={setEventStartDatePicker}
                       initialFocus
-                    />
-                    <Input
-                      type="time"
-                      value={eventStartTimeValue}
-                      onChange={(e) => {
-                        setEventStartTimeValue(e.target.value);
+                      classNames={{
+                        day_today: "bg-slate-800",
+                        nav_button: cn(
+                          buttonVariants({ variant: "outline" }),
+                          "h-7 w-7 bg-transparent p-0 hover:bg-slate-800 hover:text-white border-slate-500"
+                        ),
+                        day: cn(
+                          buttonVariants({ variant: "ghost" }),
+                          "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-slate-700 hover:text-white"
+                        ),
+                        day_selected: "bg-slate-700 border border-slate-500"
                       }}
                     />
+                    <div className="mx-1">
+                      <Input
+                        type="time"
+                        value={eventStartTimeValue}
+                        onChange={(e) => {
+                          setEventStartTimeValue(e.target.value);
+                        }}
+                        className="border border-x-0 border-b-0 rounded-none accent-white grid place-content-center mb-1"
+                      />
+                    </div>
                   </PopoverContent>
                 </Popover>
                 <Popover>
@@ -269,23 +285,38 @@ const Calendar: React.FC = () => {
                       )}
                     >
                       <CalendarIcon />
-                      {eventEndDatePicker ? format(eventEndDatePicker, "PPP") : <span>Vég dátum</span>}
+                      {eventEndDatePicker ? format(eventEndDatePicker, "PPP") : <span>End date</span>}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0 border border-slate-600 bg-slate-900 text-white">
                     <SmallCalendar
                       mode="single"
                       selected={eventEndDatePicker}
                       onSelect={setEventEndDatePicker}
                       initialFocus
-                    />
-                    <Input
-                      type="time"
-                      value={eventEndTimeValue}
-                      onChange={(e) => {
-                        setEventEndTimeValue(e.target.value);
+                      classNames={{
+                        day_today: "bg-slate-800",
+                        nav_button: cn(
+                          buttonVariants({ variant: "outline" }),
+                          "h-7 w-7 bg-transparent p-0 hover:bg-slate-800 hover:text-white border-slate-500"
+                        ),
+                        day: cn(
+                          buttonVariants({ variant: "ghost" }),
+                          "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-slate-700 hover:text-white"
+                        ),
+                        day_selected: "bg-slate-700 border border-slate-500"
                       }}
                     />
+                    <div className="mx-1">
+                      <Input
+                        type="time"
+                        value={eventEndTimeValue}
+                        onChange={(e) => {
+                          setEventEndTimeValue(e.target.value);
+                        }}
+                        className="border border-x-0 border-b-0 rounded-none accent-white grid place-content-center mb-1"
+                      />
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
