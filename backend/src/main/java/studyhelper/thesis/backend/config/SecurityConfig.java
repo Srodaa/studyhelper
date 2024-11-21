@@ -1,5 +1,6 @@
 package studyhelper.thesis.backend.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,6 +17,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Autowired
     private OAuth2LoginSuccessHandler successHandler;
 
     public SecurityConfig(OAuth2LoginSuccessHandler successHandler) {

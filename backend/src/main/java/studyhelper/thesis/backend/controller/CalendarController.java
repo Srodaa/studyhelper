@@ -1,5 +1,6 @@
 package studyhelper.thesis.backend.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,13 +28,17 @@ import java.util.stream.Collectors;
 @RestController
 public class CalendarController {
 
-    private final CalendarService calendarService;
+    @Autowired
+    private CalendarService calendarService;
 
-    private final OAuth2AuthorizedClientService authorizedClientService;
+    @Autowired
+    private OAuth2AuthorizedClientService authorizedClientService;
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final EventDetailsRepository eventDetailsRepository;
+    @Autowired
+    private EventDetailsRepository eventDetailsRepository;
 
     public CalendarController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
         this.calendarService = calendarService;

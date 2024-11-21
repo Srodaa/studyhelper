@@ -25,10 +25,17 @@ public class CalendarService {
     @Value("${google.calendar.api.url}")
     private String apiUrl;
 
-    private final RestTemplate restTemplate;
-    private final UserRepository userRepository;
-    private final EventDetailsRepository eventDetailsRepository;
-    private final EventDetailsService eventDetailsService;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EventDetailsRepository eventDetailsRepository;
+
+    @Autowired
+    private EventDetailsService eventDetailsService;
 
     @Autowired
     public CalendarService(RestTemplate restTemplate, UserRepository userRepository, EventDetailsRepository eventDetailsRepository, EventDetailsService eventDetailsService) {

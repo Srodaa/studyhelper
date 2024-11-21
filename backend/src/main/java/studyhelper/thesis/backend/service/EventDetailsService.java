@@ -1,5 +1,6 @@
 package studyhelper.thesis.backend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
@@ -8,6 +9,7 @@ import studyhelper.thesis.backend.repository.EventDetailsRepository;
 @Service
 public class EventDetailsService {
 
+    @Autowired
     EventDetailsRepository eventDetailsRepository;
 
     @Transactional

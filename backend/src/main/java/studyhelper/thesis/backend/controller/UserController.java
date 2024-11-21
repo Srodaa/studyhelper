@@ -19,8 +19,10 @@ import java.util.Map;
 @RestController
 public class UserController {
 
+    @Autowired
     private CalendarService calendarService;
 
+    @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
     public UserController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService) {
