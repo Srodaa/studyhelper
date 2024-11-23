@@ -31,6 +31,7 @@ import {
   getEventCategoryAndDuration
 } from "@/components/utils/functions";
 import { buttonVariants } from "@/components/calendarui/button";
+import loadingIcon from "@/assets/90-ring.svg";
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -135,7 +136,11 @@ const Calendar: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Betöltés...</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <img src={loadingIcon} />
+      </div>
+    );
   }
 
   const eventList = events.map((event) => ({
