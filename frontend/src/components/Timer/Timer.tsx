@@ -38,7 +38,8 @@ const Timer: React.FC = () => {
         if (prevTime <= 0) {
           clearInterval(id);
           setIsRunning(false);
-          handleStopTimer();
+          const elapsedSeconds = duration * 60;
+          updateDatabaseDuration(selectedCategory, elapsedSeconds);
           setRemainingTime(duration * 60);
           return 0;
         }
