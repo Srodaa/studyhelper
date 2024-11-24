@@ -52,9 +52,7 @@ export const handleSaveChanges = async (
   category: string,
   duration: number
 ) => {
-  const esemenyNeve = document.getElementById(
-    "esemenyNeve"
-  ) as HTMLInputElement;
+  const esemenyNeve = document.getElementById("esemenyNeve") as HTMLInputElement;
   if (esemenyNeve) {
     console.log("Az esemény új neve: " + esemenyNeve.value);
   } else {
@@ -64,16 +62,8 @@ export const handleSaveChanges = async (
   if (currentEvent?.id) {
     const startDateTime = new Date(currentEvent.start.dateTime);
     const endDateTime = new Date(currentEvent.end.dateTime);
-    const combinatedStart = getCombinatedDateTime(
-      eventStartDatePicker,
-      eventStartTimeValue,
-      startDateTime
-    );
-    const combinatedEnd = getCombinatedDateTime(
-      eventEndDatePicker,
-      eventEndTimeValue,
-      endDateTime
-    );
+    const combinatedStart = getCombinatedDateTime(eventStartDatePicker, eventStartTimeValue, startDateTime);
+    const combinatedEnd = getCombinatedDateTime(eventEndDatePicker, eventEndTimeValue, endDateTime);
 
     try {
       const updatedEvent: CalendarEvent = {
@@ -92,12 +82,9 @@ export const handleSaveChanges = async (
       };
 
       console.log(updatedEvent);
-      const response = await axios.put(
-        `http://localhost:8080/user/calendar-events/${currentEvent.id}`,
-        updatedEvent,
-        {
-          withCredentials: true,
-          timeout: 5000
+      const response = await axios.put(`http://localhost:8080/user/calendar-events/${currentEvent.id}`, updatedEvent, {
+        withCredentials: true,
+        timeout: 5000
         }
       );
       console.log("Sikeres eseményfrissítés!", response.data);
@@ -204,6 +191,34 @@ export async function updateDatabaseDuration(category: string, elapsedSeconds: n
     }
     console.log('Az adatbázis sikeresen frissítve.');
   } catch (error) {
-    console.error('Nem sikerült frissíteni az adatbázist:', error);
+    console.error("Nem sikerült frissíteni az adatbázist:", error);
+  }
+}
+
+export async function saveStudyProgress(category: string, elapsedTime: number): Promise<void> {
+  try {
+    if (!category || elapsedTime <= 0) {
+      console.error("Hibás paraméterek a tanulási statisztika elküldéséhez:", category, elapsedTime);
+      return;
+    }
+
+    const response = await fetch("/user/studyProgress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        category,
+        elapsedTime
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Hiba a statisztikák mentése közben.");
+    }
+
+    console.log("Az előrehaladás sikeresen lementve.", category, elapsedTime);
+  } catch (error) {
+    console.error("Hiba a statisztikák mentése közben:", error);
   }
 }

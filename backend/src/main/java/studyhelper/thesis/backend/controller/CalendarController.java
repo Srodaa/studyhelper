@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+import studyhelper.thesis.backend.DTO.StudyProgressDTO;
 import studyhelper.thesis.backend.DTO.UpdateDurationRequest;
 import studyhelper.thesis.backend.DTO.CalendarEvent;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
@@ -18,6 +19,7 @@ import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.EventDetailsRepository;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
+import studyhelper.thesis.backend.service.StudyProgressService;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +41,9 @@ public class CalendarController {
 
     @Autowired
     private EventDetailsRepository eventDetailsRepository;
+
+    @Autowired
+    private StudyProgressService studyProgressService;
 
     public CalendarController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
         this.calendarService = calendarService;
@@ -131,4 +136,16 @@ public class CalendarController {
             return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
         }
     }
+
+    @PostMapping("/user/studyProgress")
+    public ResponseEntity<String> saveStudyProgress(@RequestBody StudyProgressDTO progressDTO, @AuthenticationPrincipal OAuth2User principal) {
+        try {
+            UserEntity user = getUserFromPrincipal(principal);
+            studyProgressService.saveStudyProgress(user, progressDTO.getCategory(), progressDTO.getElapsedTime());
+            return ResponseEntity.ok("Az előrehaladási statisztika sikeresen mentve.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Hiba történt a előrehaladási statisztika mentése során.");
+        }
+    }
+
 }

@@ -5,7 +5,7 @@ import { Input } from "@/components/calendarui/input";
 import { Label } from "@/components/calendarui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getAllCategories, updateDatabaseDuration } from "../utils/functions";
+import { getAllCategories, saveStudyProgress, updateDatabaseDuration } from "../utils/functions";
 
 const Timer: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -40,6 +40,7 @@ const Timer: React.FC = () => {
           setIsRunning(false);
           const elapsedSeconds = duration * 60;
           updateDatabaseDuration(selectedCategory, elapsedSeconds);
+          saveStudyProgress(selectedCategory, elapsedSeconds);
           setRemainingTime(duration * 60);
           return 0;
         }
@@ -56,7 +57,7 @@ const Timer: React.FC = () => {
     const elapsedSeconds = duration * 60 - remainingTime;
     console.log(selectedCategory, elapsedSeconds);
     updateDatabaseDuration(selectedCategory, elapsedSeconds);
-
+    saveStudyProgress(selectedCategory, elapsedSeconds);
     setRemainingTime(duration * 60);
   };
 
