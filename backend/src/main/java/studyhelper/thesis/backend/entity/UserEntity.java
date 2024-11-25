@@ -14,8 +14,6 @@ public class UserEntity {
     private String email;
     @Column(name = "name")
     private String name;
-    @Column(name = "password")
-    private String password;
     @Column(name = "googleID")
     private String googleID;
     @Column(name = "accessToken")
@@ -64,14 +62,7 @@ public class UserEntity {
     public void setGoogleID(String googleID) {
         this.googleID = googleID;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    
 
     public String getAccessToken() {
         return accessToken;
