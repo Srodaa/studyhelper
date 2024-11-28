@@ -6,6 +6,7 @@ import { Label } from "@/components/calendarui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getAllCategories, saveStudyProgress, updateDatabaseDuration } from "../utils/functions";
+import { toast } from "sonner";
 
 const Timer: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -137,6 +138,10 @@ const Timer: React.FC = () => {
             <Button
               type="submit"
               onClick={() => {
+                if (!selectedCategory || duration <= 0) {
+                  toast.error("Please select a category and set a valid duration.");
+                  return;
+                }
                 startTimer();
                 closePopover();
               }}

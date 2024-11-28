@@ -142,3 +142,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     transform: translateY(100vh);
   }
 }
+
+[data-sonner-toast] {
+  @apply bg-slate-900 text-white border border-slate-600
+}
