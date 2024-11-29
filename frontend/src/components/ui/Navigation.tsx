@@ -13,7 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger
 } from "@/components/ui/drawer";
-import { Button } from "@/components/calendarui/button";
 
 interface NavbarProps {
   profileImageUrl?: string;
