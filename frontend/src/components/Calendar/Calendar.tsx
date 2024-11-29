@@ -32,6 +32,7 @@ import {
 } from "@/components/utils/functions";
 import { buttonVariants } from "@/components/calendarui/button";
 import loadingIcon from "@/assets/90-ring.svg";
+import { toast } from "sonner";
 
 const Calendar: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -56,12 +57,13 @@ const Calendar: React.FC = () => {
     return () => clearInterval(interval);
   }, [setEvents, setInterval]);
 
-  const onDeleteEvent = (eventId: string | undefined) => {
-    handleDeleteEvent(eventId, setEvents, setLoading, closeDialog);
+  const onDeleteEvent = async (eventId: string | undefined) => {
+    const response = await handleDeleteEvent(eventId, setEvents, setLoading, closeDialog);
+    return response;
   };
 
   const onSaveChanges = async () => {
-    await handleSaveChanges(
+    const response = await handleSaveChanges(
       currentEvent as CalendarEvent,
       eventStartDatePicker,
       eventStartTimeValue,
@@ -73,6 +75,7 @@ const Calendar: React.FC = () => {
       eventCategory,
       eventDuration
     );
+    return response;
   };
 
   const openDialogForNewEvent = (isDateClickDialog = false) => {
@@ -92,7 +95,7 @@ const Calendar: React.FC = () => {
       duration: eventDuration
     };
 
-    await handleCreateEvent(newEvent, eventCategory, eventDuration, setEvents, setLoading, closeDialog);
+    return await handleCreateEvent(newEvent, eventCategory, eventDuration, setEvents, setLoading, closeDialog);
   };
   const openDialog = async (eventInfo: any) => {
     setCurrentEvent({
@@ -359,7 +362,36 @@ const Calendar: React.FC = () => {
               <>
                 <Button
                   type="submit"
-                  onClick={createNewEvent}
+                  onClick={async () => {
+                    try {
+                      const response = await createNewEvent();
+                      if (response.status === 200) {
+                        if (eventEndDatePicker && eventStartDatePicker) {
+                          const formattedStartDate = format(eventStartDatePicker, "EEEE, LLLL dd, yyyy"); // Nap, hónap, év
+                          const formattedEndDate = format(eventEndDatePicker, "EEEE, LLLL dd, yyyy");
+                          if (formattedStartDate != formattedEndDate) {
+                            toast("Event has been created", {
+                              description: `The event is scheduled from ${formattedStartDate} to ${formattedEndDate}`
+                            });
+                          } else {
+                            toast("Event has been created", {
+                              description: `The event is scheduled for ${formattedStartDate}`
+                            });
+                          }
+                        } else {
+                          toast.error("Failed to create event.", {
+                            description: "Enter start and end date as well!"
+                          });
+                        }
+                      } else {
+                        toast.error("An error occured while creating the event.");
+                        console.log(response.status);
+                      }
+                    } catch (error) {
+                      toast.error("An error occured while creating the event.");
+                      console.log(error);
+                    }
+                  }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
                 >
                   Create event
@@ -368,14 +400,37 @@ const Calendar: React.FC = () => {
             ) : (
               <>
                 <Button
-                  onClick={() => onDeleteEvent(currentEvent?.id)}
+                  onClick={async () => {
+                    try {
+                      const response = await onDeleteEvent(currentEvent?.id);
+                      if (response.status === 204) {
+                        toast.info(`'${eventName}' has been deleted.`);
+                      } else toast.error("Failed to delete the event.");
+                    } catch (error) {
+                      toast.error("An error occurred while deleting the event.");
+                      console.error(error);
+                    }
+                  }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
                 >
                   Delete event
                 </Button>
                 <Button
                   type="submit"
-                  onClick={onSaveChanges}
+                  onClick={async () => {
+                    try {
+                      const response = await onSaveChanges();
+                      if (response.status === 200) {
+                        // Ha OK akkor OK :)
+                        toast.info("Event has been saved.");
+                      } else {
+                        toast.error("Failed to save the event.");
+                      }
+                    } catch (error) {
+                      toast.error("An error occurred while saving the event.");
+                      console.error(error);
+                    }
+                  }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
                 >
                   Save event

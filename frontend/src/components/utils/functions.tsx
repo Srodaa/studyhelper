@@ -24,9 +24,9 @@ export const handleDeleteEvent = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   closeDialog: () => void
-) => {
+): Promise<{ status: number }> => {
   try {
-    await axios.delete(
+    const response = await axios.delete(
       `http://localhost:8080/user/calendar-events/${eventId}`,
       {
         withCredentials: true,
@@ -35,9 +35,15 @@ export const handleDeleteEvent = async (
     );
     closeDialog();
     fetchEvents(setEvents, setLoading);
+    if(response.status === 204){ // 204, mert No Content-et ad vissza.
+      return {status: 204};
+    } else{
+      return {status: response.status}
+    }
   } catch (error) {
     console.error("Error deleting event: ", error);
   }
+  return {status: 500}
 };
 
 export const handleSaveChanges = async (
@@ -51,7 +57,7 @@ export const handleSaveChanges = async (
   closeDialog: () => void,
   category: string,
   duration: number
-) => {
+): Promise<{ status: number }> => {
   const esemenyNeve = document.getElementById("esemenyNeve") as HTMLInputElement;
   if (esemenyNeve) {
     console.log("Az esemény új neve: " + esemenyNeve.value);
@@ -90,10 +96,16 @@ export const handleSaveChanges = async (
       console.log("Sikeres eseményfrissítés!", response.data);
       closeDialog();
       fetchEvents(setEvents, setLoading);
+      if(response.status === 200){
+        return {status: 200};
+      } else{
+        return {status: response.status}
+      }
     } catch (error) {
       console.error("Hiba történt az esemény frissítése során: ", error);
     }
   }
+  return {status: 400}
 };
 
 export const getCombinatedDateTime = (
@@ -119,7 +131,7 @@ export const handleCreateEvent = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   closeDialog: () => void
-) => {
+): Promise<{ status: number }> => {
   setLoading(true);
   const eventData = {
     ...newEvent,
@@ -141,8 +153,10 @@ export const handleCreateEvent = async (
     setEvents((prevEvents) => [...prevEvents, createdEvent]);
     closeDialog();
     console.log("Event created.");
+    return {status: response.status}
   } catch (error) {
     console.error("Error creating event: ", error);
+    return {status: 500}
   } finally {
     setLoading(false);
   }
