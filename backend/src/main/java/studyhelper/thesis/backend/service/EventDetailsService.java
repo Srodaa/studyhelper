@@ -16,8 +16,12 @@ public class EventDetailsService {
     public void updateCategoryDuration(String category, int elapsedSeconds) {
         EventDetailsEntity eventDetails = eventDetailsRepository.findByCategory(category);
         if (eventDetails != null) {
-            int updatedDuration = eventDetails.getDuration() - elapsedSeconds;
-            eventDetails.setDuration(updatedDuration);
+            if (eventDetails.getDuration() < elapsedSeconds) {
+                eventDetails.setDuration(0);
+            } else {
+                int updatedDuration = eventDetails.getDuration() - elapsedSeconds;
+                eventDetails.setDuration(updatedDuration);
+            }
             eventDetailsRepository.save(eventDetails);
         } else {
             throw new IllegalArgumentException("Nincs találat a kategóriához: " + category); //Ilyen elv sose tud lenni.
