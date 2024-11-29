@@ -6,14 +6,12 @@ export const fetchEvents = async (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const response = await axios.get(
-      "http://localhost:8080/user/calendar-events",
-      {
-        withCredentials: true
+    const response = await axios.get("http://localhost:8080/user/calendar-events", {
+      withCredentials: true
     });
     setEvents(response.data);
   } catch (err) {
-    console.error('Error fetching events: ', err);
+    console.error("Error fetching events: ", err);
   } finally {
     setLoading(false);
   }
@@ -26,24 +24,22 @@ export const handleDeleteEvent = async (
   closeDialog: () => void
 ): Promise<{ status: number }> => {
   try {
-    const response = await axios.delete(
-      `http://localhost:8080/user/calendar-events/${eventId}`,
-      {
-        withCredentials: true,
-        timeout: 5000
-      }
-    );
+    const response = await axios.delete(`http://localhost:8080/user/calendar-events/${eventId}`, {
+      withCredentials: true,
+      timeout: 5000
+    });
     closeDialog();
     fetchEvents(setEvents, setLoading);
-    if(response.status === 204){ // 204, mert No Content-et ad vissza.
-      return {status: 204};
-    } else{
-      return {status: response.status}
+    if (response.status === 204) {
+      // 204, mert No Content-et ad vissza.
+      return { status: 204 };
+    } else {
+      return { status: response.status };
     }
   } catch (error) {
     console.error("Error deleting event: ", error);
   }
-  return {status: 500}
+  return { status: 500 };
 };
 
 export const handleSaveChanges = async (
@@ -84,35 +80,30 @@ export const handleSaveChanges = async (
           dateTime: combinatedEnd || endDateTime.toISOString()
         },
         category: category,
-        duration: duration*60
+        duration: duration * 60
       };
 
       console.log(updatedEvent);
       const response = await axios.put(`http://localhost:8080/user/calendar-events/${currentEvent.id}`, updatedEvent, {
         withCredentials: true,
         timeout: 5000
-        }
-      );
+      });
       console.log("Sikeres eseményfrissítés!", response.data);
       closeDialog();
       fetchEvents(setEvents, setLoading);
-      if(response.status === 200){
-        return {status: 200};
-      } else{
-        return {status: response.status}
+      if (response.status === 200) {
+        return { status: 200 };
+      } else {
+        return { status: response.status };
       }
     } catch (error) {
       console.error("Hiba történt az esemény frissítése során: ", error);
     }
   }
-  return {status: 400}
+  return { status: 400 };
 };
 
-export const getCombinatedDateTime = (
-  datePicker: Date | undefined,
-  timeValue: string,
-  defaultDate: Date
-) => {
+export const getCombinatedDateTime = (datePicker: Date | undefined, timeValue: string, defaultDate: Date) => {
   if (datePicker) {
     const date = new Date(datePicker);
     const [selectedHourString, selectedMinuteString] = timeValue.split(":");
@@ -136,27 +127,23 @@ export const handleCreateEvent = async (
   const eventData = {
     ...newEvent,
     category: category,
-    duration: duration*60
+    duration: duration * 60
   };
 
   console.log("eventData: ", eventData);
   try {
-    const response = await axios.post(
-      "http://localhost:8080/user/calendar-events",
-      eventData,
-      {
-        withCredentials: true,
-        timeout: 5000
-      }
-    );
+    const response = await axios.post("http://localhost:8080/user/calendar-events", eventData, {
+      withCredentials: true,
+      timeout: 5000
+    });
     const createdEvent = response.data;
     setEvents((prevEvents) => [...prevEvents, createdEvent]);
     closeDialog();
     console.log("Event created.");
-    return {status: response.status}
+    return { status: response.status };
   } catch (error) {
     console.error("Error creating event: ", error);
-    return {status: 500}
+    return { status: 500 };
   } finally {
     setLoading(false);
   }
@@ -164,21 +151,21 @@ export const handleCreateEvent = async (
 
 export const getEventCategoryAndDuration = async (eventId: string): Promise<CalendarEvent> => {
   try {
-      const response = await axios.get<CalendarEvent>(`/user/calendar-events/${eventId}/details`);
-      console.log(response.data)
-      return response.data;
+    const response = await axios.get<CalendarEvent>(`/user/calendar-events/${eventId}/details`);
+    console.log(response.data);
+    return response.data;
   } catch (error) {
-      console.error('Ehhez az eventhez nincs társítva kategória és tervezett tanulási idő!', error);
-      throw error;
+    console.error("Ehhez az eventhez nincs társítva kategória és tervezett tanulási idő!", error);
+    throw error;
   }
 };
 
 export const getAllCategories = async (): Promise<string[]> => {
   try {
-    const response = await axios.get('/user/categories');
+    const response = await axios.get("/user/categories");
     return response.data;
   } catch (error) {
-    console.error('Hiba a kategóriák lekérésekor:', error);
+    console.error("Hiba a kategóriák lekérésekor:", error);
     throw error;
   }
 };
@@ -186,24 +173,24 @@ export const getAllCategories = async (): Promise<string[]> => {
 export async function updateDatabaseDuration(category: string, elapsedSeconds: number): Promise<void> {
   try {
     if (!category || elapsedSeconds <= 0) {
-      console.error('Hibás paraméterek az adatbázis frissítéséhez. ', category + ' ' + elapsedSeconds);
+      console.error("Hibás paraméterek az adatbázis frissítéséhez. ", category + " " + elapsedSeconds);
       return;
     }
 
-    const response = await fetch('/user/updateDuration', {
-      method: 'POST',
+    const response = await fetch("/user/updateDuration", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         category,
-        elapsedSeconds,
-      }),
+        elapsedSeconds
+      })
     });
     if (!response.ok) {
-      throw new Error('Hiba az adatbázis frissítése során.');
+      throw new Error("Hiba az adatbázis frissítése során.");
     }
-    console.log('Az adatbázis sikeresen frissítve.');
+    console.log("Az adatbázis sikeresen frissítve.");
   } catch (error) {
     console.error("Nem sikerült frissíteni az adatbázist:", error);
   }
