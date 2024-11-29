@@ -43,12 +43,9 @@ const Navbar: React.FC<NavbarProps> = ({ profileImageUrl }) => {
                   </div>
                   <DrawerFooter>
                     <DrawerClose>
-                      <Button
-                        variant="outline"
-                        className="bg-white text-black hover:bg-slate-200 border border-slate-600"
-                      >
-                        Close the calendar
-                      </Button>
+                      <span className="bg-white text-black hover:bg-slate-200 border border-slate-600 h-9 px-4 py-2 rounded-md text-sm font-medium">
+                        Close calendar
+                      </span>
                     </DrawerClose>
                   </DrawerFooter>
                 </DrawerContent>
