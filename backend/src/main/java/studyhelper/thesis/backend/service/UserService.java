@@ -15,13 +15,37 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserEntity saveUserIfNotExists(String email, String name, String googleID, String accessToken) {
-        return userRepository.findByGoogleID(googleID).orElseGet(() -> {
+    public UserEntity saveUserIfNotExists(String email, String name, String googleID, String accessToken, String refreshToken) {
+        return userRepository.findByGoogleID(googleID).map(existingUser -> {
+            boolean updated = false;
+            if (!existingUser.getAccessToken().equals(accessToken)) {
+                existingUser.setAccessToken(accessToken);
+                updated = true;
+                System.out.println("Updated access token: " + accessToken);
+            }
+            if (refreshToken != null && (existingUser.getRefreshToken() == null || !existingUser.getRefreshToken().equals(refreshToken))) {
+                existingUser.setRefreshToken(refreshToken);
+                updated = true;
+                System.out.println("Updated refresh token: " + refreshToken);
+            }
+            if (updated) {
+                System.out.println("User updated");
+                return userRepository.save(existingUser);
+            } else {
+                return existingUser;
+            }
+        }).orElseGet(() -> {
             UserEntity user = new UserEntity();
             user.setEmail(email);
             user.setName(name);
             user.setGoogleID(googleID);
             user.setAccessToken(accessToken);
+            System.out.println("Access token: " + accessToken);
+            if (refreshToken != null)
+            {
+                user.setRefreshToken(refreshToken);
+                System.out.println("Refresh token: " + refreshToken);
+            }
             return userRepository.save(user);
         });
     }

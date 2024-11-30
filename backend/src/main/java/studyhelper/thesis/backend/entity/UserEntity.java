@@ -18,6 +18,8 @@ public class UserEntity {
     private String googleID;
     @Column(name = "accessToken")
     private String accessToken;
+    @Column(name = "refreshToken")
+    private String refreshToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -62,17 +64,26 @@ public class UserEntity {
     public void setGoogleID(String googleID) {
         this.googleID = googleID;
     }
-    
 
     public String getAccessToken() {
         return accessToken;
     }
+
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void addEvent(EventDetailsEntity event) {
         events.add(event);
         event.setUser(this);
     }
+
 }

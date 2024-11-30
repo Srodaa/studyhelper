@@ -49,8 +49,11 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         );
 
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
+        String refreshToken = null;
+        if (authorizedClient.getRefreshToken() != null)
+            refreshToken = authorizedClient.getRefreshToken().getTokenValue();
 
-        userService.saveUserIfNotExists(email, name, googleID, accessToken);
+        userService.saveUserIfNotExists(email, name, googleID, accessToken, refreshToken);
 
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
     }
