@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ profileImageUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 left-0 w-full p-4 shadow-lg z-10">
+    <nav className="sticky top-0 left-0 w-full p-4 bg-slate-800 shadow-lg z-40">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-lg font-semibold hidden sm:block px-4">Bal szöveg</div>
 

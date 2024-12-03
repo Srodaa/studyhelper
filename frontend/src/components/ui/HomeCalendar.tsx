@@ -31,7 +31,7 @@ const HomeCalendar: React.FC = () => {
     });
   };
   return (
-    <div className="absolute right-5 top-[6rem] p-0 border border-slate-600 rounded-md shadow-lg bg-slate-900">
+    <div className="absolute right-5 top-[6rem] p-0 border border-slate-600 rounded-md shadow-lg bg-slate-900 mobile:z-0 mobile:left-1/2 mobile:w-[250px] mobile:transform mobile:-translate-x-1/2">
       <Calendar
         classNames={{
           day_today: "bg-slate-800",

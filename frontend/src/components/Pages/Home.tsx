@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-slate-800 text-white h-screen">
+    <div className="bg-slate-800 text-white h-screen relative">
       <Navigation profileImageUrl={userProfileImageUrl} />
       <div>
         <HomeCalendar></HomeCalendar>
