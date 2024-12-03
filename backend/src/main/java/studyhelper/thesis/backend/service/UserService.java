@@ -2,8 +2,11 @@ package studyhelper.thesis.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -48,5 +51,17 @@ public class UserService {
             }
             return userRepository.save(user);
         });
+    }
+
+    public List<UserEntity> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void updateAccessToken(String googleID, String newAccessToken) {
+        UserEntity user = userRepository.findByGoogleID(googleID)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setAccessToken(newAccessToken);
+        userRepository.save(user);
     }
 }

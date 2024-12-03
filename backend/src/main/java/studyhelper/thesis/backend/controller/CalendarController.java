@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import studyhelper.thesis.backend.DTO.CalendarEvent;
@@ -15,18 +12,18 @@ import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.EventDetailsRepository;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 public class CalendarController {
 
-    @Autowired
-    private CalendarService calendarService;
+    private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
 
     @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
+    private CalendarService calendarService;
 
     @Autowired
     private UserRepository userRepository;
@@ -34,20 +31,20 @@ public class CalendarController {
     @Autowired
     private EventDetailsRepository eventDetailsRepository;
 
-    public CalendarController(CalendarService calendarService, OAuth2AuthorizedClientService authorizedClientService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
+    public CalendarController(CalendarService calendarService, UserRepository userRepository, EventDetailsRepository eventDetailsRepository) {
         this.calendarService = calendarService;
-        this.authorizedClientService = authorizedClientService;
         this.userRepository = userRepository;
         this.eventDetailsRepository = eventDetailsRepository;
     }
 
-    private OAuth2AccessToken getAccessToken(Authentication authentication) {
+    private String getAccessToken(Authentication authentication) {
         OAuth2AuthenticationToken oAuth2Token = (OAuth2AuthenticationToken) authentication;
-        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                oAuth2Token.getAuthorizedClientRegistrationId(),
-                oAuth2Token.getName()
-        );
-        return authorizedClient.getAccessToken();
+        String googleID = oAuth2Token.getPrincipal().getAttribute("sub");
+        String accessToken =  userRepository.findByGoogleID(googleID)
+                .map(UserEntity::getAccessToken)
+                .orElseThrow(() -> new IllegalArgumentException("Access token not found for the user."));
+        logger.info("Access token: " + accessToken);
+        return accessToken;
     }
 
     private UserEntity getUserFromPrincipal(OAuth2User principal) {
@@ -55,18 +52,18 @@ public class CalendarController {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    @GetMapping("/calendar-events")
+    @GetMapping("/user/calendar-events")
     public List<CalendarEvent> getUpcomingEvents(Authentication authentication) {
-        OAuth2AccessToken accessToken = getAccessToken(authentication);
-        return calendarService.getEvents(accessToken.getTokenValue());
+        String accessToken = getAccessToken(authentication);
+        return calendarService.getEvents(accessToken);
     }
 
     @DeleteMapping("/user/calendar-events/{eventId}")
     public ResponseEntity<Void> deleteEvent(@PathVariable String eventId, Authentication authentication) {
-        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        String accessToken = getAccessToken(authentication);
         eventDetailsRepository.findByEventID(eventId)
                 .ifPresent(eventDetails -> eventDetailsRepository.delete(eventDetails));
-        calendarService.deleteEvent(accessToken.getTokenValue(), eventId);
+        calendarService.deleteEvent(accessToken, eventId);
         return ResponseEntity.noContent().build();
     }
 
@@ -77,9 +74,9 @@ public class CalendarController {
             @AuthenticationPrincipal OAuth2User principal,
             Authentication authentication) {
 
-        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        String accessToken = getAccessToken(authentication);
         UserEntity user = getUserFromPrincipal(principal);
-        CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken.getTokenValue(), eventId, updatedEvent);
+        CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken, eventId, updatedEvent);
         return ResponseEntity.ok(updatedEventResult);
     }
 
@@ -89,9 +86,9 @@ public class CalendarController {
             @AuthenticationPrincipal OAuth2User principal,
             Authentication authentication) {
 
-        OAuth2AccessToken accessToken = getAccessToken(authentication);
+        String accessToken = getAccessToken(authentication);
         UserEntity user = getUserFromPrincipal(principal);
-        CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken.getTokenValue(), newEvent);
+        CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken, newEvent);
         return ResponseEntity.ok(createdEvent);
     }
 
