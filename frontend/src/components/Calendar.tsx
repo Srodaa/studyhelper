@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarEvent } from "../../types";
+import { CalendarEvent } from "../types";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -11,16 +11,16 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from "@/components/calendarui/dialog";
-import { Label } from "@/components/calendarui/label";
-import { Input } from "@/components/calendarui/input";
+} from "@/components/templates/dialog";
+import { Label } from "@/components/templates/label";
+import { Input } from "@/components/templates/input";
 
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/calendarui/button";
-import { Calendar as SmallCalendar } from "@/components/calendarui/smallcalendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
+import { Button } from "@/components/templates/button";
+import { Calendar as SmallCalendar } from "@/components/templates/smallcalendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/templates/popover";
 import { format } from "date-fns";
 import {
   fetchEvents,
@@ -30,7 +30,7 @@ import {
   getCombinatedDateTime,
   getEventCategoryAndDuration
 } from "@/components/utils/functions";
-import { buttonVariants } from "@/components/calendarui/button";
+import { buttonVariants } from "@/components/templates/button";
 import loadingIcon from "@/assets/90-ring.svg";
 import { toast } from "sonner";
 

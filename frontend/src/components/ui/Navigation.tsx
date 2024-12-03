@@ -1,7 +1,7 @@
 // Navbar.tsx
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
-import Calendar from "@/components/Calendar/Calendar";
+import Calendar from "@/components/Calendar";
 
 import {
   Drawer,
@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger
-} from "@/components/ui/drawer";
+} from "@/components/templates/drawer";
 
 interface NavbarProps {
   profileImageUrl?: string;

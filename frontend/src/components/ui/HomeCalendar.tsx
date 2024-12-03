@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Calendar } from "@/components/calendarui/smallcalendar";
+import { Calendar } from "@/components/templates/smallcalendar";
 import { CalendarEvent } from "@/types";
 import { fetchEvents } from "../utils/functions";
-import { buttonVariants } from "@/components/calendarui/button";
+import { buttonVariants } from "@/components/templates/button";
 import { cn } from "@/lib/utils";
 
 const HomeCalendar: React.FC = () => {

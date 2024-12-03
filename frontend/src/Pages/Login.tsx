@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@/components/calendarui/button";
+import { Button } from "@/components/templates/button";
 import GoogleIcon from "@/assets/google-icon-logo.svg";
-import RainEffect from "../ui/Rain";
+import RainEffect from "../components/ui/Rain";
 
 const Login: React.FC = () => {
   const googleLogin = () => {
@@ -19,8 +19,8 @@ const Login: React.FC = () => {
           <h2 className="flex items-center justify-center">Discover a smarter way to learn!</h2>
           <br />
           <p className="text-center text-slate-400 xl:px-28 lg:px-20 md:px-16 px-8">
-            StudyHelper offers you a calm, distraction-free environment to focus on your studies
-            while effortlessly tracking your progress.
+            StudyHelper offers you a calm, distraction-free environment to focus on your studies while effortlessly
+            tracking your progress.
             <br />
             Start your journey toward success today!
           </p>

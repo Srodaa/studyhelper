@@ -1,6 +1,6 @@
 import "./App.css";
-import Login from "@/components/Pages/Login";
-import Home from "@/components/Pages/Home";
+import Login from "@/Pages/Login";
+import Home from "@/Pages/Home";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 

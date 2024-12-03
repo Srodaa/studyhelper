@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Button } from "@/components/calendarui/button";
-import { Input } from "@/components/calendarui/input";
-import { Label } from "@/components/calendarui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/calendarui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getAllCategories, saveStudyProgress, updateDatabaseDuration } from "../utils/functions";
+import { Button } from "@/components/templates/button";
+import { Input } from "@/components/templates/input";
+import { Label } from "@/components/templates/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/templates/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/templates/select";
+import { getAllCategories, saveStudyProgress, updateDatabaseDuration } from "./utils/functions";
 import { toast } from "sonner";
 
 const Timer: React.FC = () => {
