@@ -4,6 +4,9 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
   	extend: {
+		screens: {
+			'mobile':{ 'max': '640px'} , //Legkisebb CSS szélességgel rendelkező modern telefon
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
