@@ -1,6 +1,7 @@
 import React from "react";
 import { LogOut, Calendar, ChartNoAxesCombined } from "lucide-react";
 import CalendarDrawer from "./CalendarDrawer";
+import Logout from "../Logout";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,9 +42,11 @@ const NavDropdown: React.FC = () => {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator className="bg-slate-600" />
-          <DropdownMenuItem>
+          <DropdownMenuItem className="focus:bg-slate-700 focus:text-white">
             <LogOut />
-            <span>Log out</span>
+            <span>
+              <Logout />
+            </span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
