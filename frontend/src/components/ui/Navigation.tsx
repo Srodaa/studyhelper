@@ -1,58 +1,31 @@
-// Navbar.tsx
 import React, { useState } from "react";
 import { Menu } from "lucide-react";
-import Calendar from "@/components/Calendar";
-
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from "@/components/templates/drawer";
+import NavDropdown from "./NavDropdown";
 
 interface NavbarProps {
-  profileImageUrl?: string;
+  userProfileName?: string;
 }
-const Navbar: React.FC<NavbarProps> = ({ profileImageUrl }) => {
+const Navbar: React.FC<NavbarProps> = ({ userProfileName }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 left-0 w-full p-4 bg-slate-800 shadow-lg z-40">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-lg font-semibold hidden sm:block px-4">Bal szöveg</div>
-
+        <div className="text-lg font-semibold hidden sm:block px-4">
+          <NavDropdown />
+        </div>
         <div className="text-3xl mx-auto sm:m-0 absolute left-1/2 transform -translate-x-1/2">StudyHelper</div>
-
         <div className="flex items-center space-x-4 text-lg font-semibold hidden sm:block px-4">
-          {profileImageUrl ? (
+          {userProfileName ? (
             <div className="flex items-center space-x-2">
-              <Drawer>
-                <DrawerTrigger className="text-lg font-semibold">Calendar</DrawerTrigger>
-                <DrawerContent className="bg-slate-900 border-slate-600">
-                  <DrawerHeader>
-                    <DrawerTitle></DrawerTitle>
-                    <DrawerDescription></DrawerDescription>
-                  </DrawerHeader>
-                  <div>
-                    <Calendar />
-                  </div>
-                  <DrawerFooter>
-                    <DrawerClose>
-                      <span className="bg-white text-black hover:bg-slate-200 border border-slate-600 h-9 px-4 py-2 rounded-md text-sm font-medium">
-                        Close calendar
-                      </span>
-                    </DrawerClose>
-                  </DrawerFooter>
-                </DrawerContent>
-              </Drawer>
-              <img src={profileImageUrl} alt="Profile" className="w-10 h-10 rounded-full border-2 border-gray-300" />
+              <span>Hi {userProfileName}!</span>
             </div>
           ) : (
-            <div className="text-lg font-semibold hidden sm:block px-4">Calendar</div>
+            <div className="text-lg font-semibold hidden sm:block px-4">
+              <a href="/login" className="focus:outline-none">
+                Login
+              </a>
+            </div>
           )}
         </div>
         <div className="sm:hidden cursor-pointer" onClick={() => setIsOpen(!isOpen)}>

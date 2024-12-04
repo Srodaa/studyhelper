@@ -8,13 +8,14 @@ import HomeCalendar from "@/components/ui/HomeCalendar";
 const Home: React.FC = () => {
   interface User {
     name: string;
+    given_name: string;
     email: string;
     picture: string;
     events: CalendarEvent[];
   }
 
   const [user, setUser] = useState<User | null>(null);
-  const userProfileImageUrl = user?.picture;
+  const userProfileName = user?.given_name;
 
   useEffect(() => {
     // Felhasználói adatok és események
@@ -30,7 +31,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="bg-slate-800 text-white h-screen relative">
-      <Navigation profileImageUrl={userProfileImageUrl} />
+      <Navigation userProfileName={userProfileName} />
       <div>
         <HomeCalendar></HomeCalendar>
       </div>
