@@ -2,6 +2,7 @@ import React from "react";
 import { LogOut, Calendar, ChartNoAxesCombined } from "lucide-react";
 import CalendarDrawer from "./CalendarDrawer";
 import Logout from "../Logout";
+import Statistics from "./Statistics";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +18,7 @@ const NavDropdown: React.FC = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <a href="" className="focus:outline-none">
-            Dashboard
-          </a>
+          <span className="cursor-pointer">Dashboard</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 ml-6 bg-slate-900 text-white border-slate-600">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -36,9 +35,11 @@ const NavDropdown: React.FC = () => {
                 <CalendarDrawer />
               </span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-slate-700 focus:text-white">
+            <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={(e) => e.preventDefault()}>
               <ChartNoAxesCombined />
-              <span>Statistics</span>
+              <span>
+                <Statistics />
+              </span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator className="bg-slate-600" />
