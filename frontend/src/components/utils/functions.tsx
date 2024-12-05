@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CalendarEvent } from "@/types";
+import { CalendarEvent, StudyProgressDTO } from "@/types";
 
 export const fetchEvents = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
@@ -223,3 +223,13 @@ export async function saveStudyProgress(category: string, elapsedTime: number): 
     console.error("Hiba a statisztikák mentése közben:", error);
   }
 }
+
+export const fetchStudyStatistics = async (): Promise<StudyProgressDTO[] | null> => {
+  try {
+    const response = await axios.get("/user/getStudyProgress");
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch categories and time:", error);
+    throw error;
+  }
+};

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 import studyhelper.thesis.backend.entity.StudyProgressEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface StudyProgressRepository extends JpaRepository<StudyProgressEntity, Long> {
     Optional<StudyProgressEntity> findByUserAndCategory(UserEntity user, String category);
+    List<StudyProgressEntity> findByUser(UserEntity user);
 }

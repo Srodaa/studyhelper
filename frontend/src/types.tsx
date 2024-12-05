@@ -14,3 +14,8 @@ export interface CalendarEvent {
   category: string;
   duration: number;
 }
+
+export interface StudyProgressDTO {
+  category: string;
+  elapsedTime: number;
+}

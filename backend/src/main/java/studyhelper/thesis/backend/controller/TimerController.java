@@ -7,13 +7,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-import studyhelper.thesis.backend.DTO.StudyProgressDTO;
 import studyhelper.thesis.backend.DTO.UpdateDurationRequest;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
-import studyhelper.thesis.backend.service.StudyProgressService;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,9 +27,6 @@ public class TimerController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private StudyProgressService studyProgressService;
 
     public TimerController(CalendarService calendarService, UserRepository userRepository) {
         this.calendarService = calendarService;
@@ -71,17 +66,6 @@ public class TimerController {
             return ResponseEntity.ok("Az adatbázis sikeresen frissítve.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
-        }
-    }
-
-    @PostMapping("/user/studyProgress")
-    public ResponseEntity<String> saveStudyProgress(@RequestBody StudyProgressDTO progressDTO, @AuthenticationPrincipal OAuth2User principal) {
-        try {
-            UserEntity user = getUserFromPrincipal(principal);
-            studyProgressService.saveStudyProgress(user, progressDTO.getCategory(), progressDTO.getElapsedTime());
-            return ResponseEntity.ok("Az előrehaladási statisztika sikeresen mentve.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Hiba történt a előrehaladási statisztika mentése során.");
         }
     }
 
