@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { LogOut, Calendar, ChartNoAxesCombined } from "lucide-react";
 import CalendarDrawer from "./CalendarDrawer";
 import Logout from "../Logout";
@@ -14,6 +14,14 @@ import {
 } from "@/components/templates/dropdown-menu";
 
 const NavDropdown: React.FC = () => {
+  const calendarDrawerRef = useRef<{ openDrawer: () => void } | null>(null);
+
+  const handleCalendarClick = () => {
+    setTimeout(() => {
+      calendarDrawerRef.current?.openDrawer();
+    }, 50);
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -24,18 +32,12 @@ const NavDropdown: React.FC = () => {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-slate-600" />
           <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="focus:bg-slate-700 focus:text-white"
-              onSelect={(e) => {
-                e.preventDefault(); // Ne zárja be a menüt
-              }}
-            >
+            <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={handleCalendarClick}>
               <Calendar />
-              <span>
-                <CalendarDrawer />
-              </span>
+              <span className="cursor-pointer">Calendar</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={(e) => e.preventDefault()}>
+              {/* Mivel nem kell interaktolni itt a preventDefault könyebb.*/}
               <ChartNoAxesCombined />
               <span>
                 <Statistics />
@@ -51,6 +53,7 @@ const NavDropdown: React.FC = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <CalendarDrawer ref={calendarDrawerRef} />
     </>
   );
 };

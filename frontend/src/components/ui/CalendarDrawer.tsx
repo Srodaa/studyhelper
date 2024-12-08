@@ -1,4 +1,4 @@
-import React from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import Calendar from "@/components/Calendar";
 
 import {
@@ -12,11 +12,16 @@ import {
   DrawerTrigger
 } from "@/components/templates/drawer";
 
-const CalendarDrawer: React.FC = () => {
+const CalendarDrawer = forwardRef((_, ref) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    openDrawer: () => setIsOpen(true)
+  }));
   return (
     <>
-      <Drawer>
-        <DrawerTrigger>Calendar</DrawerTrigger>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <DrawerTrigger className="hidden">Calendar</DrawerTrigger>
         <DrawerContent className="bg-slate-900 border-slate-600">
           <DrawerHeader>
             <DrawerTitle></DrawerTitle>
@@ -36,6 +41,6 @@ const CalendarDrawer: React.FC = () => {
       </Drawer>
     </>
   );
-};
+});
 
 export default CalendarDrawer;
