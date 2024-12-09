@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/components/templates/button";
 import {
   Dialog,
@@ -18,7 +18,7 @@ interface StudyProgressDTO {
   elapsedTime: number;
 }
 
-const Statistics: React.FC = () => {
+const Statistics = forwardRef((_, ref) => {
   const [studyProgress, setStudyProgress] = useState<StudyProgressDTO[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,10 +38,14 @@ const Statistics: React.FC = () => {
     fetchData();
   }, []);
 
+  useImperativeHandle(ref, () => ({
+    openStatistics: () => setIsOpen(true)
+  }));
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <span className="cursor-pointer">Statistics</span>
+        <span className="cursor-pointer hidden">Statistics</span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] border border-slate-600 bg-slate-900 text-white">
         <DialogHeader>
@@ -87,6 +91,6 @@ const Statistics: React.FC = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});
 
 export default Statistics;

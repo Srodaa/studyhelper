@@ -176,7 +176,7 @@ const Calendar: React.FC = () => {
           {startTime} - {endTime} {eventInfo.id}
         </b>
         <br />
-        <b className="text-center">{eventInfo.event.title}</b>
+        <b className="text-center">{eventInfo.event.title.split("(")[0]}</b>
         <div>{eventInfo.event.extendedProps.description}</div>
       </div>
     );

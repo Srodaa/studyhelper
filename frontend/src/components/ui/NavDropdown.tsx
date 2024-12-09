@@ -15,10 +15,16 @@ import {
 
 const NavDropdown: React.FC = () => {
   const calendarDrawerRef = useRef<{ openDrawer: () => void } | null>(null);
-
+  const statisticsRef = useRef<{ openStatistics: () => void } | null>(null);
   const handleCalendarClick = () => {
     setTimeout(() => {
       calendarDrawerRef.current?.openDrawer();
+    }, 50);
+  };
+
+  const handleStatisticsClick = () => {
+    setTimeout(() => {
+      statisticsRef.current?.openStatistics();
     }, 50);
   };
 
@@ -36,12 +42,9 @@ const NavDropdown: React.FC = () => {
               <Calendar />
               <span className="cursor-pointer">Calendar</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={(e) => e.preventDefault()}>
-              {/* Mivel nem kell interaktolni itt a preventDefault könyebb.*/}
+            <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={handleStatisticsClick}>
               <ChartNoAxesCombined />
-              <span>
-                <Statistics />
-              </span>
+              <span className="cursor-pointer">Statistics</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator className="bg-slate-600" />
@@ -54,6 +57,7 @@ const NavDropdown: React.FC = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <CalendarDrawer ref={calendarDrawerRef} />
+      <Statistics ref={statisticsRef} />
     </>
   );
 };
