@@ -159,3 +159,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 [data-sonner-toast] {
   @apply bg-slate-900 text-white border border-slate-600
 }
+
+::-webkit-scrollbar {
+  width: 17px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800
+}
