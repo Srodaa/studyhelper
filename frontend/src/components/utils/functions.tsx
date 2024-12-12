@@ -80,7 +80,7 @@ export const handleSaveChanges = async (
           dateTime: combinatedEnd || endDateTime.toISOString()
         },
         category: category,
-        duration: duration * 60
+        duration: duration
       };
 
       console.log(updatedEvent);
@@ -127,7 +127,7 @@ export const handleCreateEvent = async (
   const eventData = {
     ...newEvent,
     category: category,
-    duration: duration * 60
+    duration: duration
   };
 
   console.log("eventData: ", eventData);

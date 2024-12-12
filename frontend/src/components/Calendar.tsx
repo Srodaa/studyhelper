@@ -45,7 +45,10 @@ const Calendar: React.FC = () => {
   const [eventStartTimeValue, setEventStartTimeValue] = useState<string>("10:00");
   const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("12:00");
   const [eventCategory, setEventCategory] = React.useState<string>("Default");
-  const [eventDuration, setEventDuration] = React.useState<number>(60);
+  const [eventDurationMinutes, setEventDurationMinutes] = React.useState<number>(0);
+  const [eventDurationHours, setEventDurationHours] = React.useState<number>(0);
+  const [eventDurationDays, setEventDurationDays] = React.useState<number>(0);
+  const [eventDuration, setEventDuration] = React.useState<number>(0);
   const [isDateClickDialog, setIsDateClickDialog] = useState(false);
   const [clickedDate, setClickedDate] = useState<Date>();
 
@@ -63,6 +66,11 @@ const Calendar: React.FC = () => {
   };
 
   const onSaveChanges = async () => {
+    const durationInSeconds = calculateEventDurationInSeconds(
+      eventDurationDays,
+      eventDurationHours,
+      eventDurationMinutes
+    );
     const response = await handleSaveChanges(
       currentEvent as CalendarEvent,
       eventStartDatePicker,
@@ -73,7 +81,7 @@ const Calendar: React.FC = () => {
       setLoading,
       closeDialog,
       eventCategory,
-      eventDuration
+      durationInSeconds
     );
     return response;
   };
@@ -83,9 +91,38 @@ const Calendar: React.FC = () => {
     setDialogOpen(true);
   };
 
+  const setEventDurationFromSeconds = (durationInSeconds: number) => {
+    const days = Math.floor(durationInSeconds / (60 * 60 * 24));
+    const remainingSecondsAfterDays = durationInSeconds % (60 * 60 * 24);
+
+    const hours = Math.floor(remainingSecondsAfterDays / (60 * 60));
+    const remainingSecondsAfterHours = remainingSecondsAfterDays % (60 * 60);
+
+    const minutes = Math.floor(remainingSecondsAfterHours / 60);
+
+    setEventDurationDays(days);
+    setEventDurationHours(hours);
+    setEventDurationMinutes(minutes);
+  };
+
+  const calculateEventDurationInSeconds = (days: number, hours: number, minutes: number) => {
+    const secondsFromDays = days * 60 * 60 * 24;
+    const secondsFromHours = hours * 60 * 60;
+    const secondsFromMinutes = minutes * 60;
+    console.log(secondsFromDays, " ", secondsFromHours, " ", secondsFromMinutes);
+    return secondsFromDays + secondsFromHours + secondsFromMinutes;
+  };
+
   const createNewEvent = async () => {
     const startDateTime = getCombinatedDateTime(eventStartDatePicker, eventStartTimeValue, new Date());
     const endDateTime = getCombinatedDateTime(eventEndDatePicker, eventEndTimeValue, new Date());
+    const durationInSeconds = calculateEventDurationInSeconds(
+      eventDurationDays,
+      eventDurationHours,
+      eventDurationMinutes
+    );
+    setEventDuration(0);
+    setEventDuration(durationInSeconds);
 
     const newEvent: CalendarEvent = {
       summary: eventName,
@@ -124,7 +161,7 @@ const Calendar: React.FC = () => {
     try {
       const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
       setEventCategory(category);
-      setEventDuration(Math.round((duration / 60) * 100) / 100);
+      setEventDurationFromSeconds(duration);
     } catch (error) {
       console.error("Hiba a kategória és időtartam lekérésekor:", error);
     }
@@ -343,18 +380,40 @@ const Calendar: React.FC = () => {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="duration" className="text-right">
-              Time planned (minutes)
+              Time planned (day/hour/minute)
             </Label>
             <Input
-              id="eventDuration"
+              id="eventDurationDays"
               inputMode="numeric"
               max={9000}
-              value={eventDuration}
+              value={eventDurationDays}
               type="number"
               onChange={(e) => {
-                setEventDuration(parseInt(e.target.value));
+                setEventDurationDays(parseInt(e.target.value));
               }}
-              className="col-span-3 border border-slate-600 focus:border-white"
+              className="col-span-1 border border-slate-600 focus:border-white"
+            />
+            <Input
+              id="eventDurationHours"
+              inputMode="numeric"
+              max={9000}
+              value={eventDurationHours}
+              type="number"
+              onChange={(e) => {
+                setEventDurationHours(parseInt(e.target.value));
+              }}
+              className="col-span-1 border border-slate-600 focus:border-white"
+            />
+            <Input
+              id="eventDurationMinutes"
+              inputMode="numeric"
+              max={9000}
+              value={eventDurationMinutes}
+              type="number"
+              onChange={(e) => {
+                setEventDurationMinutes(parseInt(e.target.value));
+              }}
+              className="col-span-1 border border-slate-600 focus:border-white"
             />
           </div>
           <DialogFooter>
