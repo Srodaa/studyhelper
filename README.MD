@@ -16,6 +16,8 @@ StudyHelper is a comprehensive learning assistance application designed to help 
 - **React** (with TypeScript)
 - **Shadcn/UI** for components and styling
 - **FullCalendar** for calendar management
+- **TailwindCSS** for styling
+- **Vite** for fast build and development environment
 
 ### Backend
 - **Java Spring Boot**
