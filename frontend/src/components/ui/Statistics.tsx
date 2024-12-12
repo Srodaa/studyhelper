@@ -25,18 +25,20 @@ const Statistics = forwardRef((_, ref) => {
   const totalElapsedTime = studyProgress.reduce((total, item) => total + item.elapsedTime, 0);
   const totalElapsedMin = (Math.round((totalElapsedTime / 60) * 100) / 100).toFixed(2);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchStudyStatistics();
-      if (data === null) {
-        console.log("Failed to retrieve data.");
-      } else {
-        setStudyProgress(data);
-      }
-    };
+  const fetchData = async () => {
+    const data = await fetchStudyStatistics();
+    if (data === null) {
+      console.log("Failed to retrieve data.");
+    } else {
+      setStudyProgress(data);
+    }
+  };
 
-    fetchData();
-  }, []);
+  useEffect(() => {
+    if (isOpen) {
+      fetchData();
+    }
+  }, [isOpen]);
 
   useImperativeHandle(ref, () => ({
     openStatistics: () => setIsOpen(true)
