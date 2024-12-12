@@ -134,9 +134,22 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   top: -10px; /*Hogy ne legyen látható az oldal betöltésekor */
 }
 
+.drop.fall2 {
+  animation: fall2 linear infinite;
+}
+
 @keyframes fall {
   from {
     top: 10%;
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes fall2 {
+  from {
+    top: 0%;
   }
   to {
     transform: translateY(100vh);

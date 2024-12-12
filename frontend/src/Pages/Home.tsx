@@ -4,6 +4,7 @@ import { CalendarEvent } from "@/types";
 import Navigation from "@/components/ui/Navigation";
 import Timer from "@/components/Timer";
 import HomeCalendar from "@/components/ui/HomeCalendar";
+import RainEffect from "@/components/ui/Rain";
 
 const Home: React.FC = () => {
   interface User {
@@ -30,8 +31,9 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-slate-800 text-white h-screen relative">
+    <div className="bg-gradient-to-tl from-slate-800 to-slate-900 text-white h-screen relative">
       <Navigation userProfileName={userProfileName} />
+      <RainEffect topStart={0} />
       <div>
         <HomeCalendar></HomeCalendar>
       </div>
