@@ -5,6 +5,7 @@ import Navigation from "@/components/ui/Navigation";
 import Timer from "@/components/Timer";
 import HomeCalendar from "@/components/ui/HomeCalendar";
 import RainEffect from "@/components/ui/Rain";
+import MusicPlayer from "@/components/ui/MusicPlayer";
 
 const Home: React.FC = () => {
   interface User {
@@ -36,6 +37,9 @@ const Home: React.FC = () => {
       <RainEffect topStart={0} />
       <div>
         <HomeCalendar></HomeCalendar>
+      </div>
+      <div>
+        <MusicPlayer></MusicPlayer>
       </div>
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <Timer />
