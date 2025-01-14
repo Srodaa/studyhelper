@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { Slider } from "@/components/templates/slider";
 import { Button } from "@/components/templates/button";
-import { PlayIcon, PauseIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
+import {
+  PlayIcon,
+  PauseIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+  SpeakerQuietIcon,
+  SpeakerLoudIcon
+} from "@radix-ui/react-icons";
 import clsx from "clsx";
 
 const MusicPlayer: React.FC = () => {
@@ -98,22 +105,24 @@ const MusicPlayer: React.FC = () => {
             handleNext();
           }}
         >
-          <DoubleArrowRightIcon className="stroke-4" />
+          <DoubleArrowRightIcon />
         </Button>
       </div>
       <div className="flex justify-center my-2">
         <Slider value={[progress]} max={100} step={1} onValueChange={handleSliderChange} className="w-11/12 h-max" />
       </div>
-      <div>
+      <div className="flex flex-row ">
+        <div className="basis-4/6 px-4">Now playing...</div>
+        <SpeakerQuietIcon className="basis-1/6 mt-1" />
         <Slider
           value={[volume * 100]}
           max={100}
           step={1}
           onValueChange={handleVolumeSliderChange}
-          className="w-11/12 h-max mt-2"
+          className="h-max mt-1 basis-1/6 mt-2"
         />
+        <SpeakerLoudIcon className="basis-1/6 mt-1" />
       </div>
-      <div className="flex justify-center">Now playing...</div>
     </div>
   );
 };
