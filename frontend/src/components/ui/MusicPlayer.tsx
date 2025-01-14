@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Slider } from "@/components/templates/slider"; // Shadcn/UI Slider
 import { Button } from "@/components/templates/button"; // Shadcn/UI Button
 import { PlayIcon, PauseIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
@@ -9,6 +9,38 @@ const MusicPlayer: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [isAnimatingPrev, setIsAnimatingPrev] = useState(false);
   const [isAnimatingNext, setIsAnimatingNext] = useState(false);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audioElement = new Audio("/lofimix1.mp3");
+    setAudio(audioElement);
+
+    audioElement.ontimeupdate = () => {
+      setProgress((audioElement.currentTime / audioElement.duration) * 100);
+    };
+
+    return () => {
+      audioElement.pause();
+      setAudio(null);
+    };
+  }, []);
+
+  const handleSliderChange = (value: number[]) => {
+    if (audio) {
+      audio.currentTime = (value[0] / 100) * audio.duration;
+    }
+  };
+
+  const togglePlayPause = () => {
+    if (audio) {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+      setIsPlaying(!audio.paused);
+    }
+  };
 
   const handlePrevious = () => {
     setIsAnimatingPrev(true);
@@ -18,12 +50,6 @@ const MusicPlayer: React.FC = () => {
   const handleNext = () => {
     setIsAnimatingNext(true);
     setTimeout(() => setIsAnimatingNext(false), 150);
-  };
-
-  const togglePlayPause = () => setIsPlaying((prev) => !prev);
-
-  const handleSliderChange = (value: number[]) => {
-    setProgress(value[0]);
   };
 
   return (
@@ -49,7 +75,7 @@ const MusicPlayer: React.FC = () => {
               isPlaying ? "animate-fadeIn scale-110" : "animate-fadeOut scale-100"
             )}
           >
-            {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {audio && !audio.paused ? <PauseIcon /> : <PlayIcon />}
           </div>
         </Button>
 
