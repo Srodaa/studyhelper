@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Slider } from "@/components/templates/slider"; // Shadcn/UI Slider
-import { Button } from "@/components/templates/button"; // Shadcn/UI Button
+import { Slider } from "@/components/templates/slider";
+import { Button } from "@/components/templates/button";
 import { PlayIcon, PauseIcon, DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 
@@ -10,9 +10,11 @@ const MusicPlayer: React.FC = () => {
   const [isAnimatingPrev, setIsAnimatingPrev] = useState(false);
   const [isAnimatingNext, setIsAnimatingNext] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [volume, setVolume] = useState(0.5);
 
   useEffect(() => {
     const audioElement = new Audio("/lofimix1.mp3");
+    audioElement.volume = volume;
     setAudio(audioElement);
 
     audioElement.ontimeupdate = () => {
@@ -28,6 +30,13 @@ const MusicPlayer: React.FC = () => {
   const handleSliderChange = (value: number[]) => {
     if (audio) {
       audio.currentTime = (value[0] / 100) * audio.duration;
+    }
+  };
+
+  const handleVolumeSliderChange = (value: number[]) => {
+    if (audio) {
+      setVolume(value[0] / 100);
+      audio.volume = volume;
     }
   };
 
@@ -94,6 +103,15 @@ const MusicPlayer: React.FC = () => {
       </div>
       <div className="flex justify-center my-2">
         <Slider value={[progress]} max={100} step={1} onValueChange={handleSliderChange} className="w-11/12 h-max" />
+      </div>
+      <div>
+        <Slider
+          value={[volume * 100]}
+          max={100}
+          step={1}
+          onValueChange={handleVolumeSliderChange}
+          className="w-11/12 h-max mt-2"
+        />
       </div>
       <div className="flex justify-center">Now playing...</div>
     </div>
