@@ -113,7 +113,7 @@ const MusicPlayer: React.FC = () => {
       </div>
       <div className="flex flex-row ">
         <div className="basis-4/6 px-4">Now playing...</div>
-        <SpeakerQuietIcon className="basis-1/6 mt-1" />
+        <SpeakerQuietIcon className="basis-1/12 mt-1" />
         <Slider
           value={[volume * 100]}
           max={100}
@@ -121,7 +121,7 @@ const MusicPlayer: React.FC = () => {
           onValueChange={handleVolumeSliderChange}
           className="h-max mt-1 basis-1/6 mt-2"
         />
-        <SpeakerLoudIcon className="basis-1/6 mt-1" />
+        <SpeakerLoudIcon className="basis-1/12 mt-1" />
       </div>
     </div>
   );
