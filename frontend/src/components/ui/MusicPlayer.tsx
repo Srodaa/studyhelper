@@ -81,7 +81,7 @@ const MusicPlayer: React.FC = () => {
             handlePrevious();
           }}
         >
-          <DoubleArrowLeftIcon />
+          <DoubleArrowLeftIcon className="stroke-white stroke-1 [&>path]:stroke-inherit" />
         </Button>
 
         <Button className="basis-1/3 bg-slate-900 hover:bg-slate-900" onClick={togglePlayPause}>
@@ -91,7 +91,11 @@ const MusicPlayer: React.FC = () => {
               isPlaying ? "animate-fadeIn scale-110" : "animate-fadeOut scale-100"
             )}
           >
-            {audio && !audio.paused ? <PauseIcon /> : <PlayIcon />}
+            {audio && !audio.paused ? (
+              <PauseIcon className="stroke-white stroke-1 [&>path]:stroke-inherit" />
+            ) : (
+              <PlayIcon className="stroke-white stroke-1 [&>path]:stroke-inherit" />
+            )}
           </div>
         </Button>
 
@@ -105,7 +109,7 @@ const MusicPlayer: React.FC = () => {
             handleNext();
           }}
         >
-          <DoubleArrowRightIcon />
+          <DoubleArrowRightIcon className="stroke-white stroke-1 [&>path]:stroke-inherit" />
         </Button>
       </div>
       <div className="flex justify-center my-2">
@@ -113,7 +117,7 @@ const MusicPlayer: React.FC = () => {
       </div>
       <div className="flex flex-row ">
         <div className="basis-4/6 px-4">Now playing...</div>
-        <SpeakerQuietIcon className="basis-1/12 mt-1" />
+        <SpeakerQuietIcon className="basis-1/12 mt-1 stroke-white stroke-1 [&>path]:stroke-inherit" />
         <Slider
           value={[volume * 100]}
           max={100}
@@ -121,7 +125,7 @@ const MusicPlayer: React.FC = () => {
           onValueChange={handleVolumeSliderChange}
           className="h-max mt-1 basis-1/6 mt-2"
         />
-        <SpeakerLoudIcon className="basis-1/12 mt-1" />
+        <SpeakerLoudIcon className="basis-1/12 mt-1 stroke-white stroke-1 [&>path]:stroke-inherit" />
       </div>
     </div>
   );
