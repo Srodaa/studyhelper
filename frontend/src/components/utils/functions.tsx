@@ -80,7 +80,8 @@ export const handleSaveChanges = async (
           dateTime: combinatedEnd || endDateTime.toISOString()
         },
         category: category,
-        duration: duration
+        duration: duration,
+        defaultDuration: duration
       };
 
       console.log(updatedEvent);
@@ -119,6 +120,7 @@ export const handleCreateEvent = async (
   newEvent: CalendarEvent,
   category: string,
   duration: number,
+  defaultDuration: number,
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   closeDialog: () => void

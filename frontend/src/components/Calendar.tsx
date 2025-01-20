@@ -129,10 +129,19 @@ const Calendar: React.FC = () => {
       start: { dateTime: startDateTime },
       end: { dateTime: endDateTime },
       category: eventCategory,
-      duration: durationInSeconds
+      duration: durationInSeconds,
+      defaultDuration: durationInSeconds
     };
 
-    return await handleCreateEvent(newEvent, eventCategory, durationInSeconds, setEvents, setLoading, closeDialog);
+    return await handleCreateEvent(
+      newEvent,
+      eventCategory,
+      durationInSeconds,
+      durationInSeconds,
+      setEvents,
+      setLoading,
+      closeDialog
+    );
   };
   const openDialog = async (eventInfo: any) => {
     setCurrentEvent({

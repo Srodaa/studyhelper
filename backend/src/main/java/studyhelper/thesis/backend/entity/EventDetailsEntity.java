@@ -14,6 +14,8 @@ public class EventDetailsEntity {
     private String category;
     @Column(name = "duration")
     private Integer duration;
+    @Column(name = "defaultDuration")
+    private Integer defaultDuration;
 
     @ManyToOne
     @JsonBackReference
@@ -59,5 +61,13 @@ public class EventDetailsEntity {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public Integer getDefaultDuration() {
+        return defaultDuration;
+    }
+
+    public void setDefaultDuration(Integer defaultDuration) {
+        this.defaultDuration = defaultDuration;
     }
 }

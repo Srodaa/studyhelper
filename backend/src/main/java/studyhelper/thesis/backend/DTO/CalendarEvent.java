@@ -13,6 +13,8 @@ public class CalendarEvent {
     private String category;
     @JsonProperty("duration")
     private int duration;
+    @JsonProperty("defaultDuration")
+    private int defaultDuration;
 
     public String getCategory() {
         return category;
@@ -102,5 +104,13 @@ public class CalendarEvent {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getDefaultDuration() {
+        return defaultDuration;
+    }
+
+    public void setDefaultDuration(int defaultDuration) {
+        this.defaultDuration = defaultDuration;
     }
 }

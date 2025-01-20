@@ -13,6 +13,7 @@ export interface CalendarEvent {
   };
   category: string;
   duration: number;
+  defaultDuration: number;
 }
 
 export interface StudyProgressDTO {

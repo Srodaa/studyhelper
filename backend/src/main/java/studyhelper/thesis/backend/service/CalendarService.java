@@ -78,11 +78,13 @@ public class CalendarService {
                     newEventDetails.setEventID(eventId);
                     newEventDetails.setCategory(category);
                     newEventDetails.setDuration(duration);
+                    newEventDetails.setDefaultDuration(duration);
                     newEventDetails.setUser(user);
                     return eventDetailsRepository.save(newEventDetails);
                 });
         eventDetailsEntity.setCategory(category);
         eventDetailsEntity.setDuration(duration);
+        eventDetailsEntity.setDefaultDuration(duration);
         eventDetailsEntity.setUser(user);
         eventDetailsRepository.save(eventDetailsEntity);
         return updateEvent;
@@ -102,16 +104,19 @@ public class CalendarService {
         //Előre lementjük a kategóriát és az időtartamot, mert a Google Calendar API nem támogatja ezeket a mezőket
         String category = newEvent.getCategory();
         int duration = newEvent.getDuration();
+        int defaultDuration = newEvent.getDefaultDuration();
 
         CalendarEvent createdEvent = createEvent(accessToken, newEvent);
         //Mivel ID-hoz rendeljük őket ezért csak akkor mentjük el, ha a Google Calendar API visszatér az ID-val
         if (createdEvent.getId() != null) {
             createdEvent.setCategory(category);
             createdEvent.setDuration(duration);
+            createdEvent.setDefaultDuration(defaultDuration);
             EventDetailsEntity eventDetailsEntity = new EventDetailsEntity();
             eventDetailsEntity.setEventID(createdEvent.getId());
             eventDetailsEntity.setCategory(createdEvent.getCategory());
             eventDetailsEntity.setDuration(createdEvent.getDuration());
+            eventDetailsEntity.setDefaultDuration(createdEvent.getDefaultDuration());
             //Felhasználó <-> esemény raláció
             eventDetailsEntity.setUser(user);
             eventDetailsRepository.save(eventDetailsEntity);
@@ -143,6 +148,7 @@ public class CalendarService {
                     newEventDetails.setEventID(eventId);
                     newEventDetails.setCategory("Default");
                     newEventDetails.setDuration(0);
+                    newEventDetails.setDefaultDuration(0);
                     newEventDetails.setUser(user);
                     return eventDetailsRepository.save(newEventDetails);
                 });
