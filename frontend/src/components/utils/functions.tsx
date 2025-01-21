@@ -154,7 +154,6 @@ export const handleCreateEvent = async (
 export const getEventCategoryAndDuration = async (eventId: string): Promise<CalendarEvent> => {
   try {
     const response = await axios.get<CalendarEvent>(`/user/calendar-events/${eventId}/details`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Ehhez az eventhez nincs társítva kategória és tervezett tanulási idő!", error);

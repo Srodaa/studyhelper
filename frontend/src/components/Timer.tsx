@@ -121,11 +121,14 @@ const Timer: React.FC = () => {
                     <SelectTrigger className="w-[185px] border-slate-600 hover:border-white">
                       <SelectValue placeholder="Choose your category" />
                       <SelectContent>
-                        {categories.map((category, index) => (
-                          <SelectItem key={index} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
+                        {categories.map((category, index) => {
+                          const displayCategory = category.split(",")[0];
+                          return (
+                            <SelectItem key={index} value={category}>
+                              {displayCategory}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </SelectTrigger>
                   </Select>
@@ -152,6 +155,19 @@ const Timer: React.FC = () => {
                 </div>
               </div>
               <div>
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    if (!selectedCategory) {
+                      toast.error("Please select a category!");
+                      return;
+                    }
+                    closePopover();
+                  }}
+                  className="bg-white text-black hover:bg-slate-200 border border-slate-600"
+                >
+                  Finished category
+                </Button>
                 <Button
                   type="submit"
                   onClick={() => {
