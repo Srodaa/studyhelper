@@ -1,5 +1,8 @@
 package studyhelper.thesis.backend.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.UserRepository;
 import studyhelper.thesis.backend.service.CalendarService;
+import studyhelper.thesis.backend.service.StudyProgressService;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,11 +26,16 @@ import java.util.stream.Collectors;
 @RestController
 public class TimerController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
+
     @Autowired
     private CalendarService calendarService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StudyProgressService studyProgressService;
 
     public TimerController(CalendarService calendarService, UserRepository userRepository) {
         this.calendarService = calendarService;
@@ -51,7 +60,10 @@ public class TimerController {
             List<String> categories = calendarService.getCategoriesByUser(user.getId());
             categories = categories.stream()
                     .filter(Objects::nonNull)
-                    .filter(category -> !"Default".equals(category))
+                    .filter(category -> {
+                        String categoryName = category.split(",")[0];
+                        return !"Default".equals(categoryName);
+                    })
                     .collect(Collectors.toList());
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
@@ -63,9 +75,22 @@ public class TimerController {
     public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {
         try {
             calendarService.updateCategoryDuration(request.getCategory(), request.getElapsedSeconds());
+            logger.info("Category " + request.getCategory() + " updated with " + request.getElapsedSeconds() + " seconds.");
             return ResponseEntity.ok("Az adatbázis sikeresen frissítve.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
+        }
+    }
+
+    @PutMapping("user/{eventId}/setCategoryToDefault")
+    public ResponseEntity<String> setCategoryToDefault(@PathVariable String eventId){
+        try {
+            studyProgressService.setCategoryToDefault(eventId);
+            return ResponseEntity.ok("Az esemény kategóriája sikeresen átállítva alapértelmezettre.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Az esemény nem található az adatbázisban.");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Hiba történt.");
         }
     }
 
