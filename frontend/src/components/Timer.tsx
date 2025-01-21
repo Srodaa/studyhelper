@@ -5,7 +5,12 @@ import { Input } from "@/components/templates/input";
 import { Label } from "@/components/templates/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/templates/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/templates/select";
-import { getAllCategories, saveStudyProgress, updateDatabaseDuration } from "./utils/functions";
+import {
+  getAllCategories,
+  saveStudyProgress,
+  updateDatabaseDuration,
+  updateCategoryToDefault
+} from "./utils/functions";
 import { toast } from "sonner";
 
 const Timer: React.FC = () => {
@@ -41,8 +46,9 @@ const Timer: React.FC = () => {
           clearInterval(id);
           setIsRunning(false);
           const elapsedSeconds = duration * 60;
-          updateDatabaseDuration(selectedCategory, elapsedSeconds);
-          saveStudyProgress(selectedCategory, elapsedSeconds);
+          const eventCategory = selectedCategory.split(",")[0];
+          updateDatabaseDuration(eventCategory, elapsedSeconds);
+          saveStudyProgress(eventCategory, elapsedSeconds);
           setRemainingTime(duration * 60);
           return 0;
         }
@@ -57,9 +63,9 @@ const Timer: React.FC = () => {
     setIsRunning(false);
 
     const elapsedSeconds = duration * 60 - remainingTime;
-    console.log(selectedCategory, elapsedSeconds);
-    updateDatabaseDuration(selectedCategory, elapsedSeconds);
-    saveStudyProgress(selectedCategory, elapsedSeconds);
+    const eventCategory = selectedCategory.split(",")[0];
+    updateDatabaseDuration(eventCategory, elapsedSeconds);
+    saveStudyProgress(eventCategory, elapsedSeconds);
     setRemainingTime(duration * 60);
   };
 
@@ -81,6 +87,15 @@ const Timer: React.FC = () => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
+  const handleUpdateCategory = async (eventId: string) => {
+    try {
+      await updateCategoryToDefault(eventId);
+      console.log("A kategória sikeresen 'Default'-ra lett állítva.");
+    } catch {
+      console.log("Hiba történt a kategória frissítésekor.");
+    }
   };
 
   const startStudy = isRunning ? "Stop learning" : "Start learning";
@@ -162,6 +177,8 @@ const Timer: React.FC = () => {
                       toast.error("Please select a category!");
                       return;
                     }
+                    const eventID = selectedCategory.split(",")[1];
+                    handleUpdateCategory(eventID);
                     closePopover();
                   }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"

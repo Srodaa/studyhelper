@@ -173,11 +173,11 @@ export const getAllCategories = async (): Promise<string[]> => {
 
 export async function updateDatabaseDuration(category: string, elapsedSeconds: number): Promise<void> {
   try {
+    category = category.split(",")[0];
     if (!category || elapsedSeconds <= 0) {
       console.error("Hibás paraméterek az adatbázis frissítéséhez. ", category + " " + elapsedSeconds);
       return;
     }
-
     const response = await fetch("/user/updateDuration", {
       method: "POST",
       headers: {
@@ -191,7 +191,7 @@ export async function updateDatabaseDuration(category: string, elapsedSeconds: n
     if (!response.ok) {
       throw new Error("Hiba az adatbázis frissítése során.");
     }
-    console.log("Az adatbázis sikeresen frissítve.");
+    console.log("Az adatbázis duration mezője sikeresen frissítve.");
   } catch (error) {
     console.error("Nem sikerült frissíteni az adatbázist:", error);
   }
@@ -219,7 +219,7 @@ export async function saveStudyProgress(category: string, elapsedTime: number): 
       throw new Error("Hiba a statisztikák mentése közben.");
     }
 
-    console.log("Az előrehaladás sikeresen lementve.", category, elapsedTime);
+    console.log("Az előrehaladás sikeresen lementve. Kategória: ", category, " eltelt idő: ", elapsedTime);
   } catch (error) {
     console.error("Hiba a statisztikák mentése közben:", error);
   }
@@ -231,6 +231,15 @@ export const fetchStudyStatistics = async (): Promise<StudyProgressDTO[] | null>
     return response.data;
   } catch (error) {
     console.error("Failed to fetch categories and time:", error);
+    throw error;
+  }
+};
+
+export const updateCategoryToDefault = async (eventId: string): Promise<void> => {
+  try {
+    await axios.put(`/user/${eventId}/setCategoryToDefault`);
+  } catch (error) {
+    console.error("Failed to update the category to Default: ", error);
     throw error;
   }
 };
