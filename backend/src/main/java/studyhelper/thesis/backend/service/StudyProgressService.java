@@ -14,6 +14,7 @@ import studyhelper.thesis.backend.repository.StudyProgressRepository;
 import studyhelper.thesis.backend.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,5 +63,14 @@ public class StudyProgressService {
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with ID: " + eventId));
         event.setCategory("Default");
         eventDetailsRepository.save(event);
+    }
+
+    public boolean compareDurationWithDefault(String eventId){
+        Optional<EventDetailsEntity> optionalEventDetails = eventDetailsRepository.findByEventID(eventId);
+        if (optionalEventDetails.isPresent()){
+            EventDetailsEntity event = optionalEventDetails.get();
+            return event.getDuration() != 0 && event.getDuration() < event.getDefaultDuration();
+        }
+        return false;
     }
 }

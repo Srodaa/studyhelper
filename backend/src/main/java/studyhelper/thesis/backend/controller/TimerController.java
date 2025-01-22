@@ -94,4 +94,8 @@ public class TimerController {
         }
     }
 
+    @GetMapping("/user/compareDuration/{eventId}")
+    public boolean compareDurations(@PathVariable String eventId){
+        return studyProgressService.compareDurationWithDefault(eventId);
+    }
 }

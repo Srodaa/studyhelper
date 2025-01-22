@@ -9,7 +9,8 @@ import {
   getAllCategories,
   saveStudyProgress,
   updateDatabaseDuration,
-  updateCategoryToDefault
+  updateCategoryToDefault,
+  compareDurations
 } from "./utils/functions";
 import { toast } from "sonner";
 import FinishedCategoryDialog from "./ui/FinishedCategoryDialog";
@@ -100,6 +101,14 @@ const Timer: React.FC = () => {
     }
   };
 
+  const handleDurationCompare = async () => {
+    const eventId = selectedCategory.split(",")[1];
+    const isDurationLessThanDefaultAndNotZero = await compareDurations(eventId);
+    if (isDurationLessThanDefaultAndNotZero) {
+      setIsFinishedDialogOpen(true);
+    }
+  };
+
   const startStudy = isRunning ? "Stop learning" : "Start learning";
   const timerRemaining = isRunning ? formatTime(remainingTime) : "";
   const mobileStartStudy = isRunning ? formatTime(remainingTime) : "Start learning";
@@ -180,8 +189,8 @@ const Timer: React.FC = () => {
                       return;
                     }
                     const eventID = selectedCategory.split(",")[1];
+                    handleDurationCompare();
                     handleUpdateCategory(eventID);
-                    setIsFinishedDialogOpen(true);
                     setSelectedCategory("");
                   }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"

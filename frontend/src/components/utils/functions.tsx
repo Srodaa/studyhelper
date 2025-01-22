@@ -243,3 +243,13 @@ export const updateCategoryToDefault = async (eventId: string): Promise<void> =>
     throw error;
   }
 };
+
+export const compareDurations = async (eventId: string): Promise<boolean> => {
+  try {
+    const response = await axios.get(`/user/compareDuration/${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error checking event durations: ", error);
+    return false;
+  }
+};
