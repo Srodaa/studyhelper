@@ -12,6 +12,7 @@ import {
   updateCategoryToDefault
 } from "./utils/functions";
 import { toast } from "sonner";
+import FinishedCategoryDialog from "./ui/FinishedCategoryDialog";
 
 const Timer: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -22,6 +23,7 @@ const Timer: React.FC = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isTimeVisible, setIsTimeVisible] = useState(false);
+  const [isFinsihedCategoryDialogOpen, setIsFinishedDialogOpen] = useState(false);
 
   const fetchCategories = async () => {
     try {
@@ -179,12 +181,17 @@ const Timer: React.FC = () => {
                     }
                     const eventID = selectedCategory.split(",")[1];
                     handleUpdateCategory(eventID);
-                    closePopover();
+                    setIsFinishedDialogOpen(true);
+                    setSelectedCategory("");
                   }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
                 >
                   Finished category
                 </Button>
+                <FinishedCategoryDialog
+                  isOpen={isFinsihedCategoryDialogOpen}
+                  onClose={() => setIsFinishedDialogOpen(false)}
+                />
                 <Button
                   type="submit"
                   onClick={() => {
