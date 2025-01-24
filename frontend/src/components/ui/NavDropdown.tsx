@@ -13,7 +13,11 @@ import {
   DropdownMenuTrigger
 } from "@/components/templates/dropdown-menu";
 
-const NavDropdown: React.FC = () => {
+interface NavbarProps {
+  userProfileName?: string;
+}
+
+const NavDropdown: React.FC<NavbarProps> = ({ userProfileName }) => {
   const calendarDrawerRef = useRef<{ openDrawer: () => void } | null>(null);
   const statisticsRef = useRef<{ openStatistics: () => void } | null>(null);
   const handleCalendarClick = () => {
@@ -35,7 +39,7 @@ const NavDropdown: React.FC = () => {
           <span className="cursor-pointer">Dashboard</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 ml-6 bg-slate-900 text-white border-slate-600">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>{userProfileName}'s account</DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-slate-600" />
           <DropdownMenuGroup>
             <DropdownMenuItem className="focus:bg-slate-700 focus:text-white" onSelect={handleCalendarClick}>

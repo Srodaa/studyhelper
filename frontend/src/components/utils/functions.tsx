@@ -253,3 +253,14 @@ export const compareDurations = async (eventId: string): Promise<boolean> => {
     return false;
   }
 };
+
+export async function fetchUserData(setUser: (user: any) => void) {
+  try {
+    const response = await axios.get("http://localhost:8080/user-info", {
+      withCredentials: true
+    });
+    setUser(response.data);
+  } catch (error) {
+    console.error("Error occurred: ", error);
+  }
+}

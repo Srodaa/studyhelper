@@ -20,3 +20,7 @@ export interface StudyProgressDTO {
   category: string;
   elapsedTime: number;
 }
+
+export interface UserName {
+  given_name: string;
+}
