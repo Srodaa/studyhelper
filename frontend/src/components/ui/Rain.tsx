@@ -42,4 +42,8 @@ const RainEffect: React.FC<RainEffectProps> = ({ topStart }) => {
   );
 };
 
-export default RainEffect;
+const areEqual = (prevProps: RainEffectProps, nextProps: RainEffectProps) => {
+  return prevProps.topStart === nextProps.topStart;
+};
+
+export default React.memo(RainEffect, areEqual);
