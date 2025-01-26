@@ -16,7 +16,9 @@ const Home: React.FC = () => {
       <Navigation />
       <RainEffect topStart={0} />
       <div>{showCalendar && <HomeCalendar />}</div>
-      <div>{showMusicPlayer && <MusicPlayer />}</div>
+      <div className={`${showMusicPlayer ? "" : "hidden"}`}>
+        <MusicPlayer />
+      </div>
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
         <Timer />
       </div>
