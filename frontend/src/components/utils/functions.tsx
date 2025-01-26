@@ -270,7 +270,6 @@ export const fetchSoundCloudAccessToken = async (): Promise<string | null> => {
     const response = await axios.get("http://localhost:8080/soundcloud/accessToken", {
       withCredentials: true
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch categories and time:", error);

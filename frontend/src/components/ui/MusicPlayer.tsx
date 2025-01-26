@@ -10,6 +10,9 @@ import {
   SpeakerLoudIcon
 } from "@radix-ui/react-icons";
 import clsx from "clsx";
+import { fetchSoundCloudAccessToken } from "../utils/functions";
+import axios from "axios";
+import SoundCloudIcon from "@/assets/soundcloudlogo.png";
 
 const MusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,21 +21,89 @@ const MusicPlayer: React.FC = () => {
   const [isAnimatingNext, setIsAnimatingNext] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [volume, setVolume] = useState(0.5);
+  const [accessToken, setAccessToken] = useState<string | null | undefined>(null);
+  const [songTitle, setSongTitle] = useState<string>("");
+  const [trackUploaderUsername, setTrackUploaderUsername] = useState<string>("");
+  const [songUrl, setSongUrl] = useState<string>("");
 
   useEffect(() => {
-    const audioElement = new Audio("/lofimix1.mp3");
-    audioElement.volume = volume;
-    setAudio(audioElement);
-
-    audioElement.ontimeupdate = () => {
-      setProgress((audioElement.currentTime / audioElement.duration) * 100);
+    const fetchAndSetToken = async () => {
+      const token = await fetchSoundCloudAccessToken();
+      setAccessToken(token);
     };
 
-    return () => {
-      audioElement.pause();
-      setAudio(null);
-    };
+    fetchAndSetToken();
+    const interval = setInterval(fetchAndSetToken, 2700000); // 45 perc
+    return () => clearInterval(interval);
   }, []);
+
+  const BASE_API_URL = "https://api.soundcloud.com";
+
+  const getTrackStreamURL = async (trackId: string): Promise<string | null> => {
+    try {
+      if (!accessToken) {
+        console.error("Access token not available yet.");
+        return null;
+      }
+      //Get track details
+      const trackResponse = await axios.get(`${BASE_API_URL}/tracks/${trackId}`, {
+        headers: {
+          Authorization: `OAuth ${accessToken}`,
+          Accept: "application/json; charset=utf-8"
+        }
+      });
+
+      const { stream_url } = trackResponse.data;
+      setSongTitle(trackResponse.data.title);
+      setTrackUploaderUsername(trackResponse.data.user.username);
+      setSongUrl(trackResponse.data.permalink_url);
+
+      if (!stream_url) {
+        console.error("Stream URL not found for this track.");
+        return null;
+      }
+
+      //Fetch available transcoding links
+      const streamResponse = await axios.get(`${stream_url}`, {
+        headers: {
+          Authorization: `OAuth ${accessToken}`,
+          Accept: "application/json; charset=utf-8"
+        }
+      });
+
+      return streamResponse.request.responseURL;
+    } catch (error) {
+      console.error("Error fetching track stream URL:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      const initializeAudio = async () => {
+        const trackId = "2012998611";
+        const streamURL = await getTrackStreamURL(trackId);
+        if (!streamURL) {
+          console.error("Steam URL could not be retrieved.");
+          return;
+        }
+        const audioElement = new Audio(streamURL);
+        audioElement.volume = volume;
+        setAudio(audioElement);
+        audioElement.ontimeupdate = () => {
+          setProgress((audioElement.currentTime / audioElement.duration) * 100);
+        };
+      };
+      initializeAudio();
+
+      return () => {
+        if (audio) {
+          audio.pause();
+          setAudio(null);
+        }
+      };
+    }
+  }, [accessToken]);
 
   const handleSliderChange = (value: number[]) => {
     if (audio) {
@@ -51,8 +122,10 @@ const MusicPlayer: React.FC = () => {
     if (audio) {
       if (audio.paused) {
         audio.play();
+        setIsPlaying(true);
       } else {
         audio.pause();
+        setIsPlaying(false);
       }
       setIsPlaying(!audio.paused);
     }
@@ -69,7 +142,7 @@ const MusicPlayer: React.FC = () => {
   };
 
   return (
-    <div className="absolute left-10 top-[80%] border border-slate-600 rounded-md shadow-lg bg-slate-900 w-[400px] h-[100px] p-1 px-2 mobile:z-0 mobile:top-[60%] mobile:left-1/2 mobile:w-[250px] mobile:transform mobile:-translate-x-1/2">
+    <div className="absolute left-10 top-[80%] border border-slate-600 rounded-md shadow-lg bg-slate-900 w-[400px] h-[120px] p-1 px-2 mobile:z-0 mobile:top-[60%] mobile:left-1/2 mobile:w-[250px] mobile:transform mobile:-translate-x-1/2">
       <div className="flex flex-row space-x-4">
         <Button
           className={clsx(
@@ -115,8 +188,18 @@ const MusicPlayer: React.FC = () => {
       <div className="flex justify-center my-2">
         <Slider value={[progress]} max={100} step={1} onValueChange={handleSliderChange} className="w-11/12 h-max" />
       </div>
-      <div className="flex flex-row ">
-        <div className="basis-4/6 px-4">Now playing...</div>
+      <div className="flex flex-row">
+        <div className="basis-4/6 px-4">
+          <a className="text-xs">{trackUploaderUsername}</a>
+          <br />
+          <a
+            className="block max-w-[220px] truncate overflow-hidden mobile:max-w-[100px] mobile:truncate-none"
+            href={songUrl}
+          >
+            {songTitle}
+          </a>
+        </div>
+        <div></div>
         <SpeakerQuietIcon className="basis-1/12 mt-1 stroke-white stroke-1 [&>path]:stroke-inherit" />
         <Slider
           value={[volume * 100]}
@@ -127,6 +210,7 @@ const MusicPlayer: React.FC = () => {
         />
         <SpeakerLoudIcon className="basis-1/12 mt-1 stroke-white stroke-1 [&>path]:stroke-inherit" />
       </div>
+      <img src={SoundCloudIcon} className="float-right relative top-[-16px] px-2 mobile:top-[-19px] mobile:px-0"></img>
     </div>
   );
 };
