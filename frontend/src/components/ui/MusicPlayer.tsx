@@ -67,7 +67,7 @@ const MusicPlayer: React.FC = () => {
       }
 
       //Fetch available transcoding links
-      const streamResponse = await axios.get(`${stream_url}`, {
+      const streamResponse = await axios.head(`${stream_url}`, {
         headers: {
           Authorization: `OAuth ${accessToken}`,
           Accept: "application/json; charset=utf-8"
