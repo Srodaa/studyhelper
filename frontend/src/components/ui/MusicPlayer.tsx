@@ -20,11 +20,14 @@ const MusicPlayer: React.FC = () => {
   const [isAnimatingPrev, setIsAnimatingPrev] = useState(false);
   const [isAnimatingNext, setIsAnimatingNext] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.3);
   const [accessToken, setAccessToken] = useState<string | null | undefined>(null);
   const [songTitle, setSongTitle] = useState<string>("");
   const [trackUploaderUsername, setTrackUploaderUsername] = useState<string>("");
   const [songUrl, setSongUrl] = useState<string>("");
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  const trackIds = ["2012998611", "1977792295", "1986735599"];
 
   useEffect(() => {
     const fetchAndSetToken = async () => {
@@ -81,19 +84,30 @@ const MusicPlayer: React.FC = () => {
   useEffect(() => {
     if (accessToken) {
       const initializeAudio = async () => {
-        const trackId = "2012998611";
+        const trackId = trackIds[currentTrackIndex];
         const streamURL = await getTrackStreamURL(trackId);
         if (!streamURL) {
           console.error("Steam URL could not be retrieved.");
           return;
         }
+        //Nullázzuk az eddigi audiót. pl: megy egy zene, váltunk a másikra és így nem duplikálva mennek
+        if (audio) {
+          audio.pause();
+          setAudio(null);
+        }
+
         const audioElement = new Audio(streamURL);
         audioElement.volume = volume;
         setAudio(audioElement);
         audioElement.ontimeupdate = () => {
           setProgress((audioElement.currentTime / audioElement.duration) * 100);
         };
+        //Ha az isPlaying már true akkor ha zenét váltunk nem kell elindítani megint hanem megy magától
+        if (isPlaying) {
+          audioElement.play();
+        }
       };
+
       initializeAudio();
 
       return () => {
@@ -103,7 +117,7 @@ const MusicPlayer: React.FC = () => {
         }
       };
     }
-  }, [accessToken]);
+  }, [accessToken, currentTrackIndex]);
 
   const handleSliderChange = (value: number[]) => {
     if (audio) {
@@ -113,8 +127,10 @@ const MusicPlayer: React.FC = () => {
 
   const handleVolumeSliderChange = (value: number[]) => {
     if (audio) {
-      setVolume(value[0] / 100);
-      audio.volume = volume;
+      const scaledVolume = value[0] / 100;
+      const maxVolume = 1;
+      setVolume(Math.min(scaledVolume / maxVolume));
+      audio.volume = Math.min(scaledVolume / maxVolume);
     }
   };
 
@@ -133,11 +149,13 @@ const MusicPlayer: React.FC = () => {
 
   const handlePrevious = () => {
     setIsAnimatingPrev(true);
+    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + trackIds.length) % trackIds.length);
     setTimeout(() => setIsAnimatingPrev(false), 150);
   };
 
   const handleNext = () => {
     setIsAnimatingNext(true);
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % trackIds.length);
     setTimeout(() => setIsAnimatingNext(false), 150);
   };
 
@@ -178,7 +196,7 @@ const MusicPlayer: React.FC = () => {
             isAnimatingNext ? "translate-x-2" : ""
           )}
           onClick={() => {
-            console.log("Previous track");
+            console.log("Next track");
             handleNext();
           }}
         >
@@ -203,7 +221,7 @@ const MusicPlayer: React.FC = () => {
         <SpeakerQuietIcon className="basis-1/12 mt-1 stroke-white stroke-1 [&>path]:stroke-inherit" />
         <Slider
           value={[volume * 100]}
-          max={100}
+          max={60}
           step={1}
           onValueChange={handleVolumeSliderChange}
           className="h-max mt-1 basis-1/6 mt-2"
