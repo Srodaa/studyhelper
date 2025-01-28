@@ -26,6 +26,7 @@ const MusicPlayer: React.FC = () => {
   const [trackUploaderUsername, setTrackUploaderUsername] = useState<string>("");
   const [songUrl, setSongUrl] = useState<string>("");
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const [abortController, setAbortController] = useState<AbortController | null>(null); //Spam protection
 
   const trackIds = ["2012998611", "1977792295", "1986735599"];
 
@@ -43,6 +44,9 @@ const MusicPlayer: React.FC = () => {
   const BASE_API_URL = "https://api.soundcloud.com";
 
   const getTrackStreamURL = async (trackId: string): Promise<string | null> => {
+    const controller = new AbortController();
+    setAbortController(controller);
+
     try {
       if (!accessToken) {
         console.error("Access token not available yet.");
@@ -53,7 +57,8 @@ const MusicPlayer: React.FC = () => {
         headers: {
           Authorization: `OAuth ${accessToken}`,
           Accept: "application/json; charset=utf-8"
-        }
+        },
+        signal: controller.signal
       });
 
       const { stream_url } = trackResponse.data;
@@ -71,11 +76,15 @@ const MusicPlayer: React.FC = () => {
         headers: {
           Authorization: `OAuth ${accessToken}`,
           Accept: "application/json; charset=utf-8"
-        }
+        },
+        signal: controller.signal
       });
 
       return streamResponse.request.responseURL;
     } catch (error) {
+      if (axios.isCancel(error)) {
+        console.warn("Fetch request was cancelled.");
+      }
       console.error("Error fetching track stream URL:", error);
       return null;
     }
@@ -84,6 +93,10 @@ const MusicPlayer: React.FC = () => {
   useEffect(() => {
     if (accessToken) {
       const initializeAudio = async () => {
+        if (abortController) {
+          abortController.abort();
+        }
+
         const trackId = trackIds[currentTrackIndex];
         const streamURL = await getTrackStreamURL(trackId);
         if (!streamURL) {
