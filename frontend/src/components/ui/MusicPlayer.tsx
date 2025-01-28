@@ -106,6 +106,10 @@ const MusicPlayer: React.FC = () => {
         if (isPlaying) {
           audioElement.play();
         }
+
+        audioElement.onended = () => {
+          handleNext();
+        };
       };
 
       initializeAudio();
