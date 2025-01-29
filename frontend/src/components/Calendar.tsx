@@ -383,7 +383,11 @@ const Calendar: React.FC = () => {
             <Input
               id="eventCategory"
               value={eventCategory}
-              onChange={(e) => setEventCategory(e.target.value)}
+              onChange={(e) => {
+                const filteredValue = e.target.value.replace(/[^a-zA-Z0-9áéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, "");
+                console.log(filteredValue);
+                setEventCategory(filteredValue);
+              }}
               className="col-span-3 border border-slate-600 focus:border-white"
             />
           </div>
