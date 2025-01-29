@@ -49,7 +49,7 @@ const Statistics = forwardRef((_, ref) => {
       <DialogTrigger asChild>
         <span className="cursor-pointer hidden">Statistics</span>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] border border-slate-600 bg-slate-900 text-white">
+      <DialogContent className="mobile:max-w-[385px] border border-slate-600 bg-slate-900 text-white max-h-[700px] mt-6">
         <DialogHeader>
           <DialogTitle className="text-center">Statistics</DialogTitle>
           <DialogDescription className="text-center">
@@ -69,18 +69,21 @@ const Statistics = forwardRef((_, ref) => {
               <TableHead className="text-center">Studied minutes</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="border border-slate-600">
-            {studyProgress.map((item, index) => (
-              <TableRow className="border border-slate-600" key={index}>
-                <TableCell className="">{item.category}</TableCell>
-                <TableCell className="font-medium text-center">
-                  {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
         </Table>
-
+        <div className="max-h-72 overflow-y-auto">
+          <Table>
+            <TableBody className="border-b-2 border-slate-600">
+              {studyProgress.map((item, index) => (
+                <TableRow className="border-b-2 border-slate-600 " key={index}>
+                  <TableCell>{item.category}</TableCell>
+                  <TableCell className="font-medium text-center">
+                    {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
         <DialogFooter className="sm:justify-center">
           <Button
             type="submit"
