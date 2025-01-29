@@ -3,7 +3,7 @@ import Navigation from "@/components/ui/Navigation";
 import Timer from "@/components/Timer";
 import HomeCalendar from "@/components/ui/HomeCalendar";
 import RainEffect from "@/components/ui/Rain";
-import MusicPlayer from "@/components/ui/MusicPlayer";
+import MusicPlayer from "@/components/MusicPlayer";
 import HiderButtons from "@/components/ui/HiderButtons";
 import { CalendarCheck2, CalendarX2, HeadphoneOff, Headphones } from "lucide-react";
 

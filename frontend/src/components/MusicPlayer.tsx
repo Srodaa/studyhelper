@@ -10,7 +10,7 @@ import {
   SpeakerLoudIcon
 } from "@radix-ui/react-icons";
 import clsx from "clsx";
-import { fetchSoundCloudAccessToken } from "../utils/functions";
+import { fetchSoundCloudAccessToken } from "./utils/functions";
 import axios from "axios";
 import SoundCloudIcon from "@/assets/soundcloudlogo.png";
 
