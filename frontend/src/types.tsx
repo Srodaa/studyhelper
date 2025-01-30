@@ -24,3 +24,10 @@ export interface StudyProgressDTO {
 export interface UserName {
   given_name: string;
 }
+
+export interface TrackDetailsDTO {
+  title: string;
+  username: string;
+  permalinkURL: string;
+  extractStreamUrl: string;
+}

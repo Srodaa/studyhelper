@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CalendarEvent, StudyProgressDTO } from "@/types";
+import { CalendarEvent, StudyProgressDTO, TrackDetailsDTO } from "@/types";
 
 export const fetchEvents = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
@@ -265,14 +265,24 @@ export async function fetchUserData(setUser: (user: any) => void) {
   }
 }
 
-export const fetchSoundCloudAccessToken = async (): Promise<string | null> => {
+let abortController: AbortController | null = null; //Spam protection miatt megszakítjuk a kérést, ha újat küldünk a megérkezés előtt
+
+export const getStreamUrl = async (trackId: string): Promise<TrackDetailsDTO> => {
+  if (abortController) {
+    abortController.abort();
+  }
+  abortController = new AbortController();
+  const signal = abortController.signal;
+
   try {
-    const response = await axios.get("http://localhost:8080/soundcloud/accessToken", {
-      withCredentials: true
+    const response = await axios.get(`http://localhost:8080/soundcloud/getStreamUrl/${trackId}`, {
+      withCredentials: true,
+      signal
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch categories and time:", error);
+    console.error("Error checking event durations: ", error);
     throw error;
   }
 };

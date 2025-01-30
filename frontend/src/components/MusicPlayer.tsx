@@ -10,7 +10,7 @@ import {
   SpeakerLoudIcon
 } from "@radix-ui/react-icons";
 import clsx from "clsx";
-import { fetchSoundCloudAccessToken } from "./utils/functions";
+import { getStreamUrl } from "./utils/functions";
 import axios from "axios";
 import SoundCloudIcon from "@/assets/soundcloudlogo.png";
 
@@ -21,66 +21,29 @@ const MusicPlayer: React.FC = () => {
   const [isAnimatingNext, setIsAnimatingNext] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [volume, setVolume] = useState(0.3);
-  const [accessToken, setAccessToken] = useState<string | null | undefined>(null);
   const [songTitle, setSongTitle] = useState<string>("");
   const [trackUploaderUsername, setTrackUploaderUsername] = useState<string>("");
   const [songUrl, setSongUrl] = useState<string>("");
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [abortController, setAbortController] = useState<AbortController | null>(null); //Spam protection
 
   const trackIds = ["2012998611", "1977792295", "1986735599"];
 
-  useEffect(() => {
-    const fetchAndSetToken = async () => {
-      const token = await fetchSoundCloudAccessToken();
-      setAccessToken(token);
-    };
-
-    fetchAndSetToken();
-    const interval = setInterval(fetchAndSetToken, 2700000); // 45 perc
-    return () => clearInterval(interval);
-  }, []);
-
-  const BASE_API_URL = "https://api.soundcloud.com";
-
   const getTrackStreamURL = async (trackId: string): Promise<string | null> => {
-    const controller = new AbortController();
-    setAbortController(controller);
-
     try {
-      if (!accessToken) {
-        console.error("Access token not available yet.");
-        return null;
-      }
       //Get track details
-      const trackResponse = await axios.get(`${BASE_API_URL}/tracks/${trackId}`, {
-        headers: {
-          Authorization: `OAuth ${accessToken}`,
-          Accept: "application/json; charset=utf-8"
-        },
-        signal: controller.signal
-      });
+      const trackDetails = await getStreamUrl(trackId);
 
-      const { stream_url } = trackResponse.data;
-      setSongTitle(trackResponse.data.title);
-      setTrackUploaderUsername(trackResponse.data.user.username);
-      setSongUrl(trackResponse.data.permalink_url);
+      setSongTitle(trackDetails.title);
+      setTrackUploaderUsername(trackDetails.username);
+      setSongUrl(trackDetails.permalinkURL);
+      const streamURL = trackDetails.extractStreamUrl;
 
-      if (!stream_url) {
+      if (!streamURL) {
         console.error("Stream URL not found for this track.");
         return null;
       }
 
-      //Fetch available transcoding links
-      const streamResponse = await axios.head(`${stream_url}`, {
-        headers: {
-          Authorization: `OAuth ${accessToken}`,
-          Accept: "application/json; charset=utf-8"
-        },
-        signal: controller.signal
-      });
-
-      return streamResponse.request.responseURL;
+      return streamURL;
     } catch (error) {
       if (axios.isCancel(error)) {
         console.warn("Fetch request was cancelled.");
@@ -91,50 +54,44 @@ const MusicPlayer: React.FC = () => {
   };
 
   useEffect(() => {
-    if (accessToken) {
-      const initializeAudio = async () => {
-        if (abortController) {
-          abortController.abort();
-        }
+    const initializeAudio = async () => {
+      const trackId = trackIds[currentTrackIndex];
+      const streamURL = await getTrackStreamURL(trackId);
+      if (!streamURL) {
+        console.error("Steam URL could not be retrieved.");
+        return;
+      }
+      //Nullázzuk az eddigi audiót. pl: megy egy zene, váltunk a másikra és így nem duplikálva mennek
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
 
-        const trackId = trackIds[currentTrackIndex];
-        const streamURL = await getTrackStreamURL(trackId);
-        if (!streamURL) {
-          console.error("Steam URL could not be retrieved.");
-          return;
-        }
-        //Nullázzuk az eddigi audiót. pl: megy egy zene, váltunk a másikra és így nem duplikálva mennek
-        if (audio) {
-          audio.pause();
-          setAudio(null);
-        }
-
-        const audioElement = new Audio(streamURL);
-        audioElement.volume = volume;
-        setAudio(audioElement);
-        audioElement.ontimeupdate = () => {
-          setProgress((audioElement.currentTime / audioElement.duration) * 100);
-        };
-        //Ha az isPlaying már true akkor ha zenét váltunk nem kell elindítani megint hanem megy magától
-        if (isPlaying) {
-          audioElement.play();
-        }
-
-        audioElement.onended = () => {
-          handleNext();
-        };
+      const audioElement = new Audio(streamURL);
+      audioElement.volume = volume;
+      setAudio(audioElement);
+      audioElement.ontimeupdate = () => {
+        setProgress((audioElement.currentTime / audioElement.duration) * 100);
       };
+      //Ha az isPlaying már true akkor ha zenét váltunk nem kell elindítani megint hanem megy magától
+      if (isPlaying) {
+        audioElement.play();
+      }
 
-      initializeAudio();
-
-      return () => {
-        if (audio) {
-          audio.pause();
-          setAudio(null);
-        }
+      audioElement.onended = () => {
+        handleNext();
       };
-    }
-  }, [accessToken, currentTrackIndex]);
+    };
+
+    initializeAudio();
+
+    return () => {
+      if (audio) {
+        audio.pause();
+        setAudio(null);
+      }
+    };
+  }, [currentTrackIndex]);
 
   const handleSliderChange = (value: number[]) => {
     if (audio) {
