@@ -1,2 +1,0 @@
-#TODO
-A modalt jóra megcsinálni. A backend részt hozzáadni. Elmenteni az adatbázisban. Ha létrehoz egy kategóriát azt egy másik adatbázisba mentse el, egy lenyíló fülön listázza ki. A kívánt tanulási időt megint mentse el az adatbázisba. 
