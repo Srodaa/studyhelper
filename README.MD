@@ -9,6 +9,8 @@ StudyHelper is a comprehensive learning assistance application designed to help 
 - **User-Friendly Interface**: Intuitive calendar views powered by React for easy navigation and planning.
 - **Preparation Time Tracking**: Track study or preparation time for events like exams or deadlines.
 - **Secure Authentication**: OAuth 2.0 integration for secure login and access to your data.
+- **Study Completion Feedback**: Receive instant feedback when you finish studying ahead of schedule, helping you stay motivated and on track.
+- **Built-in Music Player**: With the help of the SoundCloud API, you can listen to relaxing lo-fi beats to enhance focus and create a calming study atmosphere. 
 
 ## Tech Stack
 
@@ -27,3 +29,4 @@ StudyHelper is a comprehensive learning assistance application designed to help 
 ### Other Tools
 - **Google Calendar API**
 - **date-fns** for date manipulation
+- **SoundCloud API** for built-in music
