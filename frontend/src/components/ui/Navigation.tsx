@@ -1,18 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 import NavDropdown from "./NavDropdown";
 import { UserName } from "@/types";
 import { fetchUserData } from "../utils/functions";
+import Statistics from "./Statistics";
+import Logout from "../Logout";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [user, setUser] = useState<UserName | null>(null);
   const userProfileName = user?.given_name;
+  const statisticsRef = useRef<{ openStatistics: () => void } | null>(null);
 
   useEffect(() => {
     fetchUserData(setUser);
   }, []);
+
+  const handleStatisticsClick = () => {
+    statisticsRef.current?.openStatistics();
+  };
+
+  const MenuIcon = ({ isOpen }: { isOpen: boolean }) => {
+    return (
+      <div className="relative w-6 h-[18px] flex flex-col justify-between">
+        <span className={`block w-full h-0.5 bg-white ${isOpen ? "rotate-[46deg] translate-y-2 w-[26px]" : ""}`}></span>
+        <span className={`block w-full h-0.5 bg-white ${isOpen ? "opacity-0" : "opacity-100"}`}></span>
+        <span
+          className={`block w-full h-0.5 bg-white ${isOpen ? " duration-700 -rotate-45 -translate-y-2 w-[26px]" : ""}`}
+        ></span>
+      </div>
+    );
+  };
 
   return (
     <nav className="sticky top-0 left-0 w-full p-4 bg-slate-800 shadow-lg z-40">
@@ -33,21 +51,22 @@ const Navbar: React.FC = () => {
           )}
         </div>
         <div className="sm:hidden cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-          <Menu />
+          <MenuIcon isOpen={isOpen} />
         </div>
       </div>
-      {isOpen && (
-        <div className="sm:hidden border-t mt-2 shadow-lg">
-          <ul className="flex flex-col items-center p-2">
-            <li className="py-2">
-              <a href="#">Egy szöveg</a>
-            </li>
-            <li className="py-2">
-              <a href="#">Meg egy másik szöveg</a>
-            </li>
-          </ul>
+      <div
+        className={`absolute top-full left-0 w-full bg-slate-800 transition-[opacity, transform] duration-700 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-24 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="border-t flex flex-col items-center p-2 text-lg">
+          <button className="pb-1" onClick={handleStatisticsClick}>
+            Statistics
+          </button>
+          <Logout />
         </div>
-      )}
+      </div>
+      <Statistics ref={statisticsRef} />
     </nav>
   );
 };
