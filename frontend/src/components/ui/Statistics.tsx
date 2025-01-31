@@ -64,9 +64,9 @@ const Statistics = forwardRef((_, ref) => {
         </div>
         <Table>
           <TableHeader>
-            <TableRow className="pointer-events-none border-slate-600">
-              <TableHead className="text-center">Category</TableHead>
-              <TableHead className="text-center">Studied minutes</TableHead>
+            <TableRow className="pointer-events-none border-slate-600 max-w-[462px] mobile:max-w-[167px]">
+              <TableHead className="text-center w-[231px] mobile:w-[167px]">Category</TableHead>
+              <TableHead className="text-center w-[231px]">Studied minutes</TableHead>
             </TableRow>
           </TableHeader>
         </Table>
@@ -74,8 +74,8 @@ const Statistics = forwardRef((_, ref) => {
           <Table>
             <TableBody className="border-b-2 border-slate-600">
               {studyProgress.map((item, index) => (
-                <TableRow className="border-b-2 border-slate-600 " key={index}>
-                  <TableCell>{item.category}</TableCell>
+                <TableRow className="border-b-2 border-slate-600" key={index}>
+                  <TableCell className="w-[231px] mobile:w-[167px]">{item.category}</TableCell>
                   <TableCell className="font-medium text-center">
                     {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
                   </TableCell>
