@@ -47,6 +47,7 @@ const MusicPlayer: React.FC = () => {
     } catch (error) {
       if (axios.isCancel(error)) {
         console.warn("Fetch request was cancelled.");
+        return null;
       }
       console.error("Error fetching track stream URL:", error);
       return null;
@@ -64,7 +65,7 @@ const MusicPlayer: React.FC = () => {
       //Nullázzuk az eddigi audiót. pl: megy egy zene, váltunk a másikra és így nem duplikálva mennek
       if (audio) {
         audio.pause();
-        setAudio(null);
+        audio.src = "";
       }
 
       const audioElement = new Audio(streamURL);

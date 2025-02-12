@@ -282,7 +282,7 @@ export const getStreamUrl = async (trackId: string): Promise<TrackDetailsDTO> =>
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Error checking event durations: ", error);
+    console.error("getStreamUrl error: ", error);
     throw error;
   }
 };

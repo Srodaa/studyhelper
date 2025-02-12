@@ -17,7 +17,7 @@ import java.util.Objects;
 @Service
 public class SoundCloudService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SoundCloudCredentialsService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SoundCloudService.class);
 
     private final String API_URL = "https://api.soundcloud.com";
 
@@ -66,6 +66,10 @@ public class SoundCloudService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             ObjectMapper objectMapper = new ObjectMapper();
+            if (response.statusCode() != 302) {
+                logger.error("Error fetching track: " + response.statusCode() + " - " + response.body());
+                return null;
+            }
             JsonNode rootNode = objectMapper.readTree(response.body());
             logger.info("SoundCloud stream URL: {}", rootNode.get("location").asText());
             return rootNode.has("location") ? rootNode.get("location").asText() : null;
