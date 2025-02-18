@@ -35,7 +35,7 @@ const MusicPlayer: React.FC = () => {
 
       setSongTitle(trackDetails.title);
       setTrackUploaderUsername(trackDetails.username);
-      setSongUrl(trackDetails.permalinkURL);
+      setSongUrl(trackDetails.permalinkUrl);
       const streamURL = trackDetails.extractStreamUrl;
 
       if (!streamURL) {

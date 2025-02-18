@@ -28,6 +28,6 @@ export interface UserName {
 export interface TrackDetailsDTO {
   title: string;
   username: string;
-  permalinkURL: string;
+  permalinkUrl: string;
   extractStreamUrl: string;
 }
