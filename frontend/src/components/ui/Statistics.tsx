@@ -18,12 +18,22 @@ interface StudyProgressDTO {
   elapsedTime: number;
 }
 
+const formatTime = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.round((seconds % 3600) / 60);
+
+  if (hours > 0) {
+    return `${hours} hour${hours > 1 ? "s" : ""} and ${minutes} minute${minutes !== 1 ? "s" : ""}`;
+  }
+  return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+};
+
 const Statistics = forwardRef((_, ref) => {
   const [studyProgress, setStudyProgress] = useState<StudyProgressDTO[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const totalElapsedTime = studyProgress.reduce((total, item) => total + item.elapsedTime, 0);
-  const totalElapsedMin = (Math.round((totalElapsedTime / 60) * 100) / 100).toFixed(2);
+  const formattedTime = formatTime(totalElapsedTime);
 
   const fetchData = async () => {
     const data = await fetchStudyStatistics();
@@ -59,30 +69,32 @@ const Statistics = forwardRef((_, ref) => {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-2 items-center gap-4">
             <Label className="text-right">Total time spent studying: </Label>
-            <Label className="text-center">{totalElapsedMin} minutes</Label>
+            <Label className="text-center">{formattedTime}</Label>
           </div>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow className="pointer-events-none border-slate-600 max-w-[462px] mobile:max-w-[167px]">
-              <TableHead className="text-center w-[231px] mobile:w-[167px]">Subject</TableHead>
-              <TableHead className="text-center w-[231px]">Studied minutes</TableHead>
-            </TableRow>
-          </TableHeader>
-        </Table>
-        <div className="max-h-72 overflow-y-auto">
+        <div>
           <Table>
-            <TableBody className="border-b-2 border-slate-600">
-              {studyProgress.map((item, index) => (
-                <TableRow className="border-b-2 border-slate-600" key={index}>
-                  <TableCell className="w-[231px] mobile:w-[167px]">{item.subject}</TableCell>
-                  <TableCell className="font-medium text-center">
-                    {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <TableHeader>
+              <TableRow className="pointer-events-none border-slate-600 max-w-[462px] mobile:max-w-[167px]">
+                <TableHead className="text-center w-[231px] mobile:w-[167px]">Subject</TableHead>
+                <TableHead className="text-center w-[231px]">Studied minutes</TableHead>
+              </TableRow>
+            </TableHeader>
           </Table>
+          <div className="max-h-72 overflow-y-auto">
+            <Table>
+              <TableBody className="border-b-2 border-slate-600">
+                {studyProgress.map((item, index) => (
+                  <TableRow className="border-b-2 border-slate-600" key={index}>
+                    <TableCell className="w-[231px] mobile:w-[167px]">{item.subject}</TableCell>
+                    <TableCell className="font-medium text-center">
+                      {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
         <DialogFooter className="sm:justify-center">
           <Button
