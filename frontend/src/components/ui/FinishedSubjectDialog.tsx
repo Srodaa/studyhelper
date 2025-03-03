@@ -9,12 +9,12 @@ import {
   DialogTitle
 } from "@/components/templates/dialog";
 
-interface FinishedCategoryDialogProps {
+interface FinishedSubjectDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const FinishedCategoryDialog: React.FC<FinishedCategoryDialogProps> = ({ isOpen, onClose }) => {
+const FinishedSubjectDialog: React.FC<FinishedSubjectDialogProps> = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px] border border-slate-600 bg-slate-900 text-white">
@@ -39,4 +39,4 @@ const FinishedCategoryDialog: React.FC<FinishedCategoryDialogProps> = ({ isOpen,
   );
 };
 
-export default FinishedCategoryDialog;
+export default FinishedSubjectDialog;

@@ -11,13 +11,13 @@ export interface CalendarEvent {
     dateTime: string; // ISO 8601 format
     timeZone?: string;
   };
-  category: string;
+  subject: string;
   duration: number;
   defaultDuration: number;
 }
 
 export interface StudyProgressDTO {
-  category: string;
+  subject: string;
   elapsedTime: number;
 }
 

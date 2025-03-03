@@ -3,23 +3,23 @@ package studyhelper.thesis.backend.DTO;
 import java.util.Objects;
 
 public class StudyProgressDTO {
-    private String category;
+    private String subject;
     private int elapsedTime;
 
     public StudyProgressDTO() {
     }
 
-    public StudyProgressDTO(String category, int elapsedTime) {
-        this.category = category;
+    public StudyProgressDTO(String subject, int elapsedTime) {
+        this.subject = subject;
         this.elapsedTime = elapsedTime;
     }
 
-    public String getCategory() {
-        return category;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public int getElapsedTime() {
@@ -35,11 +35,11 @@ public class StudyProgressDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudyProgressDTO that = (StudyProgressDTO) o;
-        return elapsedTime == that.elapsedTime && Objects.equals(category, that.category);
+        return elapsedTime == that.elapsedTime && Objects.equals(subject, that.subject);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(category, elapsedTime);
+        return Objects.hash(subject, elapsedTime);
     }
 }

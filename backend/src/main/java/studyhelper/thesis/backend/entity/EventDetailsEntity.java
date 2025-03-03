@@ -10,8 +10,8 @@ public class EventDetailsEntity {
     private Long id;
     @Column(name = "eventID")
     private String eventID;
-    @Column(name = "category")
-    private String category;
+    @Column(name = "subject")
+    private String subject;
     @Column(name = "duration")
     private Integer duration;
     @Column(name = "defaultDuration")
@@ -47,12 +47,12 @@ public class EventDetailsEntity {
         this.eventID = eventID;
     }
 
-    public String getCategory() {
-        return category;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public Integer getDuration() {

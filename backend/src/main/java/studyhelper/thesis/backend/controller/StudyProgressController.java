@@ -36,7 +36,7 @@ public class StudyProgressController {
     public ResponseEntity<String> saveStudyProgress(@RequestBody StudyProgressDTO progressDTO, @AuthenticationPrincipal OAuth2User principal) {
         try {
             UserEntity user = getUserFromPrincipal(principal);
-            studyProgressService.saveStudyProgress(user, progressDTO.getCategory(), progressDTO.getElapsedTime());
+            studyProgressService.saveStudyProgress(user, progressDTO.getSubject(), progressDTO.getElapsedTime());
             return ResponseEntity.ok("Az előrehaladási statisztika sikeresen mentve.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Hiba történt a előrehaladási statisztika mentése során.");
@@ -44,8 +44,8 @@ public class StudyProgressController {
     }
 
     @GetMapping("/user/getStudyProgress")
-    public List<StudyProgressDTO> getCategoriesAndTimeForUser(@AuthenticationPrincipal OAuth2User principal) {
+    public List<StudyProgressDTO> getSubjectsAndTimeForUser(@AuthenticationPrincipal OAuth2User principal) {
         UserEntity user = getUserFromPrincipal(principal);
-        return studyProgressService.getCategoriesAndTimeForUser(user.getEmail());
+        return studyProgressService.getSubjectsAndTimeForUser(user.getEmail());
     }
 }

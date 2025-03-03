@@ -2,22 +2,22 @@ package studyhelper.thesis.backend.DTO;
 
 public class UpdateDurationRequest {
 
-    private String category;
+    private String subject;
     private int elapsedSeconds;
 
     public UpdateDurationRequest() {}
 
-    public UpdateDurationRequest(String category, int elapsedSeconds) {
-        this.category = category;
+    public UpdateDurationRequest(String subject, int elapsedSeconds) {
+        this.subject = subject;
         this.elapsedSeconds = elapsedSeconds;
     }
 
-    public String getCategory() {
-        return category;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public int getElapsedSeconds() {

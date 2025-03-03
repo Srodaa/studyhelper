@@ -65,8 +65,8 @@ public class CalendarService {
         System.out.println("Törölve: " + url);
     }
 
-    public CalendarEvent updateEventWithCategoryAndDuration(UserEntity user, String accessToken, String eventId, CalendarEvent updateEvent) {
-        String category = updateEvent.getCategory();
+    public CalendarEvent updateEventWithSubjectAndDuration(UserEntity user, String accessToken, String eventId, CalendarEvent updateEvent) {
+        String subject = updateEvent.getSubject();
         int duration = updateEvent.getDuration();
         // Calendar event update
         updateEvent(accessToken, eventId, updateEvent);
@@ -76,13 +76,13 @@ public class CalendarService {
                 .orElseGet(() -> {
                     EventDetailsEntity newEventDetails = new EventDetailsEntity();
                     newEventDetails.setEventID(eventId);
-                    newEventDetails.setCategory(category);
+                    newEventDetails.setSubject(subject);
                     newEventDetails.setDuration(duration);
                     newEventDetails.setDefaultDuration(duration);
                     newEventDetails.setUser(user);
                     return eventDetailsRepository.save(newEventDetails);
                 });
-        eventDetailsEntity.setCategory(category);
+        eventDetailsEntity.setSubject(subject);
         eventDetailsEntity.setDuration(duration);
         eventDetailsEntity.setDefaultDuration(duration);
         eventDetailsEntity.setUser(user);
@@ -100,24 +100,24 @@ public class CalendarService {
         return response.getBody();
     }
 
-    public CalendarEvent createEventWithCategoryAndDuration(UserEntity user, String accessToken, CalendarEvent newEvent) {
+    public CalendarEvent createEventWithSubjectAndDuration(UserEntity user, String accessToken, CalendarEvent newEvent) {
         //Előre lementjük a kategóriát és az időtartamot, mert a Google Calendar API nem támogatja ezeket a mezőket
-        String category = newEvent.getCategory();
+        String subject = newEvent.getSubject();
         int duration = newEvent.getDuration();
         int defaultDuration = newEvent.getDefaultDuration();
 
         CalendarEvent createdEvent = createEvent(accessToken, newEvent);
         //Mivel ID-hoz rendeljük őket ezért csak akkor mentjük el, ha a Google Calendar API visszatér az ID-val
         if (createdEvent.getId() != null) {
-            createdEvent.setCategory(category);
+            createdEvent.setSubject(subject);
             createdEvent.setDuration(duration);
             createdEvent.setDefaultDuration(defaultDuration);
             EventDetailsEntity eventDetailsEntity = new EventDetailsEntity();
             eventDetailsEntity.setEventID(createdEvent.getId());
-            eventDetailsEntity.setCategory(createdEvent.getCategory());
+            eventDetailsEntity.setSubject(createdEvent.getSubject());
             eventDetailsEntity.setDuration(createdEvent.getDuration());
             eventDetailsEntity.setDefaultDuration(createdEvent.getDefaultDuration());
-            //Felhasználó <-> esemény raláció
+            //Felhasználó <-> esemény reláció
             eventDetailsEntity.setUser(user);
             eventDetailsRepository.save(eventDetailsEntity);
             user.addEvent(eventDetailsEntity);
@@ -137,7 +137,7 @@ public class CalendarService {
         return response.getBody();
     }
 
-    public EventDetailsEntity fetchEventCategoryAndDuration(String eventId, Authentication authentication) {
+    public EventDetailsEntity fetchEventSubjectAndDuration(String eventId, Authentication authentication) {
         String userEmail = ((OAuth2User) authentication.getPrincipal()).getAttribute("email");
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalStateException("Felhasználó nem található!"));
@@ -146,7 +146,7 @@ public class CalendarService {
                 .orElseGet(() -> {
                     EventDetailsEntity newEventDetails = new EventDetailsEntity();
                     newEventDetails.setEventID(eventId);
-                    newEventDetails.setCategory("Default");
+                    newEventDetails.setSubject("Default");
                     newEventDetails.setDuration(0);
                     newEventDetails.setDefaultDuration(0);
                     newEventDetails.setUser(user);
@@ -154,11 +154,11 @@ public class CalendarService {
                 });
     }
 
-    public List<String> getCategoriesByUser(Long userId) {
-        return eventDetailsRepository.findCategoriesByUserId(userId);
+    public List<String> getSubjectsByUser(Long userId) {
+        return eventDetailsRepository.findSubjectsByUserId(userId);
     }
 
-    public void updateCategoryDuration(String category, int elapsedSeconds) {
-        eventDetailsService.updateCategoryDuration(category, elapsedSeconds);
+    public void updateSubjectDuration(String subject, int elapsedSeconds) {
+        eventDetailsService.updateSubjectDuration(subject, elapsedSeconds);
     }
 }

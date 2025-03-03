@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface EventDetailsRepository extends JpaRepository<EventDetailsEntity, Long> {
     Optional<EventDetailsEntity> findByEventID(String eventID);
 
-    @Query("SELECT e.category, e.eventID FROM EventDetailsEntity e WHERE e.user.id = :userId")
-    List<String> findCategoriesByUserId(@Param("userId") Long userId);
+    @Query("SELECT e.subject, e.eventID FROM EventDetailsEntity e WHERE e.user.id = :userId")
+    List<String> findSubjectsByUserId(@Param("userId") Long userId);
 
-    EventDetailsEntity findByCategory(String category);
+    EventDetailsEntity findBySubject(String subject);
 }

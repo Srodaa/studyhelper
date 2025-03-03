@@ -51,7 +51,7 @@ export const handleSaveChanges = async (
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   closeDialog: () => void,
-  category: string,
+  subject: string,
   duration: number
 ): Promise<{ status: number }> => {
   const esemenyNeve = document.getElementById("esemenyNeve") as HTMLInputElement;
@@ -79,7 +79,7 @@ export const handleSaveChanges = async (
         end: {
           dateTime: combinatedEnd || endDateTime.toISOString()
         },
-        category: category,
+        subject: subject,
         duration: duration,
         defaultDuration: duration
       };
@@ -118,7 +118,7 @@ export const getCombinatedDateTime = (datePicker: Date | undefined, timeValue: s
 
 export const handleCreateEvent = async (
   newEvent: CalendarEvent,
-  category: string,
+  subject: string,
   duration: number,
   defaultDuration: number,
   setEvents: React.Dispatch<React.SetStateAction<CalendarEvent[]>>,
@@ -128,7 +128,7 @@ export const handleCreateEvent = async (
   setLoading(true);
   const eventData = {
     ...newEvent,
-    category: category,
+    subject: subject,
     duration: duration
   };
 
@@ -151,9 +151,10 @@ export const handleCreateEvent = async (
   }
 };
 
-export const getEventCategoryAndDuration = async (eventId: string): Promise<CalendarEvent> => {
+export const getEventSubjectAndDuration = async (eventId: string): Promise<CalendarEvent> => {
   try {
     const response = await axios.get<CalendarEvent>(`/user/calendar-events/${eventId}/details`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Ehhez az eventhez nincs társítva kategória és tervezett tanulási idő!", error);
@@ -161,9 +162,9 @@ export const getEventCategoryAndDuration = async (eventId: string): Promise<Cale
   }
 };
 
-export const getAllCategories = async (): Promise<string[]> => {
+export const getAllSubjects = async (): Promise<string[]> => {
   try {
-    const response = await axios.get("/user/categories");
+    const response = await axios.get("/user/subjects");
     return response.data;
   } catch (error) {
     console.error("Hiba a kategóriák lekérésekor:", error);
@@ -171,11 +172,11 @@ export const getAllCategories = async (): Promise<string[]> => {
   }
 };
 
-export async function updateDatabaseDuration(category: string, elapsedSeconds: number): Promise<void> {
+export async function updateDatabaseDuration(subject: string, elapsedSeconds: number): Promise<void> {
   try {
-    category = category.split(",")[0];
-    if (!category || elapsedSeconds <= 0) {
-      console.error("Hibás paraméterek az adatbázis frissítéséhez. ", category + " " + elapsedSeconds);
+    subject = subject.split(",")[0];
+    if (!subject || elapsedSeconds <= 0) {
+      console.error("Hibás paraméterek az adatbázis frissítéséhez. ", subject + " " + elapsedSeconds);
       return;
     }
     const response = await fetch("/user/updateDuration", {
@@ -184,7 +185,7 @@ export async function updateDatabaseDuration(category: string, elapsedSeconds: n
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        category,
+        subject,
         elapsedSeconds
       })
     });
@@ -197,10 +198,10 @@ export async function updateDatabaseDuration(category: string, elapsedSeconds: n
   }
 }
 
-export async function saveStudyProgress(category: string, elapsedTime: number): Promise<void> {
+export async function saveStudyProgress(subject: string, elapsedTime: number): Promise<void> {
   try {
-    if (!category || elapsedTime <= 0) {
-      console.error("Hibás paraméterek a tanulási statisztika elküldéséhez:", category, elapsedTime);
+    if (!subject || elapsedTime <= 0) {
+      console.error("Hibás paraméterek a tanulási statisztika elküldéséhez:", subject, elapsedTime);
       return;
     }
 
@@ -210,7 +211,7 @@ export async function saveStudyProgress(category: string, elapsedTime: number): 
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        category,
+        subject,
         elapsedTime
       })
     });
@@ -219,7 +220,7 @@ export async function saveStudyProgress(category: string, elapsedTime: number): 
       throw new Error("Hiba a statisztikák mentése közben.");
     }
 
-    console.log("Az előrehaladás sikeresen lementve. Kategória: ", category, " eltelt idő: ", elapsedTime);
+    console.log("Az előrehaladás sikeresen lementve. Tárgy: ", subject, " eltelt idő: ", elapsedTime);
   } catch (error) {
     console.error("Hiba a statisztikák mentése közben:", error);
   }
@@ -230,16 +231,16 @@ export const fetchStudyStatistics = async (): Promise<StudyProgressDTO[] | null>
     const response = await axios.get("/user/getStudyProgress");
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch categories and time:", error);
+    console.error("Failed to fetch subjects and time:", error);
     throw error;
   }
 };
 
-export const updateCategoryToDefault = async (eventId: string): Promise<void> => {
+export const updateSubjectToDefault = async (eventId: string): Promise<void> => {
   try {
-    await axios.put(`/user/${eventId}/setCategoryToDefault`);
+    await axios.put(`/user/${eventId}/setSubjectToDefault`);
   } catch (error) {
-    console.error("Failed to update the category to Default: ", error);
+    console.error("Failed to update the subject to Default: ", error);
     throw error;
   }
 };

@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface StudyProgressRepository extends JpaRepository<StudyProgressEntity, Long> {
-    Optional<StudyProgressEntity> findByUserAndCategory(UserEntity user, String category);
+    Optional<StudyProgressEntity> findByUserAndSubject(UserEntity user, String subject);
     List<StudyProgressEntity> findByUser(UserEntity user);
 }

@@ -6,30 +6,30 @@ import { Label } from "@/components/templates/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/templates/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/templates/select";
 import {
-  getAllCategories,
+  getAllSubjects,
   saveStudyProgress,
   updateDatabaseDuration,
-  updateCategoryToDefault,
+  updateSubjectToDefault,
   compareDurations
 } from "./utils/functions";
 import { toast } from "sonner";
-import FinishedCategoryDialog from "./ui/FinishedCategoryDialog";
+import FinishedSubjectDialog from "./ui/FinishedSubjectDialog";
 
 const Timer: React.FC = () => {
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
   const [duration, setDuration] = useState<number>(60);
   const [remainingTime, setRemainingTime] = useState<number>(duration * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isTimeVisible, setIsTimeVisible] = useState(false);
-  const [isFinsihedCategoryDialogOpen, setIsFinishedDialogOpen] = useState(false);
+  const [isFinsihedSubjectDialogOpen, setIsFinishedDialogOpen] = useState(false);
 
-  const fetchCategories = async () => {
+  const fetchSubjects = async () => {
     try {
-      const data: string[] = await getAllCategories();
-      setCategories(data);
+      const data: string[] = await getAllSubjects();
+      setSubjects(data);
     } catch (error) {
       console.error("Nem sikerült betölteni a kategóriákat: ", error);
     }
@@ -49,9 +49,9 @@ const Timer: React.FC = () => {
           clearInterval(id);
           setIsRunning(false);
           const elapsedSeconds = duration * 60;
-          const eventCategory = selectedCategory.split(",")[0];
-          updateDatabaseDuration(eventCategory, elapsedSeconds);
-          saveStudyProgress(eventCategory, elapsedSeconds);
+          const eventSubject = selectedSubject.split(",")[0];
+          updateDatabaseDuration(eventSubject, elapsedSeconds);
+          saveStudyProgress(eventSubject, elapsedSeconds);
           setRemainingTime(duration * 60);
           return 0;
         }
@@ -66,9 +66,9 @@ const Timer: React.FC = () => {
     setIsRunning(false);
 
     const elapsedSeconds = duration * 60 - remainingTime;
-    const eventCategory = selectedCategory.split(",")[0];
-    updateDatabaseDuration(eventCategory, elapsedSeconds);
-    saveStudyProgress(eventCategory, elapsedSeconds);
+    const eventSubject = selectedSubject.split(",")[0];
+    updateDatabaseDuration(eventSubject, elapsedSeconds);
+    saveStudyProgress(eventSubject, elapsedSeconds);
     setRemainingTime(duration * 60);
   };
 
@@ -92,17 +92,17 @@ const Timer: React.FC = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handleUpdateCategory = async (eventId: string) => {
+  const handleUpdateSubject = async (eventId: string) => {
     try {
-      await updateCategoryToDefault(eventId);
-      console.log("A kategória sikeresen 'Default'-ra lett állítva.");
+      await updateSubjectToDefault(eventId);
+      console.log("A tárgy sikeresen 'Default'-ra lett állítva.");
     } catch {
-      console.log("Hiba történt a kategória frissítésekor.");
+      console.log("Hiba történt a tárgy frissítésekor.");
     }
   };
 
   const handleDurationCompare = async () => {
-    const eventId = selectedCategory.split(",")[1];
+    const eventId = selectedSubject.split(",")[1];
     const isDurationLessThanDefaultAndNotZero = await compareDurations(eventId);
     if (isDurationLessThanDefaultAndNotZero) {
       setIsFinishedDialogOpen(true);
@@ -142,16 +142,16 @@ const Timer: React.FC = () => {
               </div>
               <div className="grid gap-2">
                 <div className="grid gap-4 grid-cols-3 items-center">
-                  <Label htmlFor="category">Category</Label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory} onOpenChange={fetchCategories}>
+                  <Label htmlFor="subject">Subject</Label>
+                  <Select value={selectedSubject} onValueChange={setSelectedSubject} onOpenChange={fetchSubjects}>
                     <SelectTrigger className="w-[185px] border-slate-600 hover:border-white">
-                      <SelectValue placeholder="Choose your category" />
+                      <SelectValue placeholder="Choose your subject" />
                       <SelectContent>
-                        {categories.map((category, index) => {
-                          const displayCategory = category.split(",")[0];
+                        {subjects.map((subject, index) => {
+                          const displaySubject = subject.split(",")[0];
                           return (
-                            <SelectItem key={index} value={category}>
-                              {displayCategory}
+                            <SelectItem key={index} value={subject}>
+                              {displaySubject}
                             </SelectItem>
                           );
                         })}
@@ -184,28 +184,28 @@ const Timer: React.FC = () => {
                 <Button
                   type="submit"
                   onClick={() => {
-                    if (!selectedCategory) {
-                      toast.error("Please select a category!");
+                    if (!selectedSubject) {
+                      toast.error("Please select a subject!");
                       return;
                     }
-                    const eventID = selectedCategory.split(",")[1];
+                    const eventID = selectedSubject.split(",")[1];
                     handleDurationCompare();
-                    handleUpdateCategory(eventID);
-                    setSelectedCategory("");
+                    handleUpdateSubject(eventID);
+                    setSelectedSubject("");
                   }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
                 >
-                  Finished category
+                  Finished subject
                 </Button>
-                <FinishedCategoryDialog
-                  isOpen={isFinsihedCategoryDialogOpen}
+                <FinishedSubjectDialog
+                  isOpen={isFinsihedSubjectDialogOpen}
                   onClose={() => setIsFinishedDialogOpen(false)}
                 />
                 <Button
                   type="submit"
                   onClick={() => {
-                    if (!selectedCategory || duration <= 0) {
-                      toast.error("Please select a category and set a valid duration.");
+                    if (!selectedSubject || duration <= 0) {
+                      toast.error("Please select a subject and set a valid duration.");
                       return;
                     }
                     setIsTimeVisible(true);

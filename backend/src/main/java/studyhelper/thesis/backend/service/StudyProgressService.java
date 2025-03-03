@@ -27,12 +27,12 @@ public class StudyProgressService {
     @Autowired
     private EventDetailsRepository eventDetailsRepository;
 
-    public void saveStudyProgress(UserEntity user, String category, int elapsedTime) {
-        StudyProgressEntity progress = studyProgressRepository.findByUserAndCategory(user, category)
+    public void saveStudyProgress(UserEntity user, String subject, int elapsedTime) {
+        StudyProgressEntity progress = studyProgressRepository.findByUserAndSubject(user, subject)
                 .orElseGet(() -> {
                     StudyProgressEntity newProgress = new StudyProgressEntity();
                     newProgress.setUser(user);
-                    newProgress.setCategory(category);
+                    newProgress.setSubject(subject);
                     newProgress.setElapsedTime(0);
                     return newProgress;
                 });
@@ -41,7 +41,7 @@ public class StudyProgressService {
         studyProgressRepository.save(progress);
     }
 
-    public List<StudyProgressDTO> getCategoriesAndTimeForUser(String email) {
+    public List<StudyProgressDTO> getSubjectsAndTimeForUser(String email) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -49,7 +49,7 @@ public class StudyProgressService {
 
         return studyProgressList.stream()
                 .collect(Collectors.groupingBy(
-                        StudyProgressEntity::getCategory,
+                        StudyProgressEntity::getSubject,
                         Collectors.summingInt(StudyProgressEntity::getElapsedTime)
                 ))
                 .entrySet().stream()
@@ -58,10 +58,10 @@ public class StudyProgressService {
     }
 
     @Transactional
-    public void setCategoryToDefault(String eventId){
+    public void setSubjectToDefault(String eventId){
         EventDetailsEntity event = eventDetailsRepository.findByEventID(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with ID: " + eventId));
-        event.setCategory("Default");
+        event.setSubject("Default");
         eventDetailsRepository.save(event);
     }
 

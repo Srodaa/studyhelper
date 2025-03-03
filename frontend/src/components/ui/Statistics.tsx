@@ -14,7 +14,7 @@ import { fetchStudyStatistics } from "@/components/utils/functions";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/templates/table";
 
 interface StudyProgressDTO {
-  category: string;
+  subject: string;
   elapsedTime: number;
 }
 
@@ -65,7 +65,7 @@ const Statistics = forwardRef((_, ref) => {
         <Table>
           <TableHeader>
             <TableRow className="pointer-events-none border-slate-600 max-w-[462px] mobile:max-w-[167px]">
-              <TableHead className="text-center w-[231px] mobile:w-[167px]">Category</TableHead>
+              <TableHead className="text-center w-[231px] mobile:w-[167px]">Subject</TableHead>
               <TableHead className="text-center w-[231px]">Studied minutes</TableHead>
             </TableRow>
           </TableHeader>
@@ -75,7 +75,7 @@ const Statistics = forwardRef((_, ref) => {
             <TableBody className="border-b-2 border-slate-600">
               {studyProgress.map((item, index) => (
                 <TableRow className="border-b-2 border-slate-600" key={index}>
-                  <TableCell className="w-[231px] mobile:w-[167px]">{item.category}</TableCell>
+                  <TableCell className="w-[231px] mobile:w-[167px]">{item.subject}</TableCell>
                   <TableCell className="font-medium text-center">
                     {(Math.round((item.elapsedTime / 60) * 100) / 100).toFixed(2)}
                   </TableCell>

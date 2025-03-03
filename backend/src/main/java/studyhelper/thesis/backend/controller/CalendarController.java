@@ -76,7 +76,7 @@ public class CalendarController {
 
         String accessToken = getAccessToken(authentication);
         UserEntity user = getUserFromPrincipal(principal);
-        CalendarEvent updatedEventResult = calendarService.updateEventWithCategoryAndDuration(user, accessToken, eventId, updatedEvent);
+        CalendarEvent updatedEventResult = calendarService.updateEventWithSubjectAndDuration(user, accessToken, eventId, updatedEvent);
         return ResponseEntity.ok(updatedEventResult);
     }
 
@@ -88,7 +88,7 @@ public class CalendarController {
 
         String accessToken = getAccessToken(authentication);
         UserEntity user = getUserFromPrincipal(principal);
-        CalendarEvent createdEvent = calendarService.createEventWithCategoryAndDuration(user, accessToken, newEvent);
+        CalendarEvent createdEvent = calendarService.createEventWithSubjectAndDuration(user, accessToken, newEvent);
         return ResponseEntity.ok(createdEvent);
     }
 

@@ -12,7 +12,7 @@ public class StudyProgressEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    private String category;
+    private String subject;
     private int elapsedTime; // Másodpercben
 
     public Long getId() {
@@ -31,12 +31,12 @@ public class StudyProgressEntity {
         this.user = user;
     }
 
-    public String getCategory() {
-        return category;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public int getElapsedTime() {

@@ -28,7 +28,7 @@ import {
   handleSaveChanges,
   handleCreateEvent,
   getCombinatedDateTime,
-  getEventCategoryAndDuration
+  getEventSubjectAndDuration
 } from "@/components/utils/functions";
 import { buttonVariants } from "@/components/templates/button";
 import loadingIcon from "@/assets/90-ring.svg";
@@ -44,7 +44,7 @@ const Calendar: React.FC = () => {
   const [eventEndDatePicker, setEventEndDatePicker] = React.useState<Date>();
   const [eventStartTimeValue, setEventStartTimeValue] = useState<string>("10:00");
   const [eventEndTimeValue, setEventEndTimeValue] = useState<string>("12:00");
-  const [eventCategory, setEventCategory] = React.useState<string>("Default");
+  const [eventSubject, setEventSubject] = React.useState<string>("Default");
   const [eventDurationMinutes, setEventDurationMinutes] = React.useState<number>(0);
   const [eventDurationHours, setEventDurationHours] = React.useState<number>(0);
   const [eventDurationDays, setEventDurationDays] = React.useState<number>(0);
@@ -80,7 +80,7 @@ const Calendar: React.FC = () => {
       setEvents,
       setLoading,
       closeDialog,
-      eventCategory,
+      eventSubject,
       durationInSeconds
     );
     return response;
@@ -128,14 +128,14 @@ const Calendar: React.FC = () => {
       summary: eventName,
       start: { dateTime: startDateTime },
       end: { dateTime: endDateTime },
-      category: eventCategory,
+      subject: eventSubject,
       duration: durationInSeconds,
       defaultDuration: durationInSeconds
     };
 
     return await handleCreateEvent(
       newEvent,
-      eventCategory,
+      eventSubject,
       durationInSeconds,
       durationInSeconds,
       setEvents,
@@ -168,8 +168,8 @@ const Calendar: React.FC = () => {
       })
     );
     try {
-      const { category, duration } = await getEventCategoryAndDuration(eventInfo.event.id);
-      setEventCategory(category);
+      const { subject, duration } = await getEventSubjectAndDuration(eventInfo.event.id);
+      setEventSubject(subject);
       setEventDurationFromSeconds(duration);
     } catch (error) {
       console.error("Hiba a kategória és időtartam lekérésekor:", error);
@@ -377,16 +377,16 @@ const Calendar: React.FC = () => {
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="category" className="text-right">
-              Category
+            <Label htmlFor="subject" className="text-right">
+              Subject
             </Label>
             <Input
-              id="eventCategory"
-              value={eventCategory}
+              id="eventSubject"
+              value={eventSubject}
               onChange={(e) => {
                 const filteredValue = e.target.value.replace(/[^a-zA-Z0-9áéíóöőúüűÁÉÍÓÖŐÚÜŰ\s]/g, "");
                 console.log(filteredValue);
-                setEventCategory(filteredValue);
+                setEventSubject(filteredValue);
               }}
               className="col-span-3 border border-slate-600 focus:border-white"
             />

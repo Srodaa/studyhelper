@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 public class TimerController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CalendarController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimerController.class);
 
     @Autowired
     private CalendarService calendarService;
@@ -48,24 +48,24 @@ public class TimerController {
     }
 
     @GetMapping("/user/calendar-events/{eventId}/details")
-    public ResponseEntity<EventDetailsEntity> getEventCategoryAndDuration(@PathVariable String eventId, Authentication authentication) {
-        EventDetailsEntity eventDetails = calendarService.fetchEventCategoryAndDuration(eventId, authentication);
+    public ResponseEntity<EventDetailsEntity> getEventSubjectAndDuration(@PathVariable String eventId, Authentication authentication) {
+        EventDetailsEntity eventDetails = calendarService.fetchEventSubjectAndDuration(eventId, authentication);
         return ResponseEntity.ok(eventDetails);
     }
 
-    @GetMapping("/user/categories")
-    public ResponseEntity<List<String>> getCategories(@AuthenticationPrincipal OAuth2User principal) {
+    @GetMapping("/user/subjects")
+    public ResponseEntity<List<String>> getSubjects(@AuthenticationPrincipal OAuth2User principal) {
         try {
             UserEntity user = getUserFromPrincipal(principal);
-            List<String> categories = calendarService.getCategoriesByUser(user.getId());
-            categories = categories.stream()
+            List<String> subjects = calendarService.getSubjectsByUser(user.getId());
+            subjects = subjects.stream()
                     .filter(Objects::nonNull)
-                    .filter(category -> {
-                        String categoryName = category.split(",")[0];
-                        return !"Default".equals(categoryName);
+                    .filter(subject -> {
+                        String subjectName = subject.split(",")[0];
+                        return !"Default".equals(subjectName);
                     })
                     .collect(Collectors.toList());
-            return ResponseEntity.ok(categories);
+            return ResponseEntity.ok(subjects);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
@@ -74,18 +74,18 @@ public class TimerController {
     @PostMapping("/user/updateDuration")
     public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {
         try {
-            calendarService.updateCategoryDuration(request.getCategory(), request.getElapsedSeconds());
-            logger.info("Category " + request.getCategory() + " updated with " + request.getElapsedSeconds() + " seconds.");
+            calendarService.updateSubjectDuration(request.getSubject(), request.getElapsedSeconds());
+            logger.info("Subject " + request.getSubject() + " updated with " + request.getElapsedSeconds() + " seconds.");
             return ResponseEntity.ok("Az adatbázis sikeresen frissítve.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Hiba történt az adatbázis frissítése során.");
         }
     }
 
-    @PutMapping("user/{eventId}/setCategoryToDefault")
-    public ResponseEntity<String> setCategoryToDefault(@PathVariable String eventId){
+    @PutMapping("user/{eventId}/setSubjectToDefault")
+    public ResponseEntity<String> setSubjectToDefault(@PathVariable String eventId){
         try {
-            studyProgressService.setCategoryToDefault(eventId);
+            studyProgressService.setSubjectToDefault(eventId);
             return ResponseEntity.ok("Az esemény kategóriája sikeresen átállítva alapértelmezettre.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Az esemény nem található az adatbázisban.");

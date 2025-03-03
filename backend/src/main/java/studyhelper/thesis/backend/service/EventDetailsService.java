@@ -13,8 +13,8 @@ public class EventDetailsService {
     EventDetailsRepository eventDetailsRepository;
 
     @Transactional
-    public void updateCategoryDuration(String category, int elapsedSeconds) {
-        EventDetailsEntity eventDetails = eventDetailsRepository.findByCategory(category);
+    public void updateSubjectDuration(String subject, int elapsedSeconds) {
+        EventDetailsEntity eventDetails = eventDetailsRepository.findBySubject(subject);
         if (eventDetails != null) {
             if (eventDetails.getDuration() < elapsedSeconds) {
                 eventDetails.setDuration(0);
@@ -24,7 +24,7 @@ public class EventDetailsService {
             }
             eventDetailsRepository.save(eventDetails);
         } else {
-            throw new IllegalArgumentException("Nincs találat a kategóriához: " + category); //Ilyen elv sose tud lenni.
+            throw new IllegalArgumentException("Nincs találat a tárgyhoz: " + subject); //Ilyen elv sose tud lenni.
         }
     }
 }

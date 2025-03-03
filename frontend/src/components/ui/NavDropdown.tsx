@@ -36,7 +36,7 @@ const NavDropdown: React.FC<NavbarProps> = ({ userProfileName }) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <span className="cursor-pointer">Dashboard</span>
+          <span className="cursor-pointer">Profile</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 ml-6 bg-slate-900 text-white border-slate-600">
           <DropdownMenuLabel>{userProfileName}'s account</DropdownMenuLabel>

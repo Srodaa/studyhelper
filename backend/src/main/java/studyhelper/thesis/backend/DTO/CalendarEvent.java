@@ -9,19 +9,19 @@ public class CalendarEvent {
     private String description;
     private Start start;
     private End end;
-    @JsonProperty("category")
-    private String category;
+    @JsonProperty("subject")
+    private String subject;
     @JsonProperty("duration")
     private int duration;
     @JsonProperty("defaultDuration")
     private int defaultDuration;
 
-    public String getCategory() {
-        return category;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public int getDuration() {
