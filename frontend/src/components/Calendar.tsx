@@ -438,7 +438,11 @@ const Calendar: React.FC = () => {
                 <Button
                   type="submit"
                   onClick={async () => {
-                    if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
+                    if (eventName.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventName)) {
+                      toast.error("Failed to create event.", {
+                        description: "Enter a subject name!"
+                      });
+                    } else if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
                       toast.error("Failed to create event.", {
                         description: "Enter a subject name!"
                       });
@@ -500,7 +504,11 @@ const Calendar: React.FC = () => {
                   type="submit"
                   onClick={async () => {
                     try {
-                      if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
+                      if (eventName.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventName)) {
+                        toast.error("Failed to create event.", {
+                          description: "Enter a subject name!"
+                        });
+                      } else if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
                         toast.error("Failed to create event.", {
                           description: "Enter a subject name!"
                         });
