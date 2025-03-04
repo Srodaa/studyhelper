@@ -53,6 +53,7 @@ const Timer: React.FC = () => {
           updateDatabaseDuration(eventSubject, elapsedSeconds);
           saveStudyProgress(eventSubject, elapsedSeconds);
           setRemainingTime(duration * 60);
+          setIsPopoverOpen(true);
           return 0;
         }
         return prevTime - 1;
