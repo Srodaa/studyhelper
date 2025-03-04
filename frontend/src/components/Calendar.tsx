@@ -398,6 +398,7 @@ const Calendar: React.FC = () => {
             <Input
               id="eventDurationDays"
               inputMode="numeric"
+              min={0}
               max={9000}
               value={eventDurationDays}
               type="number"
@@ -409,6 +410,7 @@ const Calendar: React.FC = () => {
             <Input
               id="eventDurationHours"
               inputMode="numeric"
+              min={0}
               max={9000}
               value={eventDurationHours}
               type="number"
@@ -420,6 +422,7 @@ const Calendar: React.FC = () => {
             <Input
               id="eventDurationMinutes"
               inputMode="numeric"
+              min={0}
               max={9000}
               value={eventDurationMinutes}
               type="number"
@@ -435,33 +438,39 @@ const Calendar: React.FC = () => {
                 <Button
                   type="submit"
                   onClick={async () => {
-                    try {
-                      const response = await createNewEvent();
-                      if (response.status === 200) {
-                        if (eventEndDatePicker && eventStartDatePicker) {
-                          const formattedStartDate = format(eventStartDatePicker, "EEEE, LLLL dd, yyyy"); // Nap, hónap, év
-                          const formattedEndDate = format(eventEndDatePicker, "EEEE, LLLL dd, yyyy");
-                          if (formattedStartDate != formattedEndDate) {
-                            toast("Event has been created", {
-                              description: `The event is scheduled from ${formattedStartDate} to ${formattedEndDate}`
-                            });
+                    if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
+                      toast.error("Failed to create event.", {
+                        description: "Enter a subject name!"
+                      });
+                    } else {
+                      try {
+                        const response = await createNewEvent();
+                        if (response.status === 200) {
+                          if (eventEndDatePicker && eventStartDatePicker) {
+                            const formattedStartDate = format(eventStartDatePicker, "EEEE, LLLL dd, yyyy"); // Nap, hónap, év
+                            const formattedEndDate = format(eventEndDatePicker, "EEEE, LLLL dd, yyyy");
+                            if (formattedStartDate != formattedEndDate) {
+                              toast("Event has been created", {
+                                description: `The event is scheduled from ${formattedStartDate} to ${formattedEndDate}`
+                              });
+                            } else {
+                              toast("Event has been created", {
+                                description: `The event is scheduled for ${formattedStartDate}`
+                              });
+                            }
                           } else {
-                            toast("Event has been created", {
-                              description: `The event is scheduled for ${formattedStartDate}`
+                            toast.error("Failed to create event.", {
+                              description: "Enter start and end date as well!"
                             });
                           }
                         } else {
-                          toast.error("Failed to create event.", {
-                            description: "Enter start and end date as well!"
-                          });
+                          toast.error("An error occured while creating the event.");
+                          console.log(response.status);
                         }
-                      } else {
+                      } catch (error) {
                         toast.error("An error occured while creating the event.");
-                        console.log(response.status);
+                        console.log(error);
                       }
-                    } catch (error) {
-                      toast.error("An error occured while creating the event.");
-                      console.log(error);
                     }
                   }}
                   className="bg-white text-black hover:bg-slate-200 border border-slate-600"
@@ -491,12 +500,18 @@ const Calendar: React.FC = () => {
                   type="submit"
                   onClick={async () => {
                     try {
-                      const response = await onSaveChanges();
-                      if (response.status === 200) {
-                        // Ha OK akkor OK :)
-                        toast.info("Event has been saved.");
+                      if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
+                        toast.error("Failed to create event.", {
+                          description: "Enter a subject name!"
+                        });
                       } else {
-                        toast.error("Failed to save the event.");
+                        const response = await onSaveChanges();
+                        if (response.status === 200) {
+                          // Ha OK akkor OK :)
+                          toast.info("Event has been saved.");
+                        } else {
+                          toast.error("Failed to save the event.");
+                        }
                       }
                     } catch (error) {
                       toast.error("An error occurred while saving the event.");
