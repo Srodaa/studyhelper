@@ -55,8 +55,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         userService.saveUserIfNotExists(email, name, googleID, accessToken, refreshToken);
 
-        userService.updateAccessToken(googleID, accessToken);
-
         getRedirectStrategy().sendRedirect(request, response, REDIRECT_URL);
     }
 

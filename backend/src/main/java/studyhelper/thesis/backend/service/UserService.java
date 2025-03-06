@@ -57,11 +57,4 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
-    public void updateAccessToken(String googleID, String newAccessToken) {
-        UserEntity user = userRepository.findByGoogleID(googleID)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        user.setAccessToken(newAccessToken);
-        userRepository.save(user);
-    }
 }

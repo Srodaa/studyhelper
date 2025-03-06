@@ -13,8 +13,6 @@ import studyhelper.thesis.backend.component.OAuth2LoginSuccessHandler;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
