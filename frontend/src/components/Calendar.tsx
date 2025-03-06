@@ -440,7 +440,7 @@ const Calendar: React.FC = () => {
                   onClick={async () => {
                     if (eventName.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventName)) {
                       toast.error("Failed to create event.", {
-                        description: "Enter a subject name!"
+                        description: "Enter the event name!"
                       });
                     } else if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
                       toast.error("Failed to create event.", {
@@ -506,7 +506,7 @@ const Calendar: React.FC = () => {
                     try {
                       if (eventName.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventName)) {
                         toast.error("Failed to create event.", {
-                          description: "Enter a subject name!"
+                          description: "Enter the event name!"
                         });
                       } else if (eventSubject.trim().length === 0 || !/[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(eventSubject)) {
                         toast.error("Failed to create event.", {
