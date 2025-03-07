@@ -179,20 +179,11 @@ export async function updateDatabaseDuration(subject: string, elapsedSeconds: nu
       console.error("Hibás paraméterek az adatbázis frissítéséhez. ", subject + " " + elapsedSeconds);
       return;
     }
-    const response = await fetch("/user/updateDuration", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        subject,
-        elapsedSeconds
-      })
+    const response = await axios.post("/user/updateDuration", {
+      subject,
+      elapsedSeconds
     });
-    if (!response.ok) {
-      throw new Error("Hiba az adatbázis frissítése során.");
-    }
-    console.log("Az adatbázis duration mezője sikeresen frissítve.");
+    console.log("Az adatbázis duration mezője sikeresen frissítve.", response);
   } catch (error) {
     console.error("Nem sikerült frissíteni az adatbázist:", error);
   }
