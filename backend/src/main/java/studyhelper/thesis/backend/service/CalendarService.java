@@ -1,5 +1,7 @@
 package studyhelper.thesis.backend.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,6 +23,9 @@ import java.util.List;
 
 @Service
 public class CalendarService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CalendarService.class);
+
 
     @Value("${google.calendar.api.url}")
     private String apiUrl;
@@ -52,7 +57,7 @@ public class CalendarService {
     public List<CalendarEvent> getEvents(String accessToken) {
         String url = apiUrl + "?access_token=" + accessToken;
         ResponseEntity<CalendarEventsResponse> response = sendRequest(url, HttpMethod.GET, null, CalendarEventsResponse.class);
-        System.out.println("Lekérdezve: "+ url);
+        logger.info("Lekérdezve: {}", url);
         return response.getBody().getItems();
     }
 
@@ -117,11 +122,8 @@ public class CalendarService {
             eventDetailsEntity.setSubject(createdEvent.getSubject());
             eventDetailsEntity.setDuration(createdEvent.getDuration());
             eventDetailsEntity.setDefaultDuration(createdEvent.getDefaultDuration());
-            //Felhasználó <-> esemény reláció
             eventDetailsEntity.setUser(user);
             eventDetailsRepository.save(eventDetailsEntity);
-            user.addEvent(eventDetailsEntity);
-            userRepository.save(user);
         } else {
             throw new IllegalStateException("Nem lekérdezhető eventID!");
         }
@@ -133,7 +135,6 @@ public class CalendarService {
         headers.setBearerAuth(accessToken);
         HttpEntity<CalendarEvent> entity = new HttpEntity<>(newEvent, headers);
         ResponseEntity<CalendarEvent> response = sendRequest(apiUrl, HttpMethod.POST, entity, CalendarEvent.class);
-        System.out.println("Létrehozva: " + apiUrl);
         return response.getBody();
     }
 
