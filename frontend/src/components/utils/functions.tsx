@@ -196,20 +196,10 @@ export async function saveStudyProgress(subject: string, elapsedTime: number): P
       return;
     }
 
-    const response = await fetch("/user/studyProgress", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        subject,
-        elapsedTime
-      })
+    const response = await axios.post("/user/studyProgress", {
+      subject,
+      elapsedTime
     });
-
-    if (!response.ok) {
-      throw new Error("Hiba a statisztikák mentése közben.");
-    }
 
     console.log("Az előrehaladás sikeresen lementve. Tárgy: ", subject, " eltelt idő: ", elapsedTime);
   } catch (error) {
