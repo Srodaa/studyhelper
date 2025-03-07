@@ -174,7 +174,7 @@ export const getAllSubjects = async (): Promise<string[]> => {
 
 export async function updateDatabaseDuration(subject: string, elapsedSeconds: number): Promise<void> {
   try {
-    subject = subject.split(",")[0];
+    console.log(subject);
     if (!subject || elapsedSeconds <= 0) {
       console.error("Hibás paraméterek az adatbázis frissítéséhez. ", subject + " " + elapsedSeconds);
       return;

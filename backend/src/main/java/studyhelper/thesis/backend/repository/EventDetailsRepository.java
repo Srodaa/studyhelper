@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
+import studyhelper.thesis.backend.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,5 +17,5 @@ public interface EventDetailsRepository extends JpaRepository<EventDetailsEntity
     @Query("SELECT e.subject, e.eventID FROM EventDetailsEntity e WHERE e.user.id = :userId")
     List<String> findSubjectsByUserId(@Param("userId") Long userId);
 
-    EventDetailsEntity findBySubject(String subject);
+    EventDetailsEntity findByEventIDAndUser(String eventID, UserEntity user);
 }

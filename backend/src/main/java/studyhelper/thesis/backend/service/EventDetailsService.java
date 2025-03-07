@@ -19,7 +19,8 @@ public class EventDetailsService {
 
     @Transactional
     public void updateSubjectDuration(String subject, int elapsedSeconds, UserEntity user) {
-        EventDetailsEntity eventDetails = eventDetailsRepository.findBySubjectAndUser(subject, user);
+        String subjectId = subject.split(",")[1];
+        EventDetailsEntity eventDetails = eventDetailsRepository.findByEventIDAndUser(subjectId, user);
         if (eventDetails != null) {
             if (eventDetails.getDuration() < elapsedSeconds) {
                 eventDetails.setDuration(0);

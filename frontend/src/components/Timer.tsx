@@ -50,7 +50,7 @@ const Timer: React.FC = () => {
           setIsRunning(false);
           const elapsedSeconds = duration * 60;
           const eventSubject = selectedSubject.split(",")[0];
-          updateDatabaseDuration(eventSubject, elapsedSeconds);
+          updateDatabaseDuration(selectedSubject, elapsedSeconds);
           saveStudyProgress(eventSubject, elapsedSeconds);
           setRemainingTime(duration * 60);
           setIsPopoverOpen(true);
@@ -68,7 +68,7 @@ const Timer: React.FC = () => {
 
     const elapsedSeconds = duration * 60 - remainingTime;
     const eventSubject = selectedSubject.split(",")[0];
-    updateDatabaseDuration(eventSubject, elapsedSeconds);
+    updateDatabaseDuration(selectedSubject, elapsedSeconds);
     saveStudyProgress(eventSubject, elapsedSeconds);
     setRemainingTime(duration * 60);
   };
