@@ -6,7 +6,6 @@ import { buttonVariants } from "@/components/templates/button";
 import { cn } from "@/lib/utils";
 
 const HomeCalendar: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,13 +43,12 @@ const HomeCalendar: React.FC = () => {
             "h-8 w-8 p-0 font-normal aria-selected:opacity-100 hover:bg-slate-700 hover:text-white"
           )
         }}
-        selected={selectedDate}
-        onSelect={setSelectedDate}
         modifiers={{
           event: isEventDay
         }}
         modifiersClassNames={{
-          event: "event-day"
+          event:
+            "after:content-[''] after:w-[6px] after:h-[6px] after:bg-[#18637C] after:rounded-full after:absolute after:bottom-[1px] after:left-1/2 after:-translate-x-1/2"
         }}
       />
     </div>
