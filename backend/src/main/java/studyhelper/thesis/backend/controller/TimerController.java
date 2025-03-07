@@ -72,9 +72,10 @@ public class TimerController {
     }
 
     @PostMapping("/user/updateDuration")
-    public ResponseEntity<String> updateDuration(@RequestBody UpdateDurationRequest request) {
+    public ResponseEntity<String> updateDuration(@AuthenticationPrincipal OAuth2User principal, @RequestBody UpdateDurationRequest request) {
         try {
-            calendarService.updateSubjectDuration(request.getSubject(), request.getElapsedSeconds());
+            UserEntity user = getUserFromPrincipal(principal);
+            calendarService.updateSubjectDuration(request.getSubject(), request.getElapsedSeconds(), user);
             logger.info("Subject " + request.getSubject() + " updated with " + request.getElapsedSeconds() + " seconds.");
             return ResponseEntity.ok("Az adatbázis sikeresen frissítve.");
         } catch (Exception e) {

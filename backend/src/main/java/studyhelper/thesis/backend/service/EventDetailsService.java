@@ -4,17 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
+import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.EventDetailsRepository;
+import studyhelper.thesis.backend.repository.UserRepository;
 
 @Service
 public class EventDetailsService {
 
     @Autowired
+    UserRepository user;
+
+    @Autowired
     EventDetailsRepository eventDetailsRepository;
 
     @Transactional
-    public void updateSubjectDuration(String subject, int elapsedSeconds) {
-        EventDetailsEntity eventDetails = eventDetailsRepository.findBySubject(subject);
+    public void updateSubjectDuration(String subject, int elapsedSeconds, UserEntity user) {
+        EventDetailsEntity eventDetails = eventDetailsRepository.findBySubjectAndUser(subject, user);
         if (eventDetails != null) {
             if (eventDetails.getDuration() < elapsedSeconds) {
                 eventDetails.setDuration(0);

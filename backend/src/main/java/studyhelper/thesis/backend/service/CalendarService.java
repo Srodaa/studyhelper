@@ -67,7 +67,7 @@ public class CalendarService {
         headers.setBearerAuth(accessToken);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         sendRequest(url, HttpMethod.DELETE, entity, Void.class);
-        System.out.println("Törölve: " + url);
+        logger.info("Törölve: {}", url);
     }
 
     public CalendarEvent updateEventWithSubjectAndDuration(UserEntity user, String accessToken, String eventId, CalendarEvent updateEvent) {
@@ -159,7 +159,7 @@ public class CalendarService {
         return eventDetailsRepository.findSubjectsByUserId(userId);
     }
 
-    public void updateSubjectDuration(String subject, int elapsedSeconds) {
-        eventDetailsService.updateSubjectDuration(subject, elapsedSeconds);
+    public void updateSubjectDuration(String subject, int elapsedSeconds, UserEntity user) {
+        eventDetailsService.updateSubjectDuration(subject, elapsedSeconds, user);
     }
 }
