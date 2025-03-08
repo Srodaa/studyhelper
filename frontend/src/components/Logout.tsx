@@ -1,13 +1,17 @@
+import axios from "axios";
 import React from "react";
 
 const logout = async () => {
   try {
-    const response = await fetch("http://localhost:8080/logout", {
-      method: "POST",
-      credentials: "include"
-    });
+    const response = await axios.post(
+      "http://localhost:8080/logout",
+      {},
+      {
+        withCredentials: true
+      }
+    );
 
-    if (response.ok) {
+    if (response.status === 200) {
       window.location.href = "http://localhost:5173/login";
     } else {
       console.error("Failed to logging out.");
