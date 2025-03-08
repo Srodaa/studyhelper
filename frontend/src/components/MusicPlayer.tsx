@@ -103,9 +103,8 @@ const MusicPlayer: React.FC = () => {
   const handleVolumeSliderChange = (value: number[]) => {
     if (audio) {
       const scaledVolume = value[0] / 100;
-      const maxVolume = 1;
-      setVolume(Math.min(scaledVolume / maxVolume));
-      audio.volume = Math.min(scaledVolume / maxVolume);
+      setVolume(scaledVolume);
+      audio.volume = scaledVolume;
     }
   };
 
