@@ -18,7 +18,7 @@ const RainEffect: React.FC<RainEffectProps> = ({ topStart }) => {
   }, []);
 
   return (
-    <div className="rain">
+    <div className="fixed w-full h-full pointer-events-none overflow-hidden">
       {drops.map((_, index) => {
         const left = Math.random() * 100; //pozi
         const dropSpeed = topStart === 0 ? 5 : 3;
