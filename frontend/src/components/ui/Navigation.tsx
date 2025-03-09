@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
             ""
           ) : (
             <div className="text-lg font-semibold hidden sm:block px-4">
-              <a href="/login" className="focus:outline-none">
+              <a href="/login" className="focus:outline-hidden">
                 Login
               </a>
             </div>

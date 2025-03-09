@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   const [showMusicPlayer, setShowMusicPlayer] = useState(true);
 
   return (
-    <div className="bg-gradient-to-tl from-slate-800 to-slate-900 text-white h-screen relative">
+    <div className="bg-linear-to-tl from-slate-800 to-slate-900 text-white h-screen relative">
       <Navigation />
       <RainEffect topStart={0} />
       <div>{showCalendar && <HomeCalendar />}</div>

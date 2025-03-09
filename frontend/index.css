@@ -1,6 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config './tailwind.config.js';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -68,7 +87,7 @@
 
 /**Fullcalendar stilizálása */
 .fc{
-  @apply bg-slate-900 text-slate-200 xl:w-[1400px] lg:w-[800px] mx-auto lg:h-[450px] md:h-[300px] md:w-[600px] !important
+  @apply bg-slate-900! text-slate-200! xl:w-[1400px]! lg:w-[800px]! mx-auto! lg:h-[450px]! md:h-[300px]! md:w-[600px]!
 }
 .fc-col-header-cell{
   @apply text-slate-300 font-semibold
@@ -80,7 +99,7 @@
   @apply bg-gray-700 opacity-80
 }
 .fc-day-today{
-  @apply bg-slate-700 !important;
+  @apply bg-slate-700!;
 }
 .fc td, .fc th{
   @apply border-gray-500
@@ -89,7 +108,7 @@
   @apply bg-sky-900 hover:bg-slate-700
 }
 .fc-event.fc-event-start, .fc-event.fc-event-end, .fc-event.fc-event-today.fc-daygrid-event.fc-daygrid-block-event.fc-h-event, .fc-event-main, .fc-h-event{
-  @apply font-normal text-slate-300 border-0 !important
+  @apply font-normal! text-slate-300! border-0!
 }
 .fc-prev-button.fc-button.fc-button-primary,.fc-next-button.fc-button.fc-button-primary{
   @apply border border-slate-600 bg-slate-900 hover:bg-slate-800

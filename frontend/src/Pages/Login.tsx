@@ -10,7 +10,7 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-b from-slate-700 to-slate-800 text-white h-screen">
+      <div className="bg-linear-to-b from-slate-700 to-slate-800 text-white h-screen">
         <RainEffect topStart={10} />
         <h2 className="flex items-center justify-center pt-4 xl:text-9xl lg:text-6xl md:text-6xl text-5xl font-bold skew-y-3 shadow-lg bg-slate-500 text-black ">
           StudyHelper
