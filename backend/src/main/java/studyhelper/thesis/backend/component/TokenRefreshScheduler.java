@@ -1,5 +1,7 @@
 package studyhelper.thesis.backend.component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,9 @@ import studyhelper.thesis.backend.service.UserService;
 
 @Component
 public class TokenRefreshScheduler {
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenRefreshScheduler.class);
+
     @Autowired
     private UserService userService;
 
@@ -24,7 +29,7 @@ public class TokenRefreshScheduler {
             tokenRefreshService.refreshAccessToken(user.getGoogleID() ,user.getRefreshToken());
         });
         soundCloudService.getTokens();
-        System.out.println("All access tokens refreshed");
+        logger.info("All access tokens refreshed");
     }
 
 }

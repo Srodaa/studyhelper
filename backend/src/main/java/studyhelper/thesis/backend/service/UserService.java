@@ -1,5 +1,7 @@
 package studyhelper.thesis.backend.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import studyhelper.thesis.backend.entity.UserEntity;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenRefreshService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -23,15 +27,15 @@ public class UserService {
             if (!existingUser.getAccessToken().equals(accessToken)) {
                 existingUser.setAccessToken(accessToken);
                 updated = true;
-                System.out.println("Updated access token: " + accessToken);
+                logger.info("Updated access token: {}", accessToken);
             }
             if (refreshToken != null && (existingUser.getRefreshToken() == null || !existingUser.getRefreshToken().equals(refreshToken))) {
                 existingUser.setRefreshToken(refreshToken);
                 updated = true;
-                System.out.println("Updated refresh token: " + refreshToken);
+                logger.info("Updated refresh token: {}", refreshToken);
             }
             if (updated) {
-                System.out.println("User updated");
+                logger.info("User updated");
                 return userRepository.save(existingUser);
             } else {
                 return existingUser;
@@ -42,11 +46,11 @@ public class UserService {
             user.setName(name);
             user.setGoogleID(googleID);
             user.setAccessToken(accessToken);
-            System.out.println("Access token: " + accessToken);
+            logger.info("Access token: {}", accessToken);
             if (refreshToken != null)
             {
                 user.setRefreshToken(refreshToken);
-                System.out.println("Refresh token: " + refreshToken);
+                logger.info("Refresh token: {}", refreshToken);
             }
             return userRepository.save(user);
         });

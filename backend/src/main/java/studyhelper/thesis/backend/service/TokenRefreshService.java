@@ -1,5 +1,7 @@
 package studyhelper.thesis.backend.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -16,6 +18,8 @@ import java.util.Map;
 
 @Service
 public class TokenRefreshService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenRefreshService.class);
 
     private static final String TOKEN_URL = "https://oauth2.googleapis.com/token";
 
@@ -61,13 +65,13 @@ public class TokenRefreshService {
                 user.setAccessToken(newAccessToken);
                 userRepository.save(user);
 
-                System.out.println("New access token received: " + user.getEmail() + " - "+ newAccessToken);
+                logger.info("New access token received: {} - {}", user.getEmail(), newAccessToken);
             } else {
-                System.err.println("Error: No access token received.");
+                logger.error("Error: No access token received.");
             }
 
         } catch (HttpClientErrorException e) {
-            System.err.println("Error refreshing access token: " + e.getMessage());
+            logger.error("Error refreshing access token: {}", e.getMessage());
         }
     }
 }
