@@ -2,6 +2,8 @@
 
 StudyHelper is a comprehensive learning assistance application designed to help students effectively manage their study schedules and tasks. With seamless Google Calendar integration StudyHelper ensures you stay organized and focused on your academic goals.
 
+![image](https://i.imgur.com/oHAIIsL.png)
+
 ## Features
 
 - **Google Calendar Integration**: View, create, edit, and delete events directly synced with your Google Calendar.
