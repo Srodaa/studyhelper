@@ -71,9 +71,7 @@ const MusicPlayer: React.FC = () => {
       const audioElement = new Audio(streamURL);
       audioElement.volume = volume;
       setAudio(audioElement);
-      audioElement.ontimeupdate = () => {
-        setProgress((audioElement.currentTime / audioElement.duration) * 100);
-      };
+
       //Ha az isPlaying már true akkor ha zenét váltunk nem kell elindítani megint hanem megy magától
       if (isPlaying) {
         audioElement.play();
@@ -93,6 +91,17 @@ const MusicPlayer: React.FC = () => {
       }
     };
   }, [currentTrackIndex]);
+
+  useEffect(() => {
+    if (audio) {
+      audio.ontimeupdate = () => {
+        const newProgress = (audio.currentTime / audio.duration) * 100;
+        if (Math.floor(newProgress) !== Math.floor(progress)) {
+          setProgress(newProgress);
+        }
+      };
+    }
+  }, [progress, isPlaying]);
 
   const handleSliderChange = (value: number[]) => {
     if (audio) {
