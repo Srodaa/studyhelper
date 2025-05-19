@@ -6,13 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import studyhelper.thesis.backend.entity.EventDetailsEntity;
 import studyhelper.thesis.backend.entity.UserEntity;
 import studyhelper.thesis.backend.repository.EventDetailsRepository;
-import studyhelper.thesis.backend.repository.UserRepository;
 
 @Service
 public class EventDetailsService {
-
-    @Autowired
-    UserRepository user;
 
     @Autowired
     EventDetailsRepository eventDetailsRepository;
